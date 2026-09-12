@@ -144,6 +144,25 @@ def gate(paths: list[Path], session_id: str, out) -> int:
         blocks = [f for f in findings if f.severity == "block"]
         if blocks:
             blocked[p] = blocks
+    # render step: on Windows with PowerPoint, a body page whose text is taller than its box blocks too
+    if sys.platform == "win32":
+        import subprocess as _sp
+        for p in paths:
+            if p in blocked:
+                continue
+            try:
+                r = _sp.run([sys.executable, str(HERE / "render_check.py"), str(p), "--out", str(p.parent / ("render_" + p.stem))],
+                            capture_output=True, text=True, timeout=300)
+            except Exception as exc:  # noqa: BLE001
+                out("qc gate: render check skipped for %s (%s)" % (p.name, exc))
+                continue
+            if r.returncode == 1:
+                lines = [ln for ln in r.stdout.splitlines() if ln.startswith("OVERFLOW")]
+                blocked[p] = [qc_check.Finding("render-overflow", "block", None, None, None, ln[:200],
+                                               "PowerPoint measures text taller than its box; look at the PNG", "resize", False)
+                              for ln in lines[:20]]
+            elif r.returncode == 0:
+                out("qc gate: rendered %s, no text overflow; PNGs in %s" % (p.name, p.parent / ("render_" + p.stem)))
     sp = state_path(session_id)
     st = load_state(sp)
     if not blocked:

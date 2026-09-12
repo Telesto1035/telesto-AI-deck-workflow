@@ -36,7 +36,7 @@ Empty author field. Nothing below 10pt except footnotes, which stop at 8pt. Ital
 
 ## Seeing the page
 
-On Windows with PowerPoint installed, `render_check.py DECK.pptx` exports every body page to PNG and lists text that is taller than its box, measured by PowerPoint. Claude looks at the PNGs before handing a deck over; so should you. Appendix and crosstab pages are left alone by both the AI phase and the gate.
+On Windows with PowerPoint installed, `render_check.py DECK.pptx` exports every body page to PNG and lists text that is taller than its box, measured by PowerPoint. The Stop hook runs it and blocks the turn on overflow, so a Claude Code build cannot hand over an unrendered deck. Claude looks at the PNGs before handing a deck over; so should you. Cowork has LibreOffice in its sandbox and renders through that route; a machine with neither PowerPoint nor LibreOffice cannot run the render step. Appendix and crosstab pages are left alone by both the AI phase and the gate.
 
 ## Machine setup
 
