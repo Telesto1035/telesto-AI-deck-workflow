@@ -228,6 +228,15 @@ Icons earn their place where a set of items is scanned rather than read, such as
 13. Apply `references/deck-craft.md` for client-paper specifics (Huron/EDR titles, tables, charts, callouts, footnotes, versioning). A freshly attached shipped deck beats it, except where the four-homes rule or the typography floor says otherwise.
 14. **Look at the render before handing off.** Convert to PDF with the pptx skill's soffice wrapper, rasterise with pdftoppm, and view every page. Overlaps, overflow, stranded titles and hanging single words on a last line are invisible in the XML and obvious in the image. Fix (widen the box, or reword a few words), re-render, then send.
 
+## Construction conventions (house, every paper)
+
+Stated by the CEO 2026-09-12. They override habits found in an attachment.
+
+- **Text boxes are zero-margin and top-anchored.** Every text box you create has all four insets at 0 and its text anchored to the top, so edges align to the grid and a one-line and a three-line box start at the same height. python-pptx: `tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0` and `tf.vertical_anchor = MSO_ANCHOR.TOP`. The gate lists departures as information.
+- **Section subtitles are a bold line with a rule beneath.** A section or panel inside a page is announced by a bold subtitle at 14 or 16pt and a thin horizontal line directly below it, not by a filled band or a box. One subtitle size per page.
+- **Tables are lines and text boxes, not the native table feature.** The consulting table of roughly four columns and three to five rows is built from one text box per cell, aligned on a grid, with thin horizontal divider lines between rows and a bold header row; no vertical rules, no cell fills. Multi-item cells are bullets. The native PowerPoint table is reserved for large tables (more rows or columns than fit that construction) and for heatmaps, where cell fills carry the data. The gate warns on a small native table.
+- **Charts are native and editable, and match the think-cell look.** think-cell was the house tool and remains available but is not required. A native chart must keep its data editable (never a picture) and match the established format: category labels as a column of left-aligned text boxes sharing one left edge, data labels outside the bars, one series colour with a muted colour for non-focus series, no gridlines, no legend where one series is shown, source and denominator line beneath. Where a chart's data lives in an existing think-cell object, patch its cache; do not rebuild it.
+
 ## Handoff
 
 Every Build ends with two things alongside the file:

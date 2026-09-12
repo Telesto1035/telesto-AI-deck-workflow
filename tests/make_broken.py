@@ -14,7 +14,7 @@ Planted faults (all on slide 1 unless noted), each mapped to the qc_check.py fin
     custom.xml with SharePoint fields .. metadata-scrub
     speaker note "Build sequence: ..." . speaker-notes
     [PLACEHOLDER: source needed] ....... placeholders
-    table row 40+30+28 vs Total 100 .... totals-sum (native table)
+    table row 40+30+28 vs Total 100 .... totals-sum, native-table-small (3x5 native table)
     chart cache 34 with label "36%" .... chart-cache-label
     data labels centred in bars ........ label-in-bar
     semicolon run in a table cell ...... semicolon-runs
@@ -64,6 +64,7 @@ PLANTED_BLOCK_IDS = {
     "empty-label",
 }
 PLANTED_WARN_IDS = {
+    "native-table-small",
     "italics",
     "quote-marks",
     "label-in-bar",

@@ -959,6 +959,65 @@ def check_quote_marks(d: Deck):
                 )
 
 
+def check_textbox_conventions(d: Deck):
+    """House construction: text boxes have zero insets and top anchoring. Reported per slide as information,
+    because a shipped client deck may carry the template's defaults and the rule targets what the draft builds."""
+    for sno, shapes in d.shapes_by_slide.items():
+        insets = 0
+        anchors = 0
+        boxes = 0
+        for si in shapes:
+            if not d.is_text_shape(si) or not d.is_textbox(si) or not visible(d.shape_text(si)):
+                continue
+            boxes += 1
+            bodyPr = si.shape._element.find(q("p:txBody") + "/" + q("a:bodyPr"))
+            if bodyPr is None:
+                insets += 1
+                anchors += 1
+                continue
+            if any(int(bodyPr.get(k, "91440" if k in ("lIns", "rIns") else "45720")) != 0 for k in ("lIns", "rIns", "tIns", "bIns")):
+                insets += 1
+            if bodyPr.get("anchor", "t") != "t":
+                anchors += 1
+        if insets or anchors:
+            d.add(
+                id="textbox-conventions", severity="info", slide=sno, shape=None, shape_id=None,
+                text="", detail="%d of %d text boxes with non-zero insets, %d not top-anchored; house style is zero-margin, top-aligned" % (
+                    insets, boxes, anchors
+                ),
+                fix="resize",
+            )
+
+
+def check_native_table_small(d: Deck):
+    """A small native table where the house builds lines and text boxes. Heatmaps (most cells filled) are exempt."""
+    max_rows = int(d.rules.get("small_table_max_rows", 6))
+    max_cols = int(d.rules.get("small_table_max_cols", 5))
+    for sno, shapes in d.shapes_by_slide.items():
+        for si in shapes:
+            if not (getattr(si.shape, "has_table", False) and si.shape.has_table):
+                continue
+            tbl = si.shape._element.find(".//" + q("a:tbl"))
+            if tbl is None:
+                continue
+            rows = tbl.findall(q("a:tr"))
+            nrows = len(rows)
+            ncols = max((len(tr.findall(q("a:tc"))) for tr in rows), default=0)
+            if nrows == 0 or nrows > max_rows or ncols > max_cols:
+                continue
+            cells = [tc for tr in rows for tc in tr.findall(q("a:tc"))]
+            filled = sum(1 for tc in cells if tc.find(q("a:tcPr") + "/" + q("a:solidFill")) is not None)
+            if cells and filled / len(cells) >= 0.5:
+                continue  # heatmap: fills carry the data
+            d.add(
+                id="native-table-small", severity="warn", slide=sno, shape=si.name, shape_id=si.shape_id,
+                text="", detail="native table of %d rows x %d columns; house style builds this size from text boxes and horizontal divider lines" % (
+                    nrows, ncols
+                ),
+                fix="none",
+            )
+
+
 def check_empty_textbox(d: Deck):
     for sno, shapes in d.shapes_by_slide.items():
         for si in shapes:
@@ -1718,6 +1777,8 @@ ALL_CHECKS = [
     check_placeholders,
     check_leftover_notes_and_labels,
     check_quote_marks,
+    check_textbox_conventions,
+    check_native_table_small,
     check_empty_textbox,
     check_off_canvas,
     check_overflow_estimate,

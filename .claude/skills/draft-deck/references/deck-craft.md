@@ -47,3 +47,11 @@ Formatting conventions learned from shipped work, most recently the EDR board de
 ## Versioning
 
 - Keep the deck's _vN in the filename across working iterations. Save iterations as "…_vN (1)", "(2)", and so on. Bump to _vN+1 only on a material change or when the user signals.
+
+
+## Tables and text boxes (all papers)
+
+- Consulting tables (about four columns, three to five rows) are text boxes on a grid with thin horizontal divider lines between rows; the header row is bold; no vertical rules or cell fills. Native tables only for large tables and heatmaps. The Public Sector deck (Sep 2026) carries both constructions; the lines-and-text-boxes one is the preferred form.
+- Section subtitles inside a page: bold, 14 or 16pt, with a thin horizontal line directly beneath.
+- Every text box: zero insets on all four sides, top-anchored, so the grid aligns and boxes of different lengths share a top edge.
+- Charts: think-cell was used before and is still acceptable; a native chart is fine when its data stays editable and its format matches the think-cell look described above (left-aligned label column, labels outside bars, one colour, no gridlines).

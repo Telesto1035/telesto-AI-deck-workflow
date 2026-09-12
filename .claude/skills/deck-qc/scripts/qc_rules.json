@@ -154,5 +154,8 @@
   "_expand_note": "Per engagement. A single capitalised token at the start of a paragraph (a chart label, a sentence opener) is never flagged. On the shipped federal deck the consultant kept HHS, DoD, VA, DHA and CMS as written and spelled out only DOE and, in one quote attribution, DHA; a default list of federal agencies produced 10 ignored warnings, so the default is short.",
   "italics_threshold": 4,
   "grey_text_threshold": 4,
-  "_italics_note": "Italics and grey text outside footnotes are allowed as rare exceptions; above the threshold per deck they block. Rationale: title, body or footnote should carry everything a reader needs in a five-second scan; recurring small italic or grey detail text is the AI habit that works against it."
+  "_italics_note": "Italics and grey text outside footnotes are allowed as rare exceptions; above the threshold per deck they block. Rationale: title, body or footnote should carry everything a reader needs in a five-second scan; recurring small italic or grey detail text is the AI habit that works against it.",
+  "small_table_max_rows": 6,
+  "small_table_max_cols": 5,
+  "_tables_note": "native-table-small warns on a native table within these bounds unless half or more of its cells are filled (a heatmap); the house builds small tables from text boxes and horizontal lines."
 }
