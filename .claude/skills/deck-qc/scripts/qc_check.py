@@ -1758,10 +1758,17 @@ def check_profile_length(d: Deck, profile: Optional[str]):
         return
     lo, hi = prof["length"]
     n = len(d.slides)
+    # appendix pages do not count: stop at the first divider titled Appendix or Crosstabs
+    for i, slide in enumerate(d.slides):
+        t = slide.shapes.title
+        txt = t.text.strip() if t is not None and t.has_text_frame else ""
+        if re.match(r"^(appendix|crosstabs?|backup)", txt, re.I):
+            n = i
+            break
     if n < lo or n > hi:
         d.add(
             id="deck-length", severity="info", slide=None, shape=None, shape_id=None,
-            text="%d slides" % n, detail="%s profile expects %d-%d pages" % (profile, lo, hi), fix="none",
+            text="%d slides" % n, detail="%s profile expects %d-%d pages (appendix after a divider not counted)" % (profile, lo, hi), fix="none",
         )
 
 
