@@ -73,3 +73,8 @@ Thirteen of 33 titles and 26 of 33 pages changed between the AI draft and the sh
 - **Quote hygiene.** Straight quote marks became curly on every quote; a pronoun with no antecedent inside a quote got a bracketed referent ("[AI tools] are not being used…"); an attribution spells the agency out ("Former Market Lead, Defense Health Agency").
 - **Word list confirmed.** "carry" was edited out of a title ("Three campaigns carry what buyers said…" became "…that reflect what buyers want to hear").
 - **Format.** Body text on rebuilt pages moved from 10 and 11pt to 12pt; multi-colour chevrons became one accent colour; icons and thin divider lines were added to rebuilt concept pages; the 9pt chart category labels on Huron paper were left as they were.
+
+## Two rules from the EDR AI minipack revise (2026-09-12)
+
+- **A negative finding carries its opportunity.** When the data says the client is behind, not considered, or at risk, the same page says what the good news is or what would improve it, from the data or from what the client already does well. "Only 26% would consider Huron for digital projects" travels with "82% of its clients rate its quality 8 or higher, and its data modernization and security work is the groundwork AI needs." A finding that is only bad news reads as a verdict, not a brief.
+- **Burning-platform tone is used sparingly.** Revenue-at-risk and cost-of-waiting framings are legitimate once per deck, sized to the evidence, and never as the register of every page. The consultant chooses the strength; offer two, one at the partner's strength and one sized to the data, and apply the one chosen.

@@ -1090,6 +1090,10 @@ def check_overflow_estimate(d: Deck):
         for si in shapes:
             if not d.is_text_shape(si) or si.box is None:
                 continue
+            if si.shape.is_placeholder and si.shape.placeholder_format.type in (
+                PP_PLACEHOLDER.FOOTER, PP_PLACEHOLDER.SLIDE_NUMBER, PP_PLACEHOLDER.DATE
+            ):
+                continue  # furniture sized by the layout; their slide-level frame is often a zero-height stub
             txBody = si.shape._element.find(q("p:txBody"))
             if txBody is None:
                 continue
