@@ -11,6 +11,10 @@
 5. **Review.** The partner comments in PowerPoint, as usual. "Resolve these comments" triggers `draft-deck` Revise, which reads the comments from the file, executes mechanical ones, proposes options for judgment ones, and returns a before-and-after log.
 6. **Ship, then learn.** After shipping, `scripts/deck_diff.py DRAFT.pptx SHIPPED.pptx` lists every edit by class (number, structure, storyline, style). `draft-deck` Learn turns repeated edits into proposed skill patterns; nothing enters a skill without approval.
 
+## What the workflow is for
+
+Two things. First, every draft is written for a named room: attach the roster and `stakeholder-context` maps who is there to the questions they need answered, and `draft-deck` orders the storyline around them. Second, revisions run themselves: `draft-deck` Revise reads the partner's comments from the file, executes the mechanical ones, proposes options for the judgment ones, asks only about the ambiguous ones ("make this pop"), and logs every comment to the engagement's revision ledger. Learn reads the ledgers and the shipped diffs and proposes rule changes, including loosening a rule partners no longer want. Every rule lives in a markdown skill or a JSON threshold, so any of it can be changed by hand when minds change.
+
 ## Commands (repo root, Claude Code users)
 
 ```
