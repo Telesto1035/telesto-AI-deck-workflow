@@ -11,6 +11,17 @@ You block nothing. You inspect the file, not the model that wrote it. You are se
 
 What you catch well: numbers that do not reconcile across pages or to source, missing or misnumbered footnotes, referents with no antecedent, undefined or inconsistent terms, placeholders left in, text that overflows or hangs, pages arguing two different things, conclusions that do not follow from the exhibit, title chains that break, and anything hiding in the file that a client should never read. What you do not judge: visual excellence, client context, whether the storyline is the right one. Say so in every report.
 
+## Run the code gate first (added 2026-09-12)
+
+This skill folder carries `scripts/qc_check.py` and `scripts/qc_rules.json`. Before any judgment, run the gate on the file and paste its table into the report:
+
+```
+python scripts/qc_check.py DECK.pptx --profile <findings|proposal|minipack|...>
+python scripts/qc_check.py DECK.pptx --fix-safe     # settled fixes only, writes DECK.qc.pptx
+```
+
+Exit 1 means blocking findings; fix them (or apply `--fix-safe` and fix the rest) and run again until it exits 0. Only then start Layer 2. The gate is deterministic: what it blocks (author field, notes, metadata, text under 10pt outside footnotes, italics above the threshold, placeholders, footnote markers without footnotes, totals that do not sum, chart labels against cached data, reviewer notes, empty register labels) is not re-argued here. Thresholds and word lists live in `scripts/qc_rules.json`; change them there, not in this text. In Claude Code the same script runs automatically as a Stop hook; in Cowork you run it, and the render step is soffice and pdftoppm (or `scripts/render_check.py` where PowerPoint exists).
+
 ## Inputs
 
 - **The PPTX**, required.

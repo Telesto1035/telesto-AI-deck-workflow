@@ -7,3 +7,5 @@ tests/fixtures/broken/
 *.json.tmp
 tests/fixtures/client/
 docs/client/
+dist/
+render_*/
