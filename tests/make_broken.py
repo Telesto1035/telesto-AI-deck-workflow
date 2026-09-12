@@ -24,6 +24,7 @@ Planted faults (all on slide 1 unless noted), each mapped to the qc_check.py fin
     empty text box ..................... empty-textbox
     "DL 11-Sep-26: ..." note ............ reviewer-note
     "Takeaway:" with nothing after ..... empty-label
+    two colliding text boxes ........... shape-overlap
     shape past the right edge .......... off-canvas
     hidden last slide .................. hidden-slides
     DRAFT on slide 1 only .............. draft-stamp (multi-slide decks only)
@@ -64,6 +65,7 @@ PLANTED_BLOCK_IDS = {
     "empty-label",
 }
 PLANTED_WARN_IDS = {
+    "shape-overlap",
     "native-table-small",
     "italics",
     "quote-marks",
@@ -152,6 +154,10 @@ def plant_slide_faults(prs: Presentation) -> None:
     _textbox(slide, x2, y + Inches(1.3), col_w, Inches(0.3), "DL 11-Sep-26: logo order is wrong, reorder", size=12,
              name="QC reviewer note")
     _textbox(slide, x3, y + Inches(3.1), Inches(2.5), Inches(0.3), "Takeaway:", size=12, name="QC empty label")
+
+    # 7c. two text boxes that collide
+    _textbox(slide, x3, y + Inches(2.75), Inches(2.4), Inches(0.4), "Overlap A: this box sits under the next", size=12, name="QC overlap A")
+    _textbox(slide, x3 + Inches(0.6), y + Inches(2.85), Inches(2.4), Inches(0.4), "Overlap B: this box sits on the previous", size=12, name="QC overlap B")
 
     # 8. off-canvas shape
     _textbox(slide, W + Inches(0.5), y, Inches(2), Inches(0.4), "Off the right edge", size=12, name="QC off-canvas")

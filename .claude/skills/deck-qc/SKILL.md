@@ -181,3 +181,11 @@ Apply everything in one pass once the answers come back, then validate, re-rende
 - Score visual excellence or storyline choice.
 - Fault a deck for something its profile marks not applicable, or for house convention listed under "What is not a defect".
 - Chase an AI-detector score.
+
+## Appendix and data pages (added 2026-09-12)
+
+Pages after a divider titled Appendix, Crosstabs or Backup are data: crosstabs, methodology detail, backup exhibits. Layer 1 style checks (type size, italics, palette, tables, overlap, overflow) do not apply to them and no fix is offered on them; smaller type is allowed there. Hygiene (author, notes, comments, metadata) still covers the whole file. The gate (`qc_check.py`) exempts them the same way.
+
+## Render step on Windows
+
+Where PowerPoint is installed, `scripts/render_check.py DECK.pptx` exports the body pages to PNG through PowerPoint and lists every text frame whose laid-out text is taller than its box. Look at the PNGs before reporting; the PowerPoint render is the authoritative one, so a LibreOffice artifact is not a concern on this route.

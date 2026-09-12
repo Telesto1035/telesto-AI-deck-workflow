@@ -188,6 +188,18 @@ class Deck:
             self.shapes_by_slide[i] = self._walk(slide, i)
         self._theme_cache: dict = {}
         self._default_style = self._presentation_default_style()
+        self.appendix_start = self._find_appendix_start()  # 1-based slide number of the first appendix page, or None
+
+    def _find_appendix_start(self):
+        for i, slide in enumerate(self.slides, 1):
+            t = slide.shapes.title
+            txt = t.text.strip() if t is not None and t.has_text_frame else ""
+            if re.match(r"^(appendix|crosstabs?|backup)\b", txt, re.I):
+                return i
+        return None
+
+    def is_appendix(self, sno: int) -> bool:
+        return self.appendix_start is not None and sno >= self.appendix_start
 
     # ---- parts -------------------------------------------------------------------------
 
@@ -1018,6 +1030,61 @@ def check_native_table_small(d: Deck):
             )
 
 
+def check_shape_overlap(d: Deck):
+    """Two text-bearing or chart shapes whose boxes intersect by more than a sliver, where neither contains the
+    other: the collision a render would show. Group children, footers and page numbers are skipped."""
+    tol = 4 * EMU_PER_PT
+    for sno, shapes in d.shapes_by_slide.items():
+        items = []
+        for si in shapes:
+            if si.box is None or si.in_group or si.shape.shape_type == MSO_SHAPE_TYPE.GROUP:
+                continue
+            if si.shape.is_placeholder and si.shape.placeholder_format.type in (
+                PP_PLACEHOLDER.FOOTER, PP_PLACEHOLDER.SLIDE_NUMBER, PP_PLACEHOLDER.DATE
+            ):
+                continue
+            if re.search(r"footer|slide number", si.name or "", re.I):
+                continue
+            has_chart = getattr(si.shape, "has_chart", False) and si.shape.has_chart
+            has_table = getattr(si.shape, "has_table", False) and si.shape.has_table
+            if not (has_chart or has_table or (d.is_text_shape(si) and visible(d.shape_text(si)))):
+                continue
+            items.append(si)
+        seen = set()
+        for i, a in enumerate(items):
+            ax, ay, aw, ah = a.box
+            for b in items[i + 1:]:
+                bx, by, bw, bh = b.box
+                ix = min(ax + aw, bx + bw) - max(ax, bx)
+                iy = min(ay + ah, by + bh) - max(ay, by)
+                if ix <= tol or iy <= tol:
+                    continue
+                a_in_b = ax >= bx - tol and ay >= by - tol and ax + aw <= bx + bw + tol and ay + ah <= by + bh + tol
+                b_in_a = bx >= ax - tol and by >= ay - tol and bx + bw <= ax + aw + tol and by + bh <= ay + ah + tol
+                if a_in_b or b_in_a:
+                    continue  # text on a band or a label inside a card is deliberate nesting
+                smaller = min(aw * ah, bw * bh) or 1
+                if (ix * iy) / smaller < 0.30:
+                    continue
+                # a short label riding on a chart frame edge (segment headers, axis captions) is a layout convention
+                a_chart = getattr(a.shape, "has_chart", False) and a.shape.has_chart
+                b_chart = getattr(b.shape, "has_chart", False) and b.shape.has_chart
+                if (a_chart and len(d.shape_text(b).strip()) <= 15) or (b_chart and len(d.shape_text(a).strip()) <= 15):
+                    continue
+                key = (a.shape_id, b.shape_id)
+                if key in seen:
+                    continue
+                seen.add(key)
+                d.add(
+                    id="shape-overlap", severity="warn", slide=sno, shape=a.name, shape_id=a.shape_id,
+                    text=(d.shape_text(a).strip()[:50] or a.name) + "  x  " + (d.shape_text(b).strip()[:50] or b.name),
+                    detail="'%s' and '%s' overlap by %.0f%% of the smaller shape; confirm in the render" % (
+                        a.name, b.name, 100 * (ix * iy) / smaller
+                    ),
+                    fix="resize",
+                )
+
+
 def check_empty_textbox(d: Deck):
     for sno, shapes in d.shapes_by_slide.items():
         for si in shapes:
@@ -1790,6 +1857,7 @@ ALL_CHECKS = [
     check_quote_marks,
     check_textbox_conventions,
     check_native_table_small,
+    check_shape_overlap,
     check_empty_textbox,
     check_off_canvas,
     check_overflow_estimate,
@@ -1810,6 +1878,10 @@ def run_checks(path: Path, rules: dict, profile: Optional[str] = None) -> tuple[
     for fn in ALL_CHECKS:
         fn(deck)
     check_profile_length(deck, profile)
+    if deck.appendix_start is not None:
+        keep_ids = {"speaker-notes", "hidden-slides", "comments-open", "placeholders", "reviewer-note",
+                    "stakeholder-name", "chart-cache-label", "totals-sum"}
+        deck.findings = [f for f in deck.findings if f.slide is None or not deck.is_appendix(f.slide) or f.id in keep_ids]
     deck.findings.sort(key=lambda f: (SEVERITY_ORDER.get(f.severity, 9), f.slide or 0, f.id))
     return deck, deck.findings
 

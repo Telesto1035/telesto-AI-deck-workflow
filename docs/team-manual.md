@@ -34,6 +34,10 @@ Two things. First, every draft is written for a named room: attach the roster an
 
 Empty author field. Nothing below 10pt except footnotes, which stop at 8pt. Italics only as rare exceptions: a few are listed, more than four in a deck blocks. Grey text outside footnotes in a colour that is not in the palette is listed for the author, never blocked. The test behind both rules: title, body or footnote carries everything a reader needs in a five-second scan. No `[PLACEHOLDER]`, `TBD` or `XX` left in. Every footnote marker has its footnote on the same slide. Components sum to their stated total within one point. No client stakeholder named on a slide. Small tables are text boxes and horizontal lines, not the native table (warned). Text boxes zero-margin and top-anchored, section subtitles bold 14 or 16pt with a rule beneath (listed as information). Units are slides and pages.
 
+## Seeing the page
+
+On Windows with PowerPoint installed, `render_check.py DECK.pptx` exports every body page to PNG and lists text that is taller than its box, measured by PowerPoint. Claude looks at the PNGs before handing a deck over; so should you. Appendix and crosstab pages are left alone by both the AI phase and the gate.
+
 ## Machine setup
 
 Python 3.11+ with the repo venv (`pip install -r requirements.txt`). For the render checks the skills ask for (overflow, hanging words, overlaps) install LibreOffice (`soffice`) and poppler (`pdftoppm`); without them the skills fall back to XML checks and say so.
