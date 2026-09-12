@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+tests/fixtures/broken/
+*.qc.pptx
+*.json.tmp
+tests/fixtures/client/
+docs/client/
