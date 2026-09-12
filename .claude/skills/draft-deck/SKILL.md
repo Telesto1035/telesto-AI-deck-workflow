@@ -13,6 +13,18 @@ Content and layout outrank styling. Never spend effort on lines, icons, or decor
 
 Every Telesto deck produces a call to action or a discussion, supported by statistics, quotes or data visualization, and it works at two reading speeds. Read only the titles on a phone and the message lands in 20 seconds. Read every chart and footnote for 30 minutes and nothing is ambiguous, unexplained or unsourced. Both tests apply to every type and every page. Density is not a style choice; it is set by the deck type and by each page's job.
 
+## Division of labour: the AI phase builds the core three, a human adds the polish
+
+Every slide has three things at its core, and they are what this skill spends its effort on:
+
+1. **The title and message.** Is this the right claim for this room, given what the stakeholders need to hear and what Telesto can realistically recommend? The title is the takeaway; if it could move to another client's deck, it is not finished.
+2. **The exhibit.** The one chart, table or quote set that shows the data behind the claim, native and editable, sourced and denominated.
+3. **The recommendation.** What this changes or informs: the band that closes the page, in the recommendation register.
+
+Callouts, colours, icons, badges and other polish are added by a human afterwards, when the storyline has settled. Do not spend the AI phase on them. The point is that the consultant thinks like a partner about what the page says in the larger story, not like an executor placing elements; placing elements is the cheap part.
+
+**Confirm the storyline in text before building anything.** For a first draft, and whenever a comment or a new input changes the storyline (which pages exist, in what order, with which exhibit), write the page plan as text first: one line per page with the title, the exhibit it carries and the recommendation it closes on. Wait for the consultant's confirmation, then build. This holds even when a Build Brief is attached: the brief settles the takeaway and the storyline lines, and the page plan is still shown before the file exists. It saves time and tokens on both sides.
+
 ## Inputs and routing
 
 There is no dot-dash step. The storyline comes from the inputs and you produce the page plan from them.
@@ -37,10 +49,10 @@ Ask only what the inputs do not answer, in one round, and never ask for somethin
 ## Modes
 
 ### Build
-Inputs in, deck out. Infer package, type and paper; ask once for anything missing. Produce the page plan as one action title per line and show it. If a Build Brief is attached, build straight through; otherwise take one confirm on the plan. Build, render, self-check, then hand off with the review manifest (below).
+Inputs in, deck out. Infer package, type and paper; ask once for anything missing. Produce the page plan as text, one line per page with title, exhibit and recommendation, and wait for confirmation before building; a Build Brief settles the storyline but the plan is still confirmed. Build, render, self-check, then hand off with the review manifest (below).
 
 ### Revise
-An existing deck plus partner comments (in-file, email, or a list). In-file comments are read from both stores, legacy `ppt/comments/comment*.xml` and modern `ppt/comments/modernComment_*.xml`, and each is quoted with its slide, author and thread before a resolution is proposed. Mechanical comments (typo, renumber, move, denominator) are executed. Judgment comments (reframe a title, cut a page, soften or sharpen a claim, reorder) get two or three proposed resolutions with a recommendation, then the chosen one is applied. Ambiguous comments ("sharpen this", "make this pop", "tighten") get a targeted question that offers two concrete readings of the ask, each with the line it would produce; never guess what a senior meant. Mark comments resolved rather than deleting them where the format allows; say which comments were left open and why. Output: revised slides plus a comment-by-comment log with before and after text, each comment classed as mechanical, judgment or ambiguous. Append the log to the engagement's revision ledger (`docs/client/revision-ledger.md`, gitignored) with deck, version and date. The target is that mechanical and judgment comments resolve without a second prompt; only ambiguous ones need the consultant, and the ledger shows whether that is holding.
+An existing deck plus partner comments (in-file, email, or a list). In-file comments are read from both stores, legacy `ppt/comments/comment*.xml` and modern `ppt/comments/modernComment_*.xml`, and each is quoted with its slide, author and thread before a resolution is proposed. Where the comments change the storyline (a finding reordered or added, a page cut, a new closing page), the revised page plan is confirmed in text first. Mechanical comments (typo, renumber, move, denominator) are executed. Judgment comments (reframe a title, cut a page, soften or sharpen a claim, reorder) get two or three proposed resolutions with a recommendation, then the chosen one is applied. Ambiguous comments ("sharpen this", "make this pop", "tighten") get a targeted question that offers two concrete readings of the ask, each with the line it would produce; never guess what a senior meant. Mark comments resolved rather than deleting them where the format allows; say which comments were left open and why. Output: revised slides plus a comment-by-comment log with before and after text, each comment classed as mechanical, judgment or ambiguous. Append the log to the engagement's revision ledger (`docs/client/revision-ledger.md`, gitignored) with deck, version and date. The target is that mechanical and judgment comments resolve without a second prompt; only ambiguous ones need the consultant, and the ledger shows whether that is holding.
 
 ### Rewrite
 Titles, an exec summary block, a takeaway rail, or any slide text, no file touched. Full language ruleset; two variants with a recommendation where the framing is a judgment call.
