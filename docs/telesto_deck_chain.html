@@ -54,19 +54,19 @@
   <!-- Agent 1: stakeholder-context -->
   <rect x="206" y="285" width="170" height="90" rx="8" fill="url(#agent)" stroke="#0BD0D9" stroke-width="1.4" filter="url(#sh)"/>
   <text x="291" y="312" font-size="13.5" font-weight="bold" text-anchor="middle" fill="#FFFFFF">stakeholder-context</text>
-  <text x="291" y="333" font-size="11.5" text-anchor="middle" fill="#FFFFFF">LLM call + retrieval (web)</text>
-  <text x="291" y="350" font-size="11.5" text-anchor="middle" fill="#FFFFFF">roster → questions → data map</text>
-  <text x="291" y="395" font-size="11.5" text-anchor="middle" fill="#FFFFFF">Reads the meeting roster, picks 1-2 primary</text>
-  <text x="291" y="410" font-size="11.5" text-anchor="middle" fill="#FFFFFF">stakeholders, lists the questions each will</text>
-  <text x="291" y="425" font-size="11.5" text-anchor="middle" fill="#FFFFFF">bring and whether the data answers them.</text>
+  <text x="291" y="333" font-size="11.5" text-anchor="middle" fill="#FFFFFF">LLM call, roster in (no research)</text>
+  <text x="291" y="350" font-size="11.5" text-anchor="middle" fill="#FFFFFF">roster → room → questions → data</text>
+  <text x="291" y="395" font-size="11.5" text-anchor="middle" fill="#FFFFFF">Runs when a roster is attached. Picks the</text>
+  <text x="291" y="410" font-size="11.5" text-anchor="middle" fill="#FFFFFF">1-2 primaries, their questions, and whether</text>
+  <text x="291" y="425" font-size="11.5" text-anchor="middle" fill="#FFFFFF">the data answers them. No name on a slide.</text>
   <line x1="376" y1="330" x2="420" y2="330" stroke="#FFFFFF" stroke-width="1.4" marker-end="url(#ar)"/>
 
   <!-- Agent 2: draft-deck container -->
   <rect x="422" y="240" width="350" height="180" rx="10" fill="none" stroke="#0BD0D9" stroke-width="1.2" stroke-dasharray="6,4"/>
   <text x="436" y="262" font-size="13.5" font-weight="bold" fill="#FFFFFF">draft-deck  (agent)</text>
-  <text x="598" y="442" font-size="11.5" text-anchor="middle" fill="#FFFFFF">Builds the first draft in the specified Telesto or client style</text>
-  <text x="598" y="457" font-size="11.5" text-anchor="middle" fill="#FFFFFF">from a prompt, files and an example deck. Seven deck types</text>
-  <text x="598" y="472" font-size="11.5" text-anchor="middle" fill="#FFFFFF">including findings report and proposal. Renders and self-checks.</text>
+  <text x="598" y="442" font-size="11.5" text-anchor="middle" fill="#FFFFFF">Builds the core three of every page (title and message, exhibit, recommendation)</text>
+  <text x="598" y="457" font-size="11.5" text-anchor="middle" fill="#FFFFFF">on the client&#39;s plain layouts from a prompt, files and the template. Brief optional.</text>
+  <text x="598" y="472" font-size="11.5" text-anchor="middle" fill="#FFFFFF">Storyline confirmed in text before any build. Renders every page and looks at it.</text>
 
   <!-- Router -->
   <rect x="440" y="285" width="140" height="90" rx="8" fill="url(#agent)" stroke="#0BD0D9" stroke-width="1.4" filter="url(#sh)"/>
@@ -78,20 +78,20 @@
   <!-- Generator -->
   <rect x="614" y="285" width="140" height="90" rx="8" fill="url(#agent)" stroke="#0BD0D9" stroke-width="1.4" filter="url(#sh)"/>
   <text x="684" y="312" font-size="13" font-weight="bold" text-anchor="middle" fill="#FFFFFF">Generator</text>
-  <text x="684" y="333" font-size="11.5" text-anchor="middle" fill="#FFFFFF">page plan → build</text>
-  <text x="684" y="350" font-size="11.5" text-anchor="middle" fill="#FFFFFF">→ render (tools)</text>
+  <text x="684" y="333" font-size="11.5" text-anchor="middle" fill="#FFFFFF">page plan → human confirms</text>
+  <text x="684" y="350" font-size="11.5" text-anchor="middle" fill="#FFFFFF">→ build → render, look</text>
   <line x1="754" y1="330" x2="812" y2="330" stroke="#FFFFFF" stroke-width="1.4" marker-end="url(#ar)"/>
 
   <!-- Gate -->
   <polygon points="870,282 918,330 870,378 822,330" fill="url(#card)" stroke="#FFFFFF" stroke-width="1.4" filter="url(#sh)"/>
   <text x="870" y="326" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#FFFFFF">Gate</text>
   <text x="870" y="343" font-size="10.5" text-anchor="middle" fill="#FFFFFF">qc_check.py</text>
-  <text x="882" y="396" font-size="11.5" text-anchor="middle" fill="#FFFFFF">fonts ≥10pt · no italics</text>
-  <text x="882" y="411" font-size="11.5" text-anchor="middle" fill="#FFFFFF">totals · footnotes · placeholders</text>
-  <text x="882" y="426" font-size="11.5" text-anchor="middle" fill="#FFFFFF">overflow · author field empty</text>
+  <text x="882" y="396" font-size="11.5" text-anchor="middle" fill="#FFFFFF">fonts ≥10pt · italics ≤4 · quotes</text>
+  <text x="882" y="411" font-size="11.5" text-anchor="middle" fill="#FFFFFF">totals · footnotes · placeholders · notes</text>
+  <text x="882" y="426" font-size="11.5" text-anchor="middle" fill="#FFFFFF">metadata · rendered overflow · overlap</text>
   <!-- fail loop back to Generator -->
   <path d="M870,282 L870,222 L684,222 L684,283" fill="none" stroke="#0BD0D9" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#ard)"/>
-  <text x="777" y="214" font-size="11.5" text-anchor="middle" fill="#0BD0D9">fail → fix, re-render (cap: 3 passes)</text>
+  <text x="777" y="214" font-size="11.5" text-anchor="middle" fill="#0BD0D9">fail → fix, re-render (cap 3; Stop hook in Claude Code, by instruction in Cowork)</text>
   <line x1="918" y1="330" x2="962" y2="330" stroke="#FFFFFF" stroke-width="1.4" marker-end="url(#ar)"/>
   <text x="940" y="320" font-size="11" text-anchor="middle" fill="#FFFFFF">pass</text>
 
@@ -99,14 +99,15 @@
   <rect x="964" y="285" width="170" height="90" rx="8" fill="url(#agent)" stroke="#0BD0D9" stroke-width="1.4" filter="url(#sh)"/>
   <text x="1049" y="312" font-size="13.5" font-weight="bold" text-anchor="middle" fill="#FFFFFF">Evaluator</text>
   <text x="1049" y="333" font-size="11.5" text-anchor="middle" fill="#FFFFFF">deck-qc Layer 2, fresh context</text>
-  <text x="1049" y="350" font-size="11.5" text-anchor="middle" fill="#FFFFFF">score 1-5 · suggest · question</text>
+  <text x="1049" y="348" font-size="11.5" text-anchor="middle" fill="#FFFFFF">skeleton check first</text>
+  <text x="1049" y="364" font-size="11.5" text-anchor="middle" fill="#FFFFFF">score 1-5 · suggest · question</text>
   <line x1="1134" y1="330" x2="1178" y2="330" stroke="#FFFFFF" stroke-width="1.4" marker-end="url(#ar)"/>
 
   <!-- Human -->
   <rect x="1180" y="285" width="130" height="90" rx="8" fill="#003366" stroke="#FFFFFF" stroke-width="1.4" filter="url(#sh)"/>
   <text x="1245" y="312" font-size="13.5" font-weight="bold" text-anchor="middle" fill="#FFFFFF">Human</text>
   <text x="1245" y="333" font-size="11.5" text-anchor="middle" fill="#FFFFFF">consultant, then partner</text>
-  <text x="1245" y="350" font-size="11.5" text-anchor="middle" fill="#FFFFFF">comments in the PPTX</text>
+  <text x="1245" y="350" font-size="11.5" text-anchor="middle" fill="#FFFFFF">comments in PPTX, left open</text>
   <line x1="1310" y1="330" x2="1344" y2="330" stroke="#FFFFFF" stroke-width="1.4" marker-end="url(#ar)"/>
 
   <!-- Out -->
@@ -117,11 +118,12 @@
 
   <!-- Revise loop: Human -> Generator -->
   <path d="M1245,375 L1245,500 L782,500 L782,385 L775,385" fill="none" stroke="#0BD0D9" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#ard)"/>
-  <text x="1010" y="492" font-size="11.5" text-anchor="middle" fill="#0BD0D9">Revise: resolve comments, return before/after log; judgment items get 2-3 options</text>
+  <text x="1010" y="492" font-size="11.5" text-anchor="middle" fill="#0BD0D9">Revise: comments read from the file; mechanical done, judgment gets 2-3 options, ambiguous asked</text>
+  <text x="1010" y="514" font-size="11.5" text-anchor="middle" fill="#0BD0D9">storyline changes confirmed in text first; every comment logged to the revision ledger</text>
 
   <!-- Learn loop: Out -> draft-deck instructions -->
   <path d="M1381,360 L1381,560 L430,560 L430,424" fill="none" stroke="#0BD0D9" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#ard)"/>
-  <text x="990" y="552" font-size="11.5" text-anchor="middle" fill="#0BD0D9">Learn: diff shipped deck vs last draft → proposed patterns for the skill (human approves each)</text>
+  <text x="990" y="552" font-size="11.5" text-anchor="middle" fill="#0BD0D9">Learn: deck_diff shipped vs draft + revision ledgers + gate findings → proposed patterns, including loosening a rule (human approves each)</text>
 
   <!-- Pattern brackets -->
   <g font-size="12" fill="#FFFFFF">
@@ -129,7 +131,7 @@
     <line x1="206" y1="606" x2="206" y2="618" stroke="#8A8F92" stroke-width="1"/>
     <line x1="1310" y1="606" x2="1310" y2="618" stroke="#8A8F92" stroke-width="1"/>
     <text x="758" y="632" text-anchor="middle" font-weight="bold" fill="#009999">Prompt chaining</text>
-    <text x="758" y="648" text-anchor="middle">sequential calls with a programmatic gate between steps; the human invokes each skill today, a script could</text>
+    <text x="758" y="648" text-anchor="middle">sequential calls with a programmatic gate between steps; Claude Code enforces the gate and the render with a Stop hook, Cowork runs them by instruction</text>
 
     <line x1="440" y1="674" x2="580" y2="674" stroke="#8A8F92" stroke-width="1"/>
     <line x1="440" y1="668" x2="440" y2="680" stroke="#8A8F92" stroke-width="1"/>
@@ -149,11 +151,12 @@
     <line x1="1180" y1="668" x2="1180" y2="680" stroke="#8A8F92" stroke-width="1"/>
     <line x1="1310" y1="668" x2="1310" y2="680" stroke="#8A8F92" stroke-width="1"/>
     <text x="1245" y="694" text-anchor="middle" font-weight="bold" fill="#009999">Human checkpoint</text>
-    <text x="1245" y="710" text-anchor="middle">only the send</text>
-    <text x="1245" y="725" text-anchor="middle">is irreversible</text>
+    <text x="1245" y="710" text-anchor="middle">two: the page plan in text</text>
+    <text x="1245" y="725" text-anchor="middle">before any build, and the send</text>
   </g>
 
   <!-- Footnote -->
-  <text x="40" y="772" font-size="11" fill="#FFFFFF">Workflow = LLMs and tools on predefined code paths; agent = the LLM directs its own process and tool use (Anthropic, 2024). The Build Brief is a branch on the Router, taken only when the package includes a product or engineer time.</text>
+  <text x="40" y="770" font-size="11" fill="#FFFFFF">Workflow = LLMs and tools on predefined code paths; agent = the LLM directs its own process and tool use (Anthropic, 2024). The Build Brief is a branch on the Router, taken only when the package includes a product or engineer time.</text>
+  <text x="40" y="786" font-size="11" fill="#FFFFFF">Appendix and crosstab pages sit outside the gate&#39;s style checks. The gate and the render run as a Stop hook in Claude Code and by instruction in Cowork. Updated 2026-09-12.</text>
 </svg>
 </body></html>
