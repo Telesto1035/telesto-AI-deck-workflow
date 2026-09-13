@@ -18,3 +18,6 @@ Class every item in the report as FIX or SUGGEST, and put the FIX items in their
 
 
 SUGGEST items are listed in slide order, and every item names the page by number and title ("Page 13, Next steps: …") so the reader can find it without the file. The build session then resolves them with the AskUserQuestion tool, one question per page, up to four pages per call, worst page first only when the consultant asks; the default is slide order. Each option quotes the current line and the proposed line; every question offers "leave as drafted"; the tool's free-text path takes the consultant's own wording.
+
+
+When source data is attached, check every attribute label and quoted option on the body pages against the questionnaire wording and list any shortening as FIX (fits) or SUGGEST (does not fit), with the verbatim label. Findings decks field questions on how attributes were defined; a paraphrase is a defect, not a style choice.

@@ -201,3 +201,8 @@ Pages after a divider titled Appendix, Crosstabs or Backup are data: crosstabs, 
 ## Render step on Windows
 
 Where PowerPoint is installed, `scripts/render_check.py DECK.pptx` exports the body pages to PNG through PowerPoint and lists every text frame whose laid-out text is taller than its box. Look at the PNGs before reporting; the PowerPoint render is the authoritative one, so a LibreOffice artifact is not a concern on this route.
+
+
+## Attribute wording check (added 2026-09-13)
+
+With the crosstab or questionnaire attached, compare every chart label, table row, scale point and option quoted in prose against the source wording. Any shortening, paraphrase or dropped qualifier is a Layer 1 FIX where the verbatim label fits the space, and a SUGGEST with the verbatim wording beside it where it does not. Report them in one grouped item per page. Terms the deck invents to stand for an option ("sector insights") are flagged the same way.
