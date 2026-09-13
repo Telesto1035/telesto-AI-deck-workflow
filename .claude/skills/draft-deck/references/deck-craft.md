@@ -64,3 +64,5 @@ Formatting conventions learned from shipped work, most recently the EDR board de
 - 1_Content Header Only (aubergine side panel, title in the panel) for low-text pages only, to vary the rhythm: exec summary, quote pages, next steps. Never for a chart page.
 - Divider Option 1 for the appendix divider.
 - Competitor rows in charts carry logos; the client row is boxed with a dashed outline. Stat callouts at 26pt with the sentence at 10pt beside them; key phrase and number bold in aubergine.
+
+- An analyst rating column (readiness, maturity, fit) carries a footnote marker and a footnote that says whose estimate it is and what it rests on: "Readiness is Telesto's estimate from the survey results shown beside each area." The data beside it justifies the call; the footnote says so.
