@@ -240,6 +240,12 @@ Icons earn their place where a set of items is scanned rather than read, such as
 13. Apply `references/deck-craft.md` for client-paper specifics (Huron/EDR titles, tables, charts, callouts, footnotes, versioning). A freshly attached shipped deck beats it, except where the four-homes rule or the typography floor says otherwise.
 14. **Look at the render before handing off.** Convert to PDF with the pptx skill's soffice wrapper, rasterise with pdftoppm, and view every page. Overlaps, overflow, stranded titles and hanging single words on a last line are invisible in the XML and obvious in the image. Fix (widen the box, or reword a few words), re-render, then send.
 
+## Footnote convention (reinforced 2026-09-12)
+
+- **Question-level citations use numbered superscripts.** Where a figure, quote set or exhibit draws on a survey question, a superscript ¹ ² ³ sits on the word, number, subtitle or column head it supports, and the footnote reads "1. Q21. How would you characterize the current state of AI adoption at your institution?" with the question wording verbatim, never paraphrased, then the survey name and n. Free-response quotes are cited the same way: the marker on the section subtitle, the footnote giving the question and that it was free response.
+- **"Source:" is for external material.** A website, a report, a different survey from the rest of the deck, a client dataset: "Source: Semrush API, US database, pulled 10 September 2026." A sister survey used beside the main one takes a numbered footnote that names it ("2. Q31. … 2026 Healthcare Intelligence Survey, n=300").
+- Every marker has its footnote on the same page and every footnote has its marker; the gate checks both directions.
+
 ## Word budget (set 2026-09-12)
 
 A body page carries at most 200 words of title, body and chart labels before the gate warns and 275 before it blocks; footnotes are counted apart (warn above 100) and appendix pages are exempt, as are pages that are mostly verbatim quotes. A wordy page draws a partner comment before anything else on it is read. Exec summaries may run long but sit under the same cap: keep percentages to a minimum there and explain the finding in words; a summary line with four figures in it is a table, not a sentence. Detail pages carry the numbers.
