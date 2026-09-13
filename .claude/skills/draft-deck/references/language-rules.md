@@ -97,3 +97,14 @@ The consultant kept the storyline, the four findings and every recommendation ba
 - **Next steps page:** numbered aubergine squares, a bold lead phrase per step, owners bold in aubergine (client) or teal (Telesto), generous row spacing, no subtitle above the table.
 - **Chart subtitles shortened to one line** ("Familiarity and consideration for digital projects").
 - **Word budget observed on the shipped-ready pages:** title, body and chart labels together ran 120 to 260 words per body page, footnotes apart; the one page above 300 drew the comment "wordy".
+
+
+## Edit patterns from shipped decks (Learn pass 3, 2026-09-13: EDR AI minipack v6 to the consultant's final)
+
+- **One implication band per page, not one per stat.** Seven "For Huron:" lines under seven stats (asked for by comment, built as asked) were replaced by a single band at the foot of the page headed "What this means for Huron:". The register label may vary by page: "Recommendation:" where the page tells the client what to do, "What this means for Huron:" where it reads out an implication. The consultant's own verdict: the per-stat pattern was not the right call even though it was requested; when a comment asks for something that will crowd the page, propose the single band as the alternative before building.
+- **Titles state the client's strategic reading, not the survey structure.** "Leaders agree on the AI risks that matter…; they differ by institution type, function and seniority" became "Higher ed leaders agree that digital and AI is their critical path towards financial and strategic leadership, but adoption and comfort level remains uneven".
+- **Exec-summary bodies end on the client's position**, in the client's words: "…which is where Huron can highlight its track record"; "leadership in AI capabilities has become crucial". Finding 4 kept both facts (R1s and AMCs furthest ahead) rather than choosing one, and grew a second sentence on what institutions already do with AI.
+- **Footnotes are dark grey (5A5A5A / 7F7F7F on Huron paper), not ink.** An accepted exception to the grey-text rule for the footnote home only.
+- **Next steps soften to "Discuss and select…"** and the theme list was cut back to "themes that will lead into 2027"; naming the themes was left to the room.
+- **Softer verbs in segment sentences:** "does not see it deployed actively" for "has the least of it deployed".
+- **Recommendation bands may point to a Huron product where one exists:** "a branded Huron product should lead the conversation" replaced "should lead the service conversation". The consultant knows the offer; the draft names the service and leaves the product call to them.
