@@ -1,6 +1,6 @@
 # telesto-deck-skills
 
-Telesto's agentic PPT workflow: the skills, the code gate, the hook and the evaluator that turn a Build Brief or prompt into a partner-ready deck. Spec: `docs/HANDOFF.md`. Chart: `docs/telesto_deck_chain.png`.
+Telesto's agentic PPT workflow: the skills, the code gate, the hook and the evaluator that turn a Build Brief or prompt into a partner-ready deck. Spec: `docs/HANDOFF.md`. Start with the chart, `docs/telesto_deck_chain.png`: it is the visual readme of the chain and is updated whenever the workflow changes (edit the HTML beside it and re-render). One-page manual: `docs/team-manual.md`.
 
 ## The chain
 
