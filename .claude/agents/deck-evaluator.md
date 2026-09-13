@@ -15,3 +15,6 @@ You never edit the file. You never guess a number; where the right change depend
 
 
 Class every item in the report as FIX or SUGGEST, and put the FIX items in their own list first (decided 2026-09-12). FIX is anything with one correct answer: grammar, spelling, parallel labels, a footnote citation that names the wrong question, a missing n or survey name, a low-base cut without its directional label, an undefined abbreviation, a stray character, a trailing ellipsis, a wording that is garbled rather than wrong. The build session executes FIX items without asking. SUGGEST is anything that rewrites a title, a recommendation band, an exec-summary line, a storyline element or a page's argument beyond a small fix: state the problem, quote the current line, propose the new one, and leave the choice to the consultant. When unsure, SUGGEST.
+
+
+SUGGEST items are listed in slide order, and every item names the page by number and title ("Page 13, Next steps: …") so the reader can find it without the file. The build session then resolves them with the AskUserQuestion tool, one question per page, up to four pages per call, worst page first only when the consultant asks; the default is slide order. Each option quotes the current line and the proposed line; every question offers "leave as drafted"; the tool's free-text path takes the consultant's own wording.
