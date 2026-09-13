@@ -25,6 +25,7 @@ Planted faults (all on slide 1 unless noted), each mapped to the qc_check.py fin
     "DL 11-Sep-26: ..." note ............ reviewer-note
     "Takeaway:" with nothing after ..... empty-label
     two colliding text boxes ........... shape-overlap
+    300 words of body text ............. word-count
     shape past the right edge .......... off-canvas
     hidden last slide .................. hidden-slides
     DRAFT on slide 1 only .............. draft-stamp (multi-slide decks only)
@@ -53,6 +54,7 @@ STAKEHOLDER = "Jane Q. Stakeholder"
 
 # The faults as (finding id, severity) pairs, so the test can assert the exact block set.
 PLANTED_BLOCK_IDS = {
+    "word-count",
     "font-size-floor",
     "author-empty",
     "metadata-scrub",
@@ -158,6 +160,10 @@ def plant_slide_faults(prs: Presentation) -> None:
     # 7c. two text boxes that collide
     _textbox(slide, x3, y + Inches(2.75), Inches(2.4), Inches(0.4), "Overlap A: this box sits under the next", size=12, name="QC overlap A")
     _textbox(slide, x3 + Inches(0.6), y + Inches(2.85), Inches(2.4), Inches(0.4), "Overlap B: this box sits on the previous", size=12, name="QC overlap B")
+
+    # 7d. a wordy page: 300 words of body text
+    _textbox(slide, x1, y + Inches(2.3), Inches(3.4), Inches(1.2),
+             " ".join("word%d" % i for i in range(300)), size=12, name="QC wordy")
 
     # 8. off-canvas shape
     _textbox(slide, W + Inches(0.5), y, Inches(2), Inches(0.4), "Off the right edge", size=12, name="QC off-canvas")

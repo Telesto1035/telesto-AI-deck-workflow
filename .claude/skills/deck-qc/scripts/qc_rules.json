@@ -157,5 +157,9 @@
   "_italics_note": "Italics and grey text outside footnotes are allowed as rare exceptions; above the threshold per deck they block. Rationale: title, body or footnote should carry everything a reader needs in a five-second scan; recurring small italic or grey detail text is the AI habit that works against it.",
   "small_table_max_rows": 6,
   "small_table_max_cols": 5,
-  "_tables_note": "native-table-small warns on a native table within these bounds unless half or more of its cells are filled (a heatmap); the house builds small tables from text boxes and horizontal lines."
+  "_tables_note": "native-table-small warns on a native table within these bounds unless half or more of its cells are filled (a heatmap); the house builds small tables from text boxes and horizontal lines.",
+  "words_warn": 200,
+  "words_block": 275,
+  "footnote_words_warn": 100,
+  "_words_note": "Per body page: title + body + chart labels, footnotes counted separately, appendix pages exempt. Pages where half or more of the words sit inside quotation marks are exempt (quote pages). Set 2026-09-12 from the shipped minipack (typical 160-210) and public sector deck (typical 130-250); the one page above 300 drew the comment 'wordy'."
 }

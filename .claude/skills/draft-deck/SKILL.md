@@ -240,6 +240,10 @@ Icons earn their place where a set of items is scanned rather than read, such as
 13. Apply `references/deck-craft.md` for client-paper specifics (Huron/EDR titles, tables, charts, callouts, footnotes, versioning). A freshly attached shipped deck beats it, except where the four-homes rule or the typography floor says otherwise.
 14. **Look at the render before handing off.** Convert to PDF with the pptx skill's soffice wrapper, rasterise with pdftoppm, and view every page. Overlaps, overflow, stranded titles and hanging single words on a last line are invisible in the XML and obvious in the image. Fix (widen the box, or reword a few words), re-render, then send.
 
+## Word budget (set 2026-09-12)
+
+A body page carries at most 200 words of title, body and chart labels before the gate warns and 275 before it blocks; footnotes are counted apart (warn above 100) and appendix pages are exempt, as are pages that are mostly verbatim quotes. A wordy page draws a partner comment before anything else on it is read. Exec summaries may run long but sit under the same cap: keep percentages to a minimum there and explain the finding in words; a summary line with four figures in it is a table, not a sentence. Detail pages carry the numbers.
+
 ## Construction conventions (house, every paper)
 
 Stated by the CEO 2026-09-12. They override habits found in an attachment.

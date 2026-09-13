@@ -1085,6 +1085,62 @@ def check_shape_overlap(d: Deck):
                 )
 
 
+WORD_RE = re.compile(r"[A-Za-z0-9][\w'\u2019%$.,-]*")
+QUOTED_RE = re.compile(r"[\u201c\"]([^\u201d\"]{12,})[\u201d\"]")
+
+
+def check_word_count(d: Deck):
+    """Title + body + chart labels per page against the rules' thresholds; footnotes counted apart; appendix exempt."""
+    warn = int(d.rules.get("words_warn", 200))
+    block = int(d.rules.get("words_block", 275))
+    fn_warn = int(d.rules.get("footnote_words_warn", 100))
+    for sno, shapes in d.shapes_by_slide.items():
+        if d.is_appendix(sno):
+            continue
+        body = fn = 0
+        quoted = 0
+        for si in shapes:
+            sh = si.shape
+            if sh.is_placeholder and sh.placeholder_format.type in (
+                PP_PLACEHOLDER.FOOTER, PP_PLACEHOLDER.SLIDE_NUMBER, PP_PLACEHOLDER.DATE
+            ):
+                continue
+            if re.search(r"footer|slide number", si.name or "", re.I):
+                continue
+            txt = ""
+            if d.is_text_shape(si):
+                txt = d.shape_text(si)
+            elif getattr(sh, "has_table", False) and sh.has_table:
+                txt = " ".join(t for _r, _c, _tx, t in d.table_cells(si))
+            if not visible(txt):
+                continue
+            n = len(WORD_RE.findall(txt))
+            if d.is_footnote_home(si):
+                fn += n
+            else:
+                body += n
+                quoted += sum(len(WORD_RE.findall(m)) for m in QUOTED_RE.findall(txt))
+        if body == 0:
+            continue
+        if quoted >= body / 2:
+            continue  # a quotes page carries verbatim text by design
+        if body > warn:
+            d.add(
+                id="word-count", severity="block" if body > block else "warn", slide=sno, shape=None, shape_id=None,
+                text="%d words" % body,
+                detail="%d words of title, body and chart labels (warn above %d, block above %d); footnotes %d counted apart" % (
+                    body, warn, block, fn
+                ),
+                fix="reword",
+            )
+        if fn > fn_warn:
+            d.add(
+                id="footnote-words", severity="warn", slide=sno, shape=None, shape_id=None,
+                text="%d words" % fn, detail="footnotes run %d words (warn above %d); trim question wording or move detail to the appendix" % (fn, fn_warn),
+                fix="reword",
+            )
+
+
 def check_empty_textbox(d: Deck):
     for sno, shapes in d.shapes_by_slide.items():
         for si in shapes:
@@ -1231,7 +1287,11 @@ def footnote_defs_in(ptxt: str) -> list[int]:
         if val is not None and (not out or val != out[-1]):
             out.append(val)
     return out
-SUP_RUN_RE = re.compile(r"^\s*(\d{1,2})\s*$")
+SUP_RUN_RE = re.compile(r"^\s*(\d{1,2})(\s*,\s*\d{1,2})*\s*$")  # "4" or "4,5" as one superscript run
+
+
+def sup_values(text: str) -> list[int]:
+    return [int(x) for x in re.findall(r"\d{1,2}", text or "")]
 
 
 def superscript_value(s: str) -> Optional[int]:
@@ -1251,7 +1311,7 @@ def check_footnote_sequence(d: Deck):
                 for _r, _c, txBody, _t in d.table_cells(si):
                     for r in d.runs_of_txbody(txBody, si.shape, d.slides[sno - 1], in_cell=True):
                         if r.superscript and SUP_RUN_RE.match(r.text or ""):
-                            markers.append(int(r.text.strip()))
+                            markers.extend(sup_values(r.text))
                         for ch_group in re.findall(r"[⁰¹²³⁴⁵⁶⁷⁸⁹]+", r.text or ""):
                             v = superscript_value(ch_group)
                             if v is not None:
@@ -1267,7 +1327,7 @@ def check_footnote_sequence(d: Deck):
                 for r in runs:
                     paras.setdefault(r.para_index, r.para_text)
                     if r.superscript and SUP_RUN_RE.match(r.text or ""):
-                        sup_defs.append(int(r.text.strip()))
+                        sup_defs.extend(sup_values(r.text))
                     for ch_group in re.findall(r"[⁰¹²³⁴⁵⁶⁷⁸⁹]+", r.text or ""):
                         v = superscript_value(ch_group)
                         if v is not None:
@@ -1283,7 +1343,7 @@ def check_footnote_sequence(d: Deck):
             else:
                 for r in runs:
                     if r.superscript and SUP_RUN_RE.match(r.text or ""):
-                        markers.append(int(r.text.strip()))
+                        markers.extend(sup_values(r.text))
                     for ch_group in re.findall(r"[⁰¹²³⁴⁵⁶⁷⁸⁹]+", r.text or ""):
                         v = superscript_value(ch_group)
                         if v is not None:
@@ -1858,6 +1918,7 @@ ALL_CHECKS = [
     check_textbox_conventions,
     check_native_table_small,
     check_shape_overlap,
+    check_word_count,
     check_empty_textbox,
     check_off_canvas,
     check_overflow_estimate,

@@ -31,10 +31,12 @@ assert CLEAN, "no fixtures found in tests/fixtures"
 # section 3 rules: the Deliverable Brief is a 9pt PptxGenJS one-pager with an italic caption and
 # a populated author field; the template carries one italic quote on slide 24.
 KNOWN_CLEAN_BLOCKS = {
+    # word-count: the template's slide 2 is a 600-word AI-instructions page and the Brief is a dense one-pager by design;
+    # both are internal documents, not client body pages, so the block is expected there.
     "Telesto_Standard_v2_P3-P5": set(),
     "Telesto_Package_Types": set(),
-    "telesto_v2_template": set(),
-    "Telesto_Deliverable_Brief_Example": {"author-empty", "metadata-scrub", "font-size-floor"},
+    "telesto_v2_template": {"word-count"},
+    "Telesto_Deliverable_Brief_Example": {"author-empty", "metadata-scrub", "font-size-floor", "word-count"},
 }
 
 
