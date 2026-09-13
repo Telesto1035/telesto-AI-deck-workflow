@@ -55,3 +55,12 @@ Formatting conventions learned from shipped work, most recently the EDR board de
 - Section subtitles inside a page: bold, 14 or 16pt, with a thin horizontal line directly beneath.
 - Every text box: zero insets on all four sides, top-anchored, so the grid aligns and boxes of different lengths share a top edge.
 - Charts: think-cell was used before and is still acceptable; a native chart is fine when its data stays editable and its format matches the think-cell look described above (left-aligned label column, labels outside bars, one colour, no gridlines).
+
+
+## Huron layouts, as used on the shipped EDR minipack (2026-09-12)
+
+- Cover Option 1 for the cover; Callout Option 1 for the one-sentence takeaway page (image background, ~30 words, 36pt).
+- Content Header Only (white) for every page with an exhibit.
+- 1_Content Header Only (aubergine side panel, title in the panel) for low-text pages only, to vary the rhythm: exec summary, quote pages, next steps. Never for a chart page.
+- Divider Option 1 for the appendix divider.
+- Competitor rows in charts carry logos; the client row is boxed with a dashed outline. Stat callouts at 26pt with the sentence at 10pt beside them; key phrase and number bold in aubergine.
