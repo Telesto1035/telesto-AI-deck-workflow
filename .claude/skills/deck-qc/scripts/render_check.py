@@ -15,18 +15,25 @@ data pages the consultant leaves as they are.
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 from pathlib import Path
 
+# Paths reach PowerShell through environment variables, never by string interpolation: a deck named
+# "Q4 $ale$.pptx" or one with a quote in it must not break or run as code.
 PS_TEMPLATE = r'''
 $ErrorActionPreference = "Stop"
-$p = "{deck}"
-$out = "{out}"
+$p = $env:QC_RENDER_DECK
+$out = $env:QC_RENDER_OUT
 New-Item -ItemType Directory -Force $out | Out-Null
 try {{ $app = New-Object -ComObject PowerPoint.Application }} catch {{ Write-Output "NOPPT"; exit 2 }}
+$pres = $null
+try {{
 $pres = $app.Presentations.Open($p, $true, $false, $false)
 $n = $pres.Slides.Count
+$w = [int]{scale}
+$h = [int]([double]$w * $pres.PageSetup.SlideHeight / $pres.PageSetup.SlideWidth)
 Write-Output ("SLIDES {{0}}" -f $n)
 $stop = $n
 if (-not {all}) {{
@@ -47,7 +54,7 @@ $over = 0
 foreach ($i in $wanted) {{
   if ($i -gt $stop) {{ continue }}
   $s = $pres.Slides.Item($i)
-  $s.Export("$out\slide$i.png", "PNG", {scale}, [int]({scale} * 9 / 16))
+  $s.Export("$out\slide$i.png", "PNG", $w, $h)
   foreach ($sh in $s.Shapes) {{
     if ($sh.HasTextFrame) {{
       $tr = $sh.TextFrame.TextRange
@@ -59,8 +66,11 @@ foreach ($i in $wanted) {{
     }}
   }}
 }}
-$pres.Close(); $app.Quit()
 Write-Output ("OVERFLOWS {{0}}" -f $over)
+}} finally {{
+  if ($pres -ne $null) {{ try {{ $pres.Close() }} catch {{}} }}
+  try {{ $app.Quit() }} catch {{}}
+}}
 '''
 
 
@@ -89,12 +99,13 @@ def main(argv=None) -> int:
     deck = Path(args.deck).resolve()
     out = Path(args.out).resolve() if args.out else deck.parent / ("render_" + deck.stem)
     slides = ",".join(str(i) for i in parse_slides(args.slides))
-    script = PS_TEMPLATE.format(deck=str(deck), out=str(out), slides=slides, scale=args.scale,
-                                all="$true" if args.all else "$false")
+    script = PS_TEMPLATE.format(slides=slides, scale=int(args.scale), all="$true" if args.all else "$false")
     if sys.platform != "win32":
         print("render_check needs PowerPoint on Windows; use soffice + pdftoppm here")
         return 2
-    proc = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command", script], capture_output=True, text=True)
+    env = dict(os.environ, QC_RENDER_DECK=str(deck), QC_RENDER_OUT=str(out))
+    proc = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command", script],
+                          capture_output=True, text=True, env=env, timeout=600)
     text = proc.stdout.strip()
     print(text)
     if proc.returncode != 0 and proc.stderr.strip():

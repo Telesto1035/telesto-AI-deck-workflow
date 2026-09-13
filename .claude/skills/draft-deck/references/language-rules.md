@@ -46,6 +46,8 @@ A finding never smuggles in a recommendation; an implication never introduces ne
 - Short sentences. Split any sentence carrying more than one "that/which/as well as".
 - No filler, no empty transitions, no consulting hollow-speak (force multiplier, boil the ocean, synergies).
 - No AI-sounding constructions: no triplet-parallel slogans, no "It's not X. It's Y." framing, no "already has / already operates" filler. Save catchphrase constructions for when a catchphrase is asked for, not decks.
+- Phrases that read as machine-written, flagged by the consultant on the Vanguard Standard scaffold (2026-09-13), are out on every paper: "the chain cannot guess", "what a client keeps using", "it already has", "after the deck has been read", and any title that personifies a tool or workflow as knowing, guessing or deciding. Test: would a consultant write this sentence in an email to the CEO? If not, rewrite it as a plain statement of what the reader gets or does.
+- Process notes are not titles. Instructions the consultant gives the builder ("the section ends there", "held until tested", "write this page last") describe the build and never appear on a slide. If a note has to reach the reader, it becomes a status marker (IN DEVELOPMENT) or a footnote, not a title clause.
 - No em dashes (—) in original prose: use commas, periods, or restructure. Verbatim quoted material (question text, quotes) keeps its own punctuation.
 - Parallel structure within any list or numbered series: same grammatical shape, same level of specificity.
 

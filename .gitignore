@@ -9,3 +9,5 @@ tests/fixtures/client/
 docs/client/
 dist/
 render_*/
+manual/assets/*.pptx
+manual/research/*.pdf

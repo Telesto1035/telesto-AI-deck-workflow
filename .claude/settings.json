@@ -7,7 +7,7 @@
           {
             "type": "command",
             "command": "python .claude/skills/deck-qc/scripts/qc_gate_hook.py",
-            "timeout": 120
+            "timeout": 400
           }
         ]
       }

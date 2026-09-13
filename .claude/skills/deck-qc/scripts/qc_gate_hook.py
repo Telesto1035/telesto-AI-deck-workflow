@@ -11,6 +11,9 @@ Behaviour:
   * Run qc_check on each. If any `block` finding exists, print the findings and exit 2 so the turn cannot end.
   * Keep a counter per session in a state file. After 3 blocked stops, exit 0 and print
     "gate cap reached, handing off with findings attached" so the loop terminates.
+  * Render step (Windows with PowerPoint): runs once per deck version, keyed on path and mtime in the state file,
+    so a long deck is not re-exported on every Stop. Set QC_GATE_NO_RENDER=1 to skip it (tests, machines without
+    PowerPoint). The hook's own timeout in .claude/settings.json must exceed RENDER_TIMEOUT.
   * Never crash the stop: any internal error prints a note and exits 0.
 
 Re-execs itself under the repo venv when python-pptx is not importable from the interpreter that started it.
@@ -30,6 +33,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3] if len(HERE.parents) >= 4 else HERE
 CAP = 3
+RENDER_TIMEOUT = 150  # seconds per deck; settings.json gives the whole hook 400
+EXCLUDE_DIRS = {".venv", "node_modules", "__pycache__", "_handoff", ".git"}
 EXCLUDE_PARTS = ("tests/fixtures", ".venv", "_handoff", "node_modules", "__pycache__")
 PPTX_PATH_RE = re.compile(r"""[A-Za-z]:\\[^"'<>|\n]*?\.pptx|(?:/|\./|\.\./)[^"'<>|\s]*?\.pptx|[\w./\\ -]+\.pptx""")
 
@@ -68,24 +73,29 @@ def save_state(p: Path, st: dict) -> None:
         pass
 
 
-def session_start(transcript_path: str | None) -> float | None:
+def read_transcript(transcript_path: str | None) -> str:
+    if not transcript_path:
+        return ""
+    p = Path(transcript_path)
+    try:
+        return p.read_text(encoding="utf-8", errors="ignore") if p.exists() else ""
+    except OSError:
+        return ""
+
+
+def session_start(transcript_path: str | None, text: str | None = None) -> float | None:
     if not transcript_path:
         return None
     p = Path(transcript_path)
     if not p.exists():
         return None
-    try:
-        with open(p, encoding="utf-8", errors="ignore") as fh:
-            for line in fh:
-                m = re.search(r'"timestamp"\s*:\s*"([^"]+)"', line)
-                if m:
-                    ts = m.group(1).replace("Z", "+00:00")
-                    try:
-                        return datetime.fromisoformat(ts).timestamp()
-                    except ValueError:
-                        break
-    except OSError:
-        return None
+    text = read_transcript(transcript_path) if text is None else text
+    m = re.search(r'"timestamp"\s*:\s*"([^"]+)"', text)
+    if m:
+        try:
+            return datetime.fromisoformat(m.group(1).replace("Z", "+00:00")).timestamp()
+        except ValueError:
+            pass
     try:
         return p.stat().st_ctime
     except OSError:
@@ -100,14 +110,20 @@ def excluded(path: Path, cwd: Path) -> bool:
     return any(part in rel for part in EXCLUDE_PARTS)
 
 
-def find_candidates(cwd: Path, transcript_path: str | None, since: float | None) -> list[Path]:
+def _walk_pptx(cwd: Path):
+    """Every *.pptx under cwd, pruning the venv and other excluded folders before descending."""
+    for root, dirnames, filenames in os.walk(cwd):
+        dirnames[:] = [d for d in dirnames if d not in EXCLUDE_DIRS]
+        for fn in filenames:
+            if fn.lower().endswith(".pptx"):
+                yield Path(root) / fn
+
+
+def find_candidates(cwd: Path, transcript_path: str | None, since: float | None, text: str | None = None) -> list[Path]:
     found: dict[str, Path] = {}
     # 1. paths named in the transcript
     if transcript_path and Path(transcript_path).exists():
-        try:
-            text = Path(transcript_path).read_text(encoding="utf-8", errors="ignore")
-        except OSError:
-            text = ""
+        text = read_transcript(transcript_path) if text is None else text
         for m in PPTX_PATH_RE.finditer(text):
             raw = m.group(0).strip().replace("\\\\", "\\")
             p = Path(raw)
@@ -117,7 +133,7 @@ def find_candidates(cwd: Path, transcript_path: str | None, since: float | None)
                 found[str(p.resolve())] = p.resolve()
     # 2. anything under cwd modified since the session started
     if since is not None:
-        for p in cwd.rglob("*.pptx"):
+        for p in _walk_pptx(cwd):
             if excluded(p, cwd):
                 continue
             try:
@@ -144,15 +160,27 @@ def gate(paths: list[Path], session_id: str, out) -> int:
         blocks = [f for f in findings if f.severity == "block"]
         if blocks:
             blocked[p] = blocks
-    # render step: on Windows with PowerPoint, a body page whose text is taller than its box blocks too
-    if sys.platform == "win32":
-        import subprocess as _sp
+    sp = state_path(session_id)
+    st = load_state(sp)
+    # render step: on Windows with PowerPoint, a body page whose text is taller than its box blocks too.
+    # Runs once per (path, mtime); a deck that has not changed since its last clean render is not re-exported.
+    if sys.platform == "win32" and not os.environ.get("QC_GATE_NO_RENDER"):
+        rendered = st.setdefault("rendered", {})
         for p in paths:
             if p in blocked:
                 continue
             try:
-                r = _sp.run([sys.executable, str(HERE / "render_check.py"), str(p), "--out", str(p.parent / ("render_" + p.stem))],
-                            capture_output=True, text=True, timeout=300)
+                stamp = str(int(p.stat().st_mtime))
+            except OSError:
+                continue
+            if rendered.get(str(p)) == stamp:
+                continue
+            try:
+                r = subprocess.run([sys.executable, str(HERE / "render_check.py"), str(p), "--out", str(p.parent / ("render_" + p.stem))],
+                                   capture_output=True, text=True, timeout=RENDER_TIMEOUT)
+            except subprocess.TimeoutExpired:
+                out("qc gate: render check timed out on %s after %ds; not blocking on it" % (p.name, RENDER_TIMEOUT))
+                continue
             except Exception as exc:  # noqa: BLE001
                 out("qc gate: render check skipped for %s (%s)" % (p.name, exc))
                 continue
@@ -162,9 +190,8 @@ def gate(paths: list[Path], session_id: str, out) -> int:
                                                "PowerPoint measures text taller than its box; look at the PNG", "resize", False)
                               for ln in lines[:20]]
             elif r.returncode == 0:
+                rendered[str(p)] = stamp
                 out("qc gate: rendered %s, no text overflow; PNGs in %s" % (p.name, p.parent / ("render_" + p.stem)))
-    sp = state_path(session_id)
-    st = load_state(sp)
     if not blocked:
         if st.get("blocked"):
             out("qc gate: clean after %d blocked stop%s" % (st["blocked"], "s" if st["blocked"] != 1 else ""))
@@ -195,8 +222,9 @@ def gate(paths: list[Path], session_id: str, out) -> int:
 def run(payload: dict, cwd: Path | None = None, out=None) -> int:
     out = out or (lambda s: print(s, file=sys.stderr))
     cwd = Path(cwd or payload.get("cwd") or os.getcwd())
-    since = session_start(payload.get("transcript_path"))
-    paths = find_candidates(cwd, payload.get("transcript_path"), since)
+    text = read_transcript(payload.get("transcript_path"))
+    since = session_start(payload.get("transcript_path"), text)
+    paths = find_candidates(cwd, payload.get("transcript_path"), since, text)
     if not paths:
         return 0
     return gate(paths, payload.get("session_id", ""), out)

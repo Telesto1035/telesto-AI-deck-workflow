@@ -3,6 +3,13 @@
 
 Usage:
     python scripts/deck_diff.py BEFORE.pptx AFTER.pptx [--md out.md] [--json out.json]
+                                                     [--comments] [--ledger-rows] [--all]
+
+--comments joins the reviewer comments in BEFORE (both comment stores, via deck-qc/scripts/pptx_comments.py) to the
+changes on the slide each comment sits on, so the Revise log starts from the file rather than from memory.
+--ledger-rows prints one revision-ledger row per comment with the class and resolution left for the consultant.
+Pages after a divider titled Appendix, Crosstabs or Backup are reported only as a count unless --all is given:
+they are data pages the AI phase leaves alone, and listing their renumbering drowns the body changes.
 
 Slides are matched by title similarity first, then by position. For each matched pair the script
 lists title changes, body paragraph changes (before/after), number changes, added and removed
@@ -23,9 +30,18 @@ from lxml import etree
 from pptx import Presentation
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent / ".claude" / "skills" / "deck-qc" / "scripts"))
+try:
+    import pptx_comments  # noqa: E402
+except ImportError:  # pragma: no cover
+    pptx_comments = None
+
+APPENDIX_RE = re.compile(r"^(appendix|crosstabs?|backup)\b", re.I)
+
 A = "{http://schemas.openxmlformats.org/drawingml/2006/main}"
 C = "{http://schemas.openxmlformats.org/drawingml/2006/chart}"
-NUM_RE = re.compile(r"[-+]?\$?\d[\d,]*\.?\d*%?")
+NUM_RE = re.compile(r"[-+]?\$?\d[\d,]*(?:\.\d+)?%?")
 
 
 def para_texts(shape) -> list[str]:
@@ -148,7 +164,13 @@ def slide_model(slide, idx):
 
 def load(path: Path):
     prs = Presentation(str(path))
-    return [slide_model(s, i) for i, s in enumerate(prs.slides, 1)]
+    slides = [slide_model(s, i) for i, s in enumerate(prs.slides, 1)]
+    in_appendix = False
+    for s in slides:
+        if not in_appendix and APPENDIX_RE.match(s["title"] or ""):
+            in_appendix = True
+        s["appendix"] = in_appendix
+    return slides
 
 
 def sim(a: str, b: str) -> float:
@@ -266,7 +288,7 @@ def classify(before: str, after: str, is_title: bool) -> str:
     return "style"
 
 
-def diff_pair(b, a, s):
+def diff_pair(b, a, s, include_appendix: bool = False):
     changes = []
     if b["title"] != a["title"]:
         changes.append({"kind": "title", "before": b["title"], "after": a["title"],
@@ -300,8 +322,88 @@ def diff_pair(b, a, s):
         changes.append({"kind": "chart-cache", "before": "; ".join(cb), "after": "; ".join(ca), "class": "number"})
     if b["hidden"] != a["hidden"]:
         changes.append({"kind": "hidden", "before": str(b["hidden"]), "after": str(a["hidden"]), "class": "structure"})
-    changes.extend(format_changes(b, a))
-    return {"before_slide": b["idx"], "after_slide": a["idx"], "match": round(s, 2), "title": a["title"], "changes": changes}
+    appendix = bool(a.get("appendix") and b.get("appendix"))
+    if include_appendix or not appendix:
+        changes.extend(format_changes(b, a))
+    return {"before_slide": b["idx"], "after_slide": a["idx"], "match": round(s, 2), "title": a["title"],
+            "appendix": appendix, "changes": changes}
+
+
+def _is_format(c: dict) -> bool:
+    return c["kind"].startswith("format")
+
+
+def _changes_lines(changes: list[dict], limit: int = 6) -> list[str]:
+    lines = []
+    for c in changes[:limit]:
+        lines.append("  - %s / %s" % (c["kind"], c["class"]))
+        if c["before"]:
+            lines.append("    - before: %s" % c["before"][:300])
+        if c["after"]:
+            lines.append("    - after:  %s" % c["after"][:300])
+    if len(changes) > limit:
+        lines.append("  - and %d more change%s on this slide" % (len(changes) - limit, "" if len(changes) - limit == 1 else "s"))
+    return lines
+
+
+def join_comments(comments: list[dict], pairs: list[dict], removed: list[dict]) -> list[dict]:
+    """Attach each BEFORE comment to the content changes on the slide it sits on."""
+    by_before = {p["before_slide"]: p for p in pairs}
+    gone = {s["idx"] for s in removed}
+    out = []
+    for c in comments:
+        p = by_before.get(c["slide"])
+        if p is None:
+            fate = "slide removed" if c["slide"] in gone else "slide not matched"
+            out.append({**c, "after_slide": None, "fate": fate, "changes": []})
+        else:
+            content = [x for x in p["changes"] if not _is_format(x)]
+            out.append({**c, "after_slide": p["after_slide"], "fate": "changed" if content else "no change on this slide",
+                        "changes": content})
+    return out
+
+
+def render_comments_md(result) -> str:
+    out = ["## Comments in BEFORE and what changed on their slides", ""]
+    if not result["comments"]:
+        out.append("No comments found in the BEFORE file.")
+        return "\n".join(out)
+    shown: set[int] = set()
+    for c in result["comments"]:
+        head = "### %d. slide %d" % (c["n"], c["slide"])
+        if c["after_slide"]:
+            head += " -> %d" % c["after_slide"]
+        tail = c["author"] + ", " + c["status"]
+        if c["fate"] != "changed":
+            tail += ", " + c["fate"]
+        out.append(head + " (" + tail + ")")
+        out.append("> " + c["text"].replace("\n", " "))
+        for r in c.get("replies") or []:
+            out.append("> reply, %s: %s" % (r["author"], r["text"]))
+        if c["changes"] and c["slide"] in shown:
+            out.append("  - changes on this slide: listed under the first comment on slide %d" % c["slide"])
+        else:
+            out.extend(_changes_lines(c["changes"]))
+        shown.add(c["slide"])
+        out.append("")
+    return "\n".join(out)
+
+
+def _version(stem: str) -> str:
+    m = re.search(r"(?<![A-Za-z0-9])v\d+\w*", stem)
+    return m.group(0) if m else stem
+
+
+def ledger_rows(result, date: str) -> str:
+    """Revision-ledger skeleton: one row per comment; class, second prompt and resolution are the consultant's."""
+    stem = Path(result["before"]).stem
+    deck = re.sub(r"^\d{8}[_ ]", "", re.sub(r"[_ ]v\d+\w*$", "", stem))
+    frm, to = _version(stem), _version(Path(result["after"]).stem)
+    rows = ["| Date | Deck | From | To | # | Class | Second prompt | Resolution |", "|---|---|---|---|---|---|---|---|"]
+    for c in result.get("comments") or []:
+        note = "TODO" if c["fate"] == "changed" else c["fate"].upper()
+        rows.append("| %s | %s | %s | %s | %d |  |  | %s: %s |" % (date, deck, frm, to, c["n"], note, c["text"].replace("|", "/")[:120]))
+    return "\n".join(rows)
 
 
 def render_md(result) -> str:
@@ -322,11 +424,21 @@ def render_md(result) -> str:
             out.append("- after %d: %s" % (s["idx"], s["title"][:120]))
         out.append("")
     moved = [p for p in result["pairs"] if p["before_slide"] != p["after_slide"]]
-    if moved:
+    quiet = [p for p in moved if p.get("appendix") and not p["changes"]]
+    loud = [p for p in moved if p not in quiet]
+    if loud:
         out.append("## Slides moved")
-        for p in moved:
+        for p in loud:
             out.append("- before %d -> after %d: %s" % (p["before_slide"], p["after_slide"], p["title"][:100]))
         out.append("")
+    if quiet:
+        out.append("%d appendix page%s renumbered (before %d-%d -> after %d-%d), content unchanged" % (
+            len(quiet), "" if len(quiet) == 1 else "s",
+            min(p["before_slide"] for p in quiet), max(p["before_slide"] for p in quiet),
+            min(p["after_slide"] for p in quiet), max(p["after_slide"] for p in quiet)))
+        out.append("")
+    if result.get("comments") is not None:
+        out.append(render_comments_md(result))
     out.append("## Changes by slide")
     for p in result["pairs"]:
         if not p["changes"]:
@@ -349,6 +461,10 @@ def main(argv=None) -> int:
     ap.add_argument("after")
     ap.add_argument("--md")
     ap.add_argument("--json", dest="json_out")
+    ap.add_argument("--comments", action="store_true", help="join BEFORE's reviewer comments to the slide diffs")
+    ap.add_argument("--ledger-rows", action="store_true", help="print revision-ledger skeleton rows (implies --comments)")
+    ap.add_argument("--all", action="store_true", help="include appendix pages in the format diff and the moved list")
+    ap.add_argument("--date", default=None, help="date for --ledger-rows (default: today)")
     args = ap.parse_args(argv)
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -356,7 +472,7 @@ def main(argv=None) -> int:
         pass
     before, after = load(Path(args.before)), load(Path(args.after))
     pairs, removed, added = match_slides(before, after)
-    diffs = [diff_pair(b, a, s) for b, a, s in pairs]
+    diffs = [diff_pair(b, a, s, include_appendix=args.all) for b, a, s in pairs]
     counts = {}
     for d in diffs:
         for c in d["changes"]:
@@ -365,8 +481,20 @@ def main(argv=None) -> int:
         counts["structure"] = counts.get("structure", 0) + 1
     result = {"before": args.before, "after": args.after, "counts": counts, "pairs": diffs,
               "removed": [{"idx": s["idx"], "title": s["title"]} for s in removed],
-              "added": [{"idx": s["idx"], "title": s["title"]} for s in added]}
+              "added": [{"idx": s["idx"], "title": s["title"]} for s in added],
+              "appendix_pages": {"before": sum(s["appendix"] for s in before), "after": sum(s["appendix"] for s in after)}}
+    if args.comments or args.ledger_rows:
+        if pptx_comments is None:
+            print("deck_diff: pptx_comments.py not found beside the deck-qc scripts; comments skipped", file=sys.stderr)
+            result["comments"] = []
+        else:
+            from dataclasses import asdict
+            raw = [asdict(c) for c in pptx_comments.read_comments(Path(args.before))]
+            result["comments"] = join_comments(raw, diffs, result["removed"])
     md = render_md(result)
+    if args.ledger_rows:
+        from datetime import date as _date
+        md += "\n\n## Ledger rows\n\n" + ledger_rows(result, args.date or _date.today().isoformat())
     if args.md:
         Path(args.md).write_text(md, encoding="utf-8")
     if args.json_out:

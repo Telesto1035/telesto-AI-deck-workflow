@@ -8,7 +8,7 @@
 2. **Build.** "Draft the deck" or "build the findings report" triggers `draft-deck`. It infers package, deck type and paper, shows the page plan as one title per line, then builds from a template or prior shipped deck. It never builds a file without one.
 3. **Gate.** In Claude Code the Stop hook runs `qc_check.py` on every PPTX the session wrote and will not let the turn end while blocking findings remain: author field set, speaker notes, generator fingerprints, text below 10pt outside footnotes, italics, placeholders, footnote markers without footnotes, totals that do not sum, chart labels that disagree with cached data. Three blocked stops and it hands off with the findings attached. In Cowork the `deck-qc` skill asks for the same checks by hand.
 4. **Evaluate.** "Use the deck-evaluator subagent on OUT.pptx." It applies deck-qc Layer 2 in a fresh context: skeleton against the deck type, title chain, exec summary to body, conclusion follows exhibit, claim sizing, voice, portability. It scores four dimensions 1 to 5 and returns suggestions. It never edits the file. Anything that needs data or client context comes back marked QUESTION.
-5. **Review.** The partner comments in PowerPoint, as usual. "Resolve these comments" triggers `draft-deck` Revise, which reads the comments from the file, executes mechanical ones, proposes options for judgment ones, and returns a before-and-after log.
+5. **Review.** The partner comments in PowerPoint, as usual. "Resolve these comments" triggers `draft-deck` Revise, which reads the comments from the file (`pptx_comments.py`), executes mechanical ones, proposes options for judgment ones, and returns a before-and-after log built from `deck_diff.py --comments`. A deck can join here without having gone through steps 1 to 4: a human-built draft with the CEO's comments on it is a valid starting point.
 6. **Ship, then learn.** After shipping, `scripts/deck_diff.py DRAFT.pptx SHIPPED.pptx` lists every edit by class (number, structure, storyline, style). `draft-deck` Learn turns repeated edits into proposed skill patterns; nothing enters a skill without approval.
 
 ## What the AI phase builds
@@ -25,6 +25,8 @@ Two things. First, every draft is written for a named room: attach the roster an
 .venv/Scripts/python .claude/skills/deck-qc/scripts/qc_check.py DECK.pptx            # findings table, exit 1 if blocked
 .venv/Scripts/python .claude/skills/deck-qc/scripts/qc_check.py DECK.pptx --fix-safe # writes DECK.qc.pptx with settled fixes only
 .venv/Scripts/python scripts/deck_diff.py BEFORE.pptx AFTER.pptx --md diff.md        # what changed between versions
+.venv/Scripts/python scripts/deck_diff.py BEFORE.pptx AFTER.pptx --comments --ledger-rows   # each reviewer comment next to what changed on its slide, plus ledger rows
+.venv/Scripts/python .claude/skills/deck-qc/scripts/pptx_comments.py DECK.pptx       # the reviewer comments in a deck, by slide; --resolve all marks them done
 .venv/Scripts/python -m pytest tests/                                                  # before committing a SKILL.md change
 ```
 

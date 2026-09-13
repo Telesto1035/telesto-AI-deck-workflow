@@ -136,6 +136,12 @@
         6,
         12
       ]
+    },
+    "manual": {
+      "length": [
+        15,
+        25
+      ]
     }
   },
   "totals_window_pct": 10,
@@ -161,5 +167,8 @@
   "words_warn": 200,
   "words_block": 275,
   "footnote_words_warn": 100,
-  "_words_note": "Per body page: title + body + chart labels, footnotes counted separately, appendix pages exempt. Pages where half or more of the words sit inside quotation marks are exempt (quote pages). Set 2026-09-12 from the shipped minipack (typical 160-210) and public sector deck (typical 130-250); the one page above 300 drew the comment 'wordy'."
+  "_words_note": "Per body page: title + body + chart labels, footnotes counted separately, appendix pages exempt. Pages where half or more of the words sit inside quotation marks are exempt (quote pages). Set 2026-09-12 from the shipped minipack (typical 160-210) and public sector deck (typical 130-250); the one page above 300 drew the comment 'wordy'.",
+  "overlap_tolerance_pt": 4,
+  "chart_label_tolerance": 0.5,
+  "_tolerances_note": "overlap_tolerance_pt: two text or chart boxes may intersect by this much before shape-overlap fires. chart_label_tolerance: a data label figure must sit within this of a cached value; labels that also carry words (n=120, 2024) warn rather than block."
 }

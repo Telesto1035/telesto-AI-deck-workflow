@@ -13,11 +13,12 @@ What you catch well: numbers that do not reconcile across pages or to source, mi
 
 ## Run the code gate first (added 2026-09-12)
 
-This skill folder carries `scripts/qc_check.py` and `scripts/qc_rules.json`. Before any judgment, run the gate on the file and paste its table into the report:
+This skill folder carries `scripts/qc_check.py`, `scripts/qc_rules.json`, `scripts/pptx_comments.py` (lists the reviewer comments in a deck with slide, author and status; `--resolve` marks them resolved) and `scripts/render_check.py`. Paths below are relative to the skill folder; in Cowork the folder is wherever the account stored the skill, so locate `qc_check.py` first and, if the account copy has no `scripts` folder, say so in the report header and run the same checks by hand from the list below. Before any judgment, run the gate on the file and paste its table into the report:
 
 ```
 python scripts/qc_check.py DECK.pptx --profile <findings|proposal|minipack|...>
 python scripts/qc_check.py DECK.pptx --fix-safe     # settled fixes only, writes DECK.qc.pptx
+python scripts/pptx_comments.py DECK.pptx --open-only  # who asked for what, on which slide
 ```
 
 Exit 1 means blocking findings; fix them (or apply `--fix-safe` and fix the rest) and run again until it exits 0. Only then start Layer 2. The gate is deterministic: what it blocks (author field, notes, metadata, text under 10pt outside footnotes, italics above the threshold, placeholders, footnote markers without footnotes, totals that do not sum, chart labels against cached data, reviewer notes, empty register labels) is not re-argued here. Thresholds and word lists live in `scripts/qc_rules.json`; change them there, not in this text. In Claude Code the same script runs automatically as a Stop hook; in Cowork you run it, and the render step is soffice and pdftoppm (or `scripts/render_check.py` where PowerPoint exists).
@@ -46,7 +47,7 @@ Load the profile for the deck type. It sets what is required, what is not applic
 | Update | Status against plan; decisions needed; dates and owners | Financial value at stake; exhibits | 3-6 |
 | Workshop | Agenda; prompts on exercise pages; capture pages present | Recommendations; value at stake; sourced exhibits | 6-12 |
 
-Package 2 (services + product) shortens the findings profile and adds a check that the product hand-off page exists. Package 3 (product) uses the proposal profile in its product-led form.
+Package 2 (services + product) shortens the findings profile and adds a check that the product hand-off page exists. Package 3 (product) uses the proposal profile in its product-led form. A manual or user guide (Package 3) uses the manual profile: 15 to 25 pages, a takeaway band on every page except cover, dividers, demonstration and placeholder pages, financial value at stake N/A, and the outcome-clarity question becomes "can the reader operate the thing after the titles alone".
 
 ## What is not a defect
 

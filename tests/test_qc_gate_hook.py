@@ -26,6 +26,7 @@ CLEAN = FIXTURES / "Telesto_Standard_v2_P3-P5.pptx"
 def workdir(tmp_path, monkeypatch):
     """A fake project dir with a transcript whose first timestamp predates the deck write."""
     monkeypatch.setenv("QC_GATE_STATE_DIR", str(tmp_path / "state"))
+    monkeypatch.setenv("QC_GATE_NO_RENDER", "1")  # the render step is PowerPoint COM; tested by hand, not here
     (tmp_path / "state").mkdir()
     transcript = tmp_path / "transcript.jsonl"
     transcript.write_text(json.dumps({"timestamp": "2020-01-01T00:00:00Z", "type": "user"}) + "\n", encoding="utf-8")

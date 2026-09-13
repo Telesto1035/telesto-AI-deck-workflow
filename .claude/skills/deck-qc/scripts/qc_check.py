@@ -3,7 +3,7 @@
 
 Usage:
     python qc_check.py DECK.pptx [--rules qc_rules.json] [--json out.json] [--fix-safe]
-                        [--profile findings|proposal|kickoff|minipack|presentation|update|workshop]
+                        [--profile findings|proposal|kickoff|minipack|presentation|update|workshop|manual]
 
 Exit 0: no blocking findings. Exit 1: blocking findings present. Exit 2: file could not be opened.
 
@@ -61,6 +61,12 @@ def q(tag: str) -> str:
 # --------------------------------------------------------------------------------------
 
 
+FURNITURE_PH = (PP_PLACEHOLDER.FOOTER, PP_PLACEHOLDER.SLIDE_NUMBER, PP_PLACEHOLDER.DATE)
+FURNITURE_NAME_RE = re.compile(r"footer|slide number", re.I)
+# generator fingerprints are metadata: never look for them in slide prose
+META_PART_RE = re.compile(r"^(docProps/|\[Content_Types\]\.xml$|ppt/(presentation|presProps|viewProps|tableStyles)\.xml$)|\.rels$")
+
+
 @dataclass
 class Finding:
     id: str
@@ -115,6 +121,14 @@ class RunInfo:
     in_table_cell: bool = False
 
 
+def _stype(sh):
+    """shape_type without the NotImplementedError python-pptx raises for unknown shapes (ink, contentPart)."""
+    try:
+        return sh.shape_type
+    except NotImplementedError:
+        return None
+
+
 def visible(text: str) -> bool:
     return bool(text) and bool(text.strip())
 
@@ -153,7 +167,7 @@ def all_numbers(s: str) -> list:
 def hex_distance_ok(color: str, palette: Iterable[str], tol: int) -> bool:
     try:
         r, g, b = int(color[0:2], 16), int(color[2:4], 16), int(color[4:6], 16)
-    except ValueError:
+    except (ValueError, IndexError):
         return True
     for p in palette:
         try:
@@ -181,6 +195,9 @@ class Deck:
         self.H = self.prs.slide_height
         self.findings: list[Finding] = []
         self._xml_cache: dict = {}
+        self._runs_cache: dict[int, list] = {}
+        self._text_cache: dict[int, str] = {}
+        self._cells_cache: dict[int, list] = {}
         self.footnote_name_re = re.compile(rules.get("footnote_name_regex", "foot|source|note"), re.I)
         self.slides = list(self.prs.slides)
         self.shapes_by_slide: dict[int, list[ShapeInfo]] = {}
@@ -275,7 +292,7 @@ class Deck:
                 if None not in (l, t, w, h):
                     box = (ax + sx * l, ay + sy * t, sx * w, sy * h)
                 out.append(ShapeInfo(sh, slide_no, box, in_group, group_key))
-                if sh.shape_type == MSO_SHAPE_TYPE.GROUP:
+                if _stype(sh) == MSO_SHAPE_TYPE.GROUP:
                     xfrm = sh._element.find(q("p:grpSpPr") + "/" + q("a:xfrm"))
                     nax, nay, nsx, nsy = ax, ay, sx, sy
                     if xfrm is not None:
@@ -481,33 +498,60 @@ class Deck:
         return out
 
     def runs_of(self, si: ShapeInfo) -> list[RunInfo]:
-        sh = si.shape
-        slide = self.slides[si.slide_no - 1]
-        if getattr(sh, "has_text_frame", False) and sh.has_text_frame:
-            return self.runs_of_txbody(sh._element.find(q("p:txBody")), sh, slide)
-        return []
+        """Runs of a text shape with effective sizes; computed once per shape, ten checks read it."""
+        key = id(si)
+        if key not in self._runs_cache:
+            sh = si.shape
+            slide = self.slides[si.slide_no - 1]
+            runs: list[RunInfo] = []
+            if getattr(sh, "has_text_frame", False) and sh.has_text_frame:
+                runs = self.runs_of_txbody(sh._element.find(q("p:txBody")), sh, slide)
+            self._runs_cache[key] = runs
+        return self._runs_cache[key]
 
-    def table_cells(self, si: ShapeInfo):
-        """Yield (row, col, cell_txBody, cell_text) for a native table shape."""
-        sh = si.shape
-        if not (getattr(sh, "has_table", False) and sh.has_table):
-            return
-        tbl = sh._element.find(".//" + q("a:tbl"))
-        if tbl is None:
-            return
-        for ri, tr in enumerate(tbl.findall(q("a:tr"))):
-            for ci, tc in enumerate(tr.findall(q("a:tc"))):
-                txBody = tc.find(q("a:txBody"))
-                text = "".join(t.text or "" for t in tc.iter(q("a:t")))
-                yield ri, ci, txBody, text
+    def table_cells(self, si: ShapeInfo) -> list[tuple]:
+        """(row, col, cell_txBody, cell_text) for every cell of a native table shape; cached."""
+        key = id(si)
+        if key not in self._cells_cache:
+            cells: list[tuple] = []
+            sh = si.shape
+            tbl = sh._element.find(".//" + q("a:tbl")) if getattr(sh, "has_table", False) and sh.has_table else None
+            if tbl is not None:
+                for ri, tr in enumerate(tbl.findall(q("a:tr"))):
+                    for ci, tc in enumerate(tr.findall(q("a:tc"))):
+                        txBody = tc.find(q("a:txBody"))
+                        cells.append((ri, ci, txBody, "".join(t.text or "" for t in tc.iter(q("a:t")))))
+            self._cells_cache[key] = cells
+        return self._cells_cache[key]
 
     def shape_text(self, si: ShapeInfo) -> str:
-        return "".join(t.text or "" for t in si.shape._element.iter(q("a:t")))
+        key = id(si)
+        if key not in self._text_cache:
+            self._text_cache[key] = "".join(t.text or "" for t in si.shape._element.iter(q("a:t")))
+        return self._text_cache[key]
+
+    def is_furniture(self, si: ShapeInfo) -> bool:
+        """Footer, slide number and date: sized by the layout, never checked for overlap, overflow or words."""
+        sh = si.shape
+        if sh.is_placeholder and sh.placeholder_format.type in FURNITURE_PH:
+            return True
+        return bool(FURNITURE_NAME_RE.search(si.name or ""))
+
+    def allowed_palette(self):
+        """(colours, client) where colours is the rules palette plus the active client palette, if any."""
+        palette = set(c.upper() for c in self.rules.get("palette", []))
+        active = self.rules.get("active_client_palette")
+        client = (self.rules.get("client_palettes") or {}).get(active) if active else None
+        if isinstance(client, dict):
+            palette |= set(c.upper() for c in client.get("colours", []))
+        elif isinstance(client, list):
+            palette |= set(c.upper() for c in client)
+        return palette, client
 
     def slide_texts(self, slide_no: int) -> list[tuple[ShapeInfo, str]]:
         out = []
         for si in self.shapes_by_slide[slide_no]:
-            if si.shape.shape_type == MSO_SHAPE_TYPE.GROUP:
+            if _stype(si.shape) == MSO_SHAPE_TYPE.GROUP:
                 continue
             txt = self.shape_text(si)
             if visible(txt):
@@ -626,11 +670,7 @@ def check_grey_text(d: Deck):
     """Grey text outside a footnote home. Muted detail text is the other AI habit that defeats the scan;
     a few runs are listed, above the threshold the deck is blocked."""
     threshold = int(d.rules.get("grey_text_threshold", 4))
-    palette = set(c.upper() for c in d.rules.get("palette", []))
-    active = d.rules.get("active_client_palette")
-    client = (d.rules.get("client_palettes") or {}).get(active) if active else None
-    if isinstance(client, dict):
-        palette |= set(c.upper() for c in client.get("colours", []))
+    palette, _client = d.allowed_palette()
     found = []
     for sno, shapes in d.shapes_by_slide.items():
         allowed = palette | d.theme_colors(d.slides[sno - 1].slide_layout.slide_master)
@@ -785,7 +825,7 @@ def check_metadata(d: Deck):
     phrases = d.rules.get("generator_phrases_docprops_only", [])
     seen = set()
     for name, blob in d.parts.items():
-        if not (name.endswith(".xml") or name.endswith(".rels")):
+        if not META_PART_RE.search(name):
             continue
         try:
             text = blob.decode("utf-8", errors="ignore")
@@ -1033,17 +1073,11 @@ def check_native_table_small(d: Deck):
 def check_shape_overlap(d: Deck):
     """Two text-bearing or chart shapes whose boxes intersect by more than a sliver, where neither contains the
     other: the collision a render would show. Group children, footers and page numbers are skipped."""
-    tol = 4 * EMU_PER_PT
+    tol = float(d.rules.get("overlap_tolerance_pt", 4)) * EMU_PER_PT
     for sno, shapes in d.shapes_by_slide.items():
         items = []
         for si in shapes:
-            if si.box is None or si.in_group or si.shape.shape_type == MSO_SHAPE_TYPE.GROUP:
-                continue
-            if si.shape.is_placeholder and si.shape.placeholder_format.type in (
-                PP_PLACEHOLDER.FOOTER, PP_PLACEHOLDER.SLIDE_NUMBER, PP_PLACEHOLDER.DATE
-            ):
-                continue
-            if re.search(r"footer|slide number", si.name or "", re.I):
+            if si.box is None or si.in_group or _stype(si.shape) == MSO_SHAPE_TYPE.GROUP or d.is_furniture(si):
                 continue
             has_chart = getattr(si.shape, "has_chart", False) and si.shape.has_chart
             has_table = getattr(si.shape, "has_table", False) and si.shape.has_table
@@ -1101,11 +1135,7 @@ def check_word_count(d: Deck):
         quoted = 0
         for si in shapes:
             sh = si.shape
-            if sh.is_placeholder and sh.placeholder_format.type in (
-                PP_PLACEHOLDER.FOOTER, PP_PLACEHOLDER.SLIDE_NUMBER, PP_PLACEHOLDER.DATE
-            ):
-                continue
-            if re.search(r"footer|slide number", si.name or "", re.I):
+            if d.is_furniture(si):
                 continue
             txt = ""
             if d.is_text_shape(si):
@@ -1160,7 +1190,7 @@ def check_off_canvas(d: Deck):
     tol = EMU_PER_PT
     for sno, shapes in d.shapes_by_slide.items():
         for si in shapes:
-            if si.box is None or si.shape.shape_type == MSO_SHAPE_TYPE.GROUP:
+            if si.box is None or _stype(si.shape) == MSO_SHAPE_TYPE.GROUP:
                 continue
             x, y, w, h = si.box
             over = []
@@ -1211,12 +1241,8 @@ def _autofit_kind(d: Deck, si: ShapeInfo) -> str:
 def check_overflow_estimate(d: Deck):
     for sno, shapes in d.shapes_by_slide.items():
         for si in shapes:
-            if not d.is_text_shape(si) or si.box is None:
-                continue
-            if si.shape.is_placeholder and si.shape.placeholder_format.type in (
-                PP_PLACEHOLDER.FOOTER, PP_PLACEHOLDER.SLIDE_NUMBER, PP_PLACEHOLDER.DATE
-            ):
-                continue  # furniture sized by the layout; their slide-level frame is often a zero-height stub
+            if not d.is_text_shape(si) or si.box is None or d.is_furniture(si):
+                continue  # furniture is sized by the layout; its slide-level frame is often a zero-height stub
             txBody = si.shape._element.find(q("p:txBody"))
             if txBody is None:
                 continue
@@ -1505,7 +1531,7 @@ def check_totals(d: Deck):
         for si in shapes:
             if si.box is None or not d.is_text_shape(si):
                 continue
-            if si.shape.is_placeholder or si.shape.shape_type == MSO_SHAPE_TYPE.GROUP:
+            if si.shape.is_placeholder or _stype(si.shape) == MSO_SHAPE_TYPE.GROUP:
                 continue
             txt = d.shape_text(si).strip()
             if not visible(txt) or si.box[3] > d.H * 0.15:
@@ -1590,11 +1616,13 @@ def check_charts(d: Deck):
                 nums = all_numbers(label)
                 if not nums or not values:
                     continue
+                tol = float(d.rules.get("chart_label_tolerance", 0.5))
+                wordy = re.search(r"[A-Za-z]", label) is not None
                 for lv, _pct in nums:
                     nearest = min(scaled, key=lambda v: abs(v - lv)) if scaled else None
-                    if nearest is None or abs(nearest - lv) > 0.5:
+                    if nearest is None or abs(nearest - lv) > tol:
                         d.add(
-                            id="chart-cache-label", severity="block", slide=sno, shape=si.name, shape_id=si.shape_id,
+                            id="chart-cache-label", severity="warn" if wordy else "block", slide=sno, shape=si.name, shape_id=si.shape_id,
                             text=label[:80],
                             detail="data label figure %g has no matching cached value (nearest cached %s)" % (
                                 lv, "%g" % nearest if nearest is not None else "none"
@@ -1645,11 +1673,7 @@ def check_abbreviations(d: Deck):
         return
     compiled = []
     for token, full in expand.items():
-        if " " in token or not token[:1].isupper():
-            pat = re.compile(r"(?<![\w-])" + re.escape(token) + r"(?![\w-])")
-        else:
-            pat = re.compile(r"(?<![\w-])" + re.escape(token) + r"(?![\w-])")
-        compiled.append((token, full, pat))
+        compiled.append((token, full, re.compile(r"(?<![\w-])" + re.escape(token) + r"(?![\w-])")))
     for sno, shapes in d.shapes_by_slide.items():
         for si in shapes:
             if not d.is_text_shape(si):
@@ -1722,8 +1746,6 @@ def _has_page_number(d: Deck, slide) -> bool:
             for fld in sp.iter(q("a:fld")):
                 if fld.get("type") == "slidenum":
                     return True
-        break_layout = layout._element.find(q("p:cSld"))
-        _ = break_layout
     return False
 
 
@@ -1791,15 +1813,10 @@ def check_style_drift(d: Deck):
                 text="", detail="footer missing on slides %s" % ", ".join(str(s) for s in without_ft), fix="none",
             )
     # fill colours outside the palette, and typefaces outside the allowlist
-    palette = set(c.upper() for c in d.rules.get("palette", []))
+    palette, client = d.allowed_palette()
     fonts = set(d.rules.get("fonts", []))
-    active = d.rules.get("active_client_palette")
-    client = (d.rules.get("client_palettes") or {}).get(active) if active else None
     if isinstance(client, dict):
-        palette |= set(c.upper() for c in client.get("colours", []))
         fonts = set(client.get("fonts", [])) or fonts
-    elif isinstance(client, list):
-        palette |= set(c.upper() for c in client)
     client_fonts = set(client.get("fonts", [])) if isinstance(client, dict) else set()
     if fonts:
         # With a client palette the allowlist is exactly its fonts. Without one, allow the rules fonts, the theme
@@ -1888,14 +1905,8 @@ def check_profile_length(d: Deck, profile: Optional[str]):
     if not prof or "length" not in prof:
         return
     lo, hi = prof["length"]
-    n = len(d.slides)
-    # appendix pages do not count: stop at the first divider titled Appendix or Crosstabs
-    for i, slide in enumerate(d.slides):
-        t = slide.shapes.title
-        txt = t.text.strip() if t is not None and t.has_text_frame else ""
-        if re.match(r"^(appendix|crosstabs?|backup)", txt, re.I):
-            n = i
-            break
+    # appendix pages do not count: the body ends at the first divider titled Appendix, Crosstabs or Backup
+    n = (d.appendix_start - 1) if d.appendix_start else len(d.slides)
     if n < lo or n > hi:
         d.add(
             id="deck-length", severity="info", slide=None, shape=None, shape_id=None,
@@ -2063,7 +2074,7 @@ def fix_safe(deck: Deck, findings: list[Finding], out_path: Path, log) -> Path:
         fps = list(deck.rules.get("generator_fingerprints", []))
         phrases = list(deck.rules.get("generator_phrases_docprops_only", []))
         for name in list(parts):
-            if not (name.endswith(".xml") or name.endswith(".rels")):
+            if not META_PART_RE.search(name):
                 continue
             text = parts[name].decode("utf-8", errors="ignore")
             new = text
@@ -2200,7 +2211,7 @@ def main(argv=None) -> int:
     ap.add_argument("--rules", default=None)
     ap.add_argument("--json", dest="json_out", default=None)
     ap.add_argument("--fix-safe", action="store_true")
-    ap.add_argument("--profile", choices=["findings", "proposal", "kickoff", "minipack", "presentation", "update", "workshop"])
+    ap.add_argument("--profile", choices=["findings", "proposal", "kickoff", "minipack", "presentation", "update", "workshop", "manual"])
     args = ap.parse_args(argv)
 
     try:
