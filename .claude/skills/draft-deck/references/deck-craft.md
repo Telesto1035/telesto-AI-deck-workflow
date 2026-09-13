@@ -46,7 +46,7 @@ Formatting conventions learned from shipped work, most recently the EDR board de
 
 ## Versioning
 
-- Keep the deck's _vN in the filename across working iterations. Save iterations as "…_vN (1)", "(2)", and so on. Bump to _vN+1 only on a material change or when the user signals.
+- The version number _vN moves up only after a CEO or client revision, or when the storyline or page order changes. Everything else is an iteration of the same version: gate fixes, evaluator FIX items, resolved SUGGEST items, render fixes. Iterations are saved as _vN_1, _vN_2 and so on, never as a new N. When the consultant hands back an edited file, that edit is the new version and the AI iterations on it start again at _1. Never bump the version on your own; a build script that writes a new file writes the next iteration.
 
 
 ## Tables and text boxes (all papers)
