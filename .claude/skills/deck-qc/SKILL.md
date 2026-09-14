@@ -205,6 +205,16 @@ Pages after a divider titled Appendix, Crosstabs or Backup are data: crosstabs, 
 Where PowerPoint is installed, `scripts/render_check.py DECK.pptx` exports the body pages to PNG through PowerPoint and lists every text frame whose laid-out text is taller than its box. Look at the PNGs before reporting; the PowerPoint render is the authoritative one, so a LibreOffice artifact is not a concern on this route.
 
 
+## Token economy (added 2026-09-13)
+
+The chain runs often; its cost is in images and in re-reading, not in the gate.
+
+- **Render:** `render_check.py` tiles the pages into contact sheets (nine pages per image). Read the sheets, not the single pages; open one `slideN.png` only when a sheet shows a defect to inspect. On an iteration, render only the pages that changed (`--slides 4,7,12`) and read the full sheets once before hand-back.
+- **Gate output:** read the summary and the BLOCK lines; the WARN and INFO lines are for the fix pass, not for the transcript.
+- **Source data:** never read a whole crosstab PDF into the conversation. Extract its text once to the scratchpad (`pdftotext` or the pdf skill) and search it for the question numbers the deck cites; quote only the rows you need.
+- **Deck text:** extract once per iteration with python-pptx into a text file and diff against the previous extract; read the diff, not the deck.
+- **Build scripts:** patch the saved file with a short script per iteration rather than regenerating the full build script; the full script is written once, at the Build stage.
+
 ## The chain, and the reminder at the end of every stage (added 2026-09-13)
 
 A deck moves through five stages in order: gate (`qc_check.py`, FIX items executed as an iteration `_vN_k`), render (`render_check.py`, every body page looked at for overflow, collisions and pages whose colours or lines differ from their neighbours), evaluator (the `deck-evaluator` subagent with crosstabs and audience brief attached; FIX items executed), SUGGEST resolution (pop-ups in slide order, one page per question, "leave as drafted" always offered), ledger and hand-back. Every stage ends with one line in text naming the next stage and the prompt that starts it, for example: "Gate and render pass, 0 blocks. Next: run the evaluator. Say 'run the evaluator on FILE' or 'skip to hand-back'." The consultant never has to remember the order; the reminder carries it. Never start the evaluator or apply SUGGEST items without that prompt.
