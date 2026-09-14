@@ -2,6 +2,8 @@
 
 Read at the handoff of a Build or a full rewrite, and whenever a Revise rewrites more than a title or a band. Not needed on gate-fix iterations.
 
+This pass hunts classes of pattern that instruction-tuned models produce at above-human rates, with the research that identified them. It is not a register of house preferences: a single reviewer edit never becomes a rule here. House and client wording preferences live in the house register and the client files (see SKILL.md, References), and reach this pass only as the word list below, which is reviewed annually and capped.
+
 Draft first, then review against the named patterns below. A single up-front instruction to "not sound like AI" does not hold: these patterns are optimised into the model and regenerate under pressure, so they have to be hunted deliberately. (Juzek and Ward, COLING 2025, traced them to instruction tuning rather than training data.)
 
 Report what you changed. Never invent or alter a fact while de-slopping; a voice edit that moves a number is worse than the slop it replaced. Do not score the draft for "how AI it sounds", and never target an AI-detector result: detectors have real error rates, and the objective is that an experienced partner reads the page as competent human work.
@@ -29,21 +31,11 @@ Em dashes; three-item lists; stacked hedges ("could potentially", "might arguabl
 
 Recheck annually. The vocabulary drifts by model generation, and a word that was a tell in 2024 may not be one now. Never extend a flagged word to its synonyms; that only flattens the prose.
 
-- **The skill owner edits these out on sight:** earned, already, carry / carries, load-bearing, recast, hypothesis, "this confirms [client]".
 - **Business-register tells:** leverage (verb), utilize, facilitate, empower, streamline, harness, navigate (challenges), unpack, lean into, double down, robust, comprehensive, crucial, pivotal, key (adjective), landscape (abstract), realm, testament, underscore (verb), delve, showcase, seamless, ecosystem, transformative, game-changer, paradigm shift, ever-evolving, multifaceted, at its core, in today's [X], it's worth noting, when it comes to, going forward.
 - **Consulting hollow-speak:** force multiplier, boil the ocean, synergies, move the needle, low-hanging fruit, north star, at pace.
 - **Empty intensifiers:** just, really, literally, genuinely, honestly, simply, actually, truly, deeply, fundamentally, inevitably, remarkably, arguably.
 - **Em dashes in original prose:** replace with commas, full stops, or restructure. Claude over-uses them relative to professional human writers (The Economist, July 2026, 55,940-sentence corpus study), so the rule is worth keeping for this stack even though the popular version of it is now wrong for other models. Verbatim quoted material keeps its own punctuation.
 
-### Titles: patterns Telesto rewrites out
-
-| Rewrite this | Into this | Rule |
-|---|---|---|
-| "Adjacency quadrant: 35 federal markets" | "We ranked 35 federal service markets by size and closeness to Huron's core" | No label-colon opener |
-| "Entrenchment is agency-specific" | "Booz Allen, Deloitte, Accenture and Leidos hold established positions" | No abstract-noun subject |
-| "VA, DoD and HHS rank must-win" | "VA, DoD and HHS are must-win agencies" | No compressed verb-noun |
-| "Each agency needs its own version" | "Most common topics leaders cited as challenge or priority include EHR, workforce and AI" | No prescription in a title |
-| "Each draws criticism from the leaders who used them" | "Some leaders commented on uneven quality of work" | Softer verb when a named firm is the subject |
 
 **Portability test, the single highest-yield check.** Read each action title and each recommendation line and ask whether it could move unchanged to another client's deck. If it could, it is not a finding. A title that passes makes a claim someone could disagree with, is specific to this client, and carries a number.
 

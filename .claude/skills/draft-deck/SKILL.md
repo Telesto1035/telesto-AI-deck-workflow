@@ -142,8 +142,8 @@ The core above holds the rules every mode needs. The rest is in `references/`, r
 - `comment-shorthand.md`: reviewer phrases that go to a pop-up with readings. Read on every Revise.
 - `voice-review.md`: the de-AI pass. Read at handoff of a Build or a full rewrite.
 - `build-rules.md`: native and editable build rules, construction conventions, concept pages, Telesto dark paper. Read at Build and when a Revise adds a page or element.
-- `deck-types.md`: the eight deck types, skeletons and package variants. Read at Build, or when a Revise changes the storyline.
-- `page-archetypes.md` and `deck-craft.md`: page patterns and craft detail. Read at Build.
+- `deck-types.md`: the eight deck types as the elements each usually carries (not fixed skeletons), plus the page patterns that recur across types. Read at Build, or when a Revise changes the storyline.
+- `deck-craft.md`: formatting detail from shipped work, part client-specific. Read at Build. (Under review: universal rules move to build-rules, client rules to a client file.)
 
 ## Handoff
 
