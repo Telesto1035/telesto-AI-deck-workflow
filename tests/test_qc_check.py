@@ -304,3 +304,15 @@ def test_profile_lengths_match_deck_types():
         found[key] = [int(m.group(1)), int(m.group(2))]
     mismatches = {k: (found[k], rules[k]["length"]) for k in found if list(rules[k]["length"]) != found[k]}
     assert not mismatches, "qc_rules.json disagrees with deck-types.md: %s" % mismatches
+
+
+def test_skill_files_carry_no_engagement_figures():
+    """GOVERNANCE.md: no percentage or dollar figure from a client deck lives in a skill file. Examples use
+    placeholders or round generic numbers without a % or $ sign."""
+    import re
+    hits = []
+    for f in (REPO / ".claude").rglob("*.md"):
+        for line in f.read_text(encoding="utf-8").splitlines():
+            if re.search(r"\b\d{1,3}%|\$\d", line):
+                hits.append((f.name, line.strip()[:100]))
+    assert not hits, hits

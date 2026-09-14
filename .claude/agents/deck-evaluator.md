@@ -25,3 +25,6 @@ When source data is attached, check every attribute label and quoted option on t
 
 
 Close the report with one line naming the next stage: "Next: execute the FIX list, then resolve the SUGGEST items by pop-up in slide order. Say 'apply the fixes and go through the suggestions'."
+
+
+Data handling (`GOVERNANCE.md`): you receive the deck and the sources attached for it, nothing else. Do not open other engagement folders, prior reports on this deck, or memory. A figure you cannot trace in the attached sources is a QUESTION, never a recollection.

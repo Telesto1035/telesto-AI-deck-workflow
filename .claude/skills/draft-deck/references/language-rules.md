@@ -19,7 +19,7 @@ The title IS the takeaway. A reader skimming only titles gets the full argument.
 
 - **No superlatives, no vague intensifiers.** Banned unless quoting: significant(ly), massive, dramatic, clear winner, game-changing, unprecedented, extremely (outside scale labels). If it matters, give the number.
 - **No "every" or "never" claims from single-survey data.** "Outperform every paid channel" becomes "outperform paid outreach channels". Totalizing words survive only when the data is literally total.
-- **Quantify deltas**: "26pts difference", "2X the rate", "80% vs. 48%" — never "far more" alone. ("far more than the C-suite (26pts difference)" is fine: adjective + number.)
+- **Quantify deltas**: "26pts difference", "2X the rate", "[X]% vs. [Y]%" — never "far more" alone. ("far more than the C-suite (26pts difference)" is fine: adjective + number.)
 - **Verbs scale with evidence.** One data point: "indicates", "points to", "suggests". Converging data points: "shows", "finds". Reserve "confirms"/"proves" for near-tautologies, and prefer not to use them.
 - **Subgroup findings stay subgroup findings.** "Tech leaders elevate cybersecurity sharply" — do not promote to "leaders elevate cybersecurity".
 - **Small n:** label cuts "directional only"; state exclusions ("Chartis and CCS have low end counts (n<18); … excluded (n<5)"). State margin of error in methodology.
@@ -28,7 +28,7 @@ The title IS the takeaway. A reader skimming only titles gets the full argument.
 
 ## Provenance — every number has a home
 
-- Chart subtitle convention: `% of respondents selecting attribute · n=250` (metric · denominator).
+- Chart subtitle convention: `% of respondents selecting attribute · n=200` (metric · denominator).
 - Question sourcing in footnotes: `Q12: Which of the following cost reduction strategies…`. Cross-survey borrowings named: "From Competitive Intelligence survey: …".
 - Quotes verbatim, in quotation marks, with attribution: `"…" (Board of trustees, R1)`.
 - Missing number → `[PLACEHOLDER: source needed]`. Never estimate and present as fact. Never reuse a number from a different base without re-stating the base.
@@ -36,7 +36,7 @@ The title IS the takeaway. A reader skimming only titles gets the full argument.
 ## Finding vs. implication
 
 Two registers, kept separate:
-- **Finding**: declarative, data-anchored. "AI is changing what buyers will pay for, posing material risk to 2027 revenue. 68% agree consultant fees should be lower if the firm is using AI tools…"
+- **Finding**: declarative, data-anchored. "AI is changing what buyers will pay for, posing material risk to 2027 revenue. [X]% agree [statement]…"
 - **Implication**: imperative, action-anchored, labeled. "Implication: Position [the client's] modernization work as the safe foundation for the next deployment…"
 
 A finding never smuggles in a recommendation; an implication never introduces new data.

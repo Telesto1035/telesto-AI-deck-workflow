@@ -2,6 +2,9 @@
 
 Telesto's agentic PPT workflow: the skills, the code gate, the hook and the evaluator that turn a prompt and files into a partner-ready deck. Spec: `docs/HANDOFF.md`. Start with the chart, `docs/telesto_deck_chain.png`: it is the visual readme of the chain and is updated whenever the workflow changes (edit the HTML beside it and re-render). One-page manual: `docs/team-manual.md`.
 
+
+Data governance: `GOVERNANCE.md` (data classes, what the skills may read, client statements, items for counsel).
+
 ## The chain
 
 stakeholder-context (agent) → draft-deck (router, then generator) → **qc_check.py** (code gate, loops back to the generator until clean, cap 3) → deck-evaluator subagent (deck-qc Layer 2, fresh context) → human comments in the PPTX → draft-deck Revise → ship → draft-deck Learn.
