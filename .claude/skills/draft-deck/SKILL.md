@@ -268,6 +268,10 @@ Where the verbatim label does not fit the space, the fix is layout, not wording:
 
 A body page carries at most 200 words of title, body and chart labels before the gate warns and 275 before it blocks; footnotes are counted apart (warn above 100) and appendix pages are exempt, as are pages that are mostly verbatim quotes. A wordy page draws a partner comment before anything else on it is read. Exec summaries may run long but sit under the same cap: keep percentages to a minimum there and explain the finding in words; a summary line with four figures in it is a table, not a sentence. Detail pages carry the numbers.
 
+## Match the deck, not your constants (added 2026-09-13)
+
+When adding a page or an element to an existing deck, copy the style of the nearest element of the same kind already in the deck: section subtitle colour and size, the colour and weight of the rule line beneath it, footnote colour and size, chart label colour, band fill and lead-in colour. Read them from the file, never from a palette constant. A page that is right by the house palette but differs from the pages beside it reads as built by another hand, and the consultant spends the review recolouring lines. The gate lists minority colours per element class as `element-consistency`; the render step then looks at the pages side by side.
+
 ## Construction conventions (house, every paper)
 
 Stated by the CEO 2026-09-12. They override habits found in an attachment.
@@ -317,3 +321,7 @@ Every Build ends with two things alongside the file:
 - Make legal or regulatory judgments the dataset does not support.
 - Name the client stakeholder on a slide, whether from the brief or from an audience brief.
 - Chase an AI-detector score.
+
+## After saving (added 2026-09-13)
+
+Every build or revision ends by invoking the `deck-chain` skill: it runs the gate and the render, then asks by pop-up whether to run the evaluator and resolve its SUGGEST items. The consultant never has to remember to prompt the evaluator.

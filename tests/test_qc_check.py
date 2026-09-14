@@ -257,3 +257,20 @@ def test_profile_length_is_info_only(rules):
     assert dl and dl[0].severity == "info"
     _deck, findings = qc_check.run_checks(src, rules, profile="minipack")
     assert not by_id(findings, "deck-length")
+
+
+def test_element_consistency_flags_minority_colour(tmp_path):
+    """Four 'Section subtitle' boxes in aubergine and one in ink: the odd one is reported."""
+    from pptx import Presentation
+    from pptx.util import Inches, Pt
+    from pptx.dml.color import RGBColor
+    prs = Presentation()
+    for i in range(5):
+        s = prs.slides.add_slide(prs.slide_layouts[6])
+        tb = s.shapes.add_textbox(Inches(1), Inches(1), Inches(4), Inches(0.5)); tb.name = "Section subtitle"
+        r = tb.text_frame.paragraphs[0].add_run(); r.text = "Subtitle %d" % i; r.font.size = Pt(14)
+        r.font.color.rgb = RGBColor(0x2B, 0x26, 0x23) if i == 4 else RGBColor(0x5D, 0x01, 0x3A)
+    out = tmp_path / "consistency.pptx"; prs.save(str(out))
+    deck, findings = qc_check.run_checks(out, qc_check.load_rules(None))
+    hits = [f for f in findings if f.id == "element-consistency"]
+    assert len(hits) == 1 and "2B2623" in hits[0].text and hits[0].slide == 5

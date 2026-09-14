@@ -1171,6 +1171,54 @@ def check_word_count(d: Deck):
             )
 
 
+def check_element_consistency(d: Deck):
+    """The same kind of element should look the same on every body page: section subtitle colour, the rule
+    line beneath it, footnote colour, chart label colour, band colour. A minority value on a few pages is
+    the signature of pages built by a different hand (or a script with its own palette constants)."""
+    classes = {"Section subtitle", "Footnotes", "Chart label", "Chart subtitle", "Recommendation band", "Callouts"}
+    tallies: dict = {}
+    for sno, shapes in d.shapes_by_slide.items():
+        if d.is_appendix(sno):
+            continue
+        for si in shapes:
+            sh = si.shape
+            name = si.name or ""
+            if sh.shape_type == MSO_SHAPE_TYPE.LINE or "Connector" in name:
+                ln = sh._element.find(".//" + q("a:ln"))
+                clr = ln.find(".//" + q("a:srgbClr")) if ln is not None else None
+                val = (clr.get("val") or "").upper() if clr is not None else "theme"
+                tallies.setdefault("rule line colour", {}).setdefault(val, set()).add(sno)
+                continue
+            if name not in classes or not d.is_text_shape(si):
+                continue
+            first = None
+            for r in sh._element.iter(q("a:r")):
+                if visible(r.findtext(q("a:t")) or ""):
+                    first = r
+                    break
+            if first is None:
+                continue
+            rPr = first.find(q("a:rPr"))
+            clr = rPr.find(q("a:solidFill") + "/" + q("a:srgbClr")) if rPr is not None else None
+            val = (clr.get("val") or "").upper() if clr is not None else "inherit"
+            tallies.setdefault(name + " colour", {}).setdefault(val, set()).add(sno)
+    for cls, vals in tallies.items():
+        if len(vals) < 2:
+            continue
+        total = sum(len(v) for v in vals.values())
+        majority = max(vals, key=lambda k: len(vals[k]))
+        for val, pages in vals.items():
+            if val == majority or len(pages) > total * 0.4:
+                continue
+            plist = ", ".join(str(x) for x in sorted(pages))
+            d.add(
+                id="element-consistency", severity="warn", slide=min(pages), shape=cls, shape_id=None,
+                text="%s on pages %s" % (val, plist),
+                detail="%s is %s on most pages but %s on pages %s; match the deck" % (cls, majority, val, plist),
+                fix="none",
+            )
+
+
 def check_empty_textbox(d: Deck):
     for sno, shapes in d.shapes_by_slide.items():
         for si in shapes:
@@ -1931,6 +1979,7 @@ ALL_CHECKS = [
     check_shape_overlap,
     check_word_count,
     check_empty_textbox,
+    check_element_consistency,
     check_off_canvas,
     check_overflow_estimate,
     check_footnote_sequence,
