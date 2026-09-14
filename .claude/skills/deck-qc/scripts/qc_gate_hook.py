@@ -5,9 +5,14 @@ Wired in .claude/settings.json. Claude Code passes a JSON payload on stdin:
     {"session_id": ..., "transcript_path": ..., "cwd": ..., "hook_event_name": "Stop", "stop_hook_active": bool}
 
 Behaviour:
-  * Find PPTX files written or modified during the session: paths mentioned in the transcript that exist,
-    plus any *.pptx under cwd whose mtime is at or after the session start (first transcript timestamp).
-    Files under tests/fixtures/, .venv/, _handoff/ and node_modules/ are ignored.
+  * Find PPTX files written or modified since the LAST STOP: paths mentioned in the transcript that exist,
+    plus any *.pptx under cwd whose mtime is at or after the session start (first transcript timestamp, the
+    floor for a first run). A file that gated clean has its mtime recorded in the state file and is not gated
+    again until it changes; a file that blocked is always re-gated. A Cowork session that runs for days would
+    otherwise gate the whole workspace.
+  * Ignored: the path fragments in qc_rules.json `gate_exclude` (fixtures, asset folders, the .qc.pptx output
+    of --fix-safe), and templates (*template*.pptx, *.potx, or a file with no slide parts), which are specimen
+    layouts rather than decks. Every skip is logged, never silent.
   * Run qc_check on each. If any `block` finding exists, print the findings and exit 2 so the turn cannot end.
   * Keep a counter per session in a state file. After 3 blocked stops, exit 0 and print
     "gate cap reached, handing off with findings attached" so the loop terminates.
@@ -27,6 +32,8 @@ import subprocess
 import sys
 import tempfile
 import time
+import zipfile
+from functools import lru_cache
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -34,8 +41,25 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3] if len(HERE.parents) >= 4 else HERE
 CAP = 3
 RENDER_TIMEOUT = 150  # seconds per deck; settings.json gives the whole hook 400
-EXCLUDE_DIRS = {".venv", "node_modules", "__pycache__", "_handoff", ".git"}
-EXCLUDE_PARTS = ("tests/fixtures", ".venv", "_handoff", "node_modules", "__pycache__")
+DEFAULT_EXCLUDE_PARTS = ("tests/fixtures", ".venv", "_handoff", "node_modules", "__pycache__")
+TEMPLATE_NAME_RE = re.compile(r"template", re.I)
+SLIDE_PART_RE = re.compile(r"^ppt/slides/slide\d+\.xml$")
+
+
+@lru_cache(maxsize=1)
+def exclude_parts() -> tuple:
+    """Path fragments never gated. Lives in qc_rules.json so the list travels with the rules, not the code."""
+    try:
+        blob = json.loads((HERE / "qc_rules.json").read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        return DEFAULT_EXCLUDE_PARTS
+    v = blob.get("gate_exclude")
+    return tuple(str(x) for x in v) if isinstance(v, list) and v else DEFAULT_EXCLUDE_PARTS
+
+
+def exclude_dirs() -> set:
+    """Folder names pruned before descending: the single-segment entries of the exclusion list, plus .git."""
+    return {".git"} | {p.strip("/") for p in exclude_parts() if "/" not in p and not p.endswith(".pptx")}
 PPTX_PATH_RE = re.compile(r"""[A-Za-z]:\\[^"'<>|\n]*?\.pptx|(?:/|\./|\.\./)[^"'<>|\s]*?\.pptx|[\w./\\ -]+\.pptx""")
 
 
@@ -107,16 +131,40 @@ def excluded(path: Path, cwd: Path) -> bool:
         rel = path.resolve().relative_to(cwd.resolve()).as_posix()
     except ValueError:
         rel = path.as_posix()
-    return any(part in rel for part in EXCLUDE_PARTS)
+    return any(part in rel for part in exclude_parts())
 
 
 def _walk_pptx(cwd: Path):
     """Every *.pptx under cwd, pruning the venv and other excluded folders before descending."""
     for root, dirnames, filenames in os.walk(cwd):
-        dirnames[:] = [d for d in dirnames if d not in EXCLUDE_DIRS]
+        prune = exclude_dirs()
+        dirnames[:] = [d for d in dirnames if d not in prune]
         for fn in filenames:
             if fn.lower().endswith(".pptx"):
                 yield Path(root) / fn
+
+
+def is_template(p: Path) -> bool:
+    """A template is not a deck: its slides are specimen layouts, so its word counts and label rows mean
+    nothing. Name, extension, or a file that carries masters and layouts but no slide parts."""
+    if p.suffix.lower() == ".potx" or TEMPLATE_NAME_RE.search(p.name):
+        return True
+    try:
+        with zipfile.ZipFile(p) as z:
+            return not any(SLIDE_PART_RE.match(n) for n in z.namelist())
+    except Exception:  # noqa: BLE001
+        return False
+
+
+def unchanged_since_last_gate(p: Path, gated: dict) -> bool:
+    """True when this path gated clean at an earlier Stop and has not been written since."""
+    prev = gated.get(str(p))
+    if prev is None:
+        return False
+    try:
+        return p.stat().st_mtime <= float(prev) + 0.001
+    except OSError:
+        return False
 
 
 def find_candidates(cwd: Path, transcript_path: str | None, since: float | None, text: str | None = None) -> list[Path]:
@@ -162,6 +210,7 @@ def gate(paths: list[Path], session_id: str, out) -> int:
             blocked[p] = blocks
     sp = state_path(session_id)
     st = load_state(sp)
+    gated = st.setdefault("gated", {})
     # render step: on Windows with PowerPoint, a body page whose text is taller than its box blocks too.
     # Runs once per (path, mtime); a deck that has not changed since its last clean render is not re-exported.
     if sys.platform == "win32" and not os.environ.get("QC_GATE_NO_RENDER"):
@@ -192,6 +241,14 @@ def gate(paths: list[Path], session_id: str, out) -> int:
             elif r.returncode == 0:
                 rendered[str(p)] = stamp
                 out("qc gate: rendered %s, no text overflow; PNGs in %s" % (p.name, p.parent / ("render_" + p.stem)))
+    for p in paths:
+        if p in blocked:
+            gated.pop(str(p), None)  # always re-gate a file that is still blocking
+            continue
+        try:
+            gated[str(p)] = p.stat().st_mtime
+        except OSError:
+            pass
     if not blocked:
         if st.get("blocked"):
             out("qc gate: clean after %d blocked stop%s" % (st["blocked"], "s" if st["blocked"] != 1 else ""))
@@ -225,9 +282,19 @@ def run(payload: dict, cwd: Path | None = None, out=None) -> int:
     text = read_transcript(payload.get("transcript_path"))
     since = session_start(payload.get("transcript_path"), text)
     paths = find_candidates(cwd, payload.get("transcript_path"), since, text)
-    if not paths:
+    session_id = payload.get("session_id", "")
+    gated = load_state(state_path(session_id)).get("gated", {})
+    keep = []
+    for p in paths:
+        if unchanged_since_last_gate(p, gated):
+            continue  # gated clean at an earlier Stop and not written since
+        if is_template(p):
+            out("qc gate: skipped %s (template, not a deck)" % p.name)
+            continue
+        keep.append(p)
+    if not keep:
         return 0
-    return gate(paths, payload.get("session_id", ""), out)
+    return gate(keep, session_id, out)
 
 
 def main() -> int:

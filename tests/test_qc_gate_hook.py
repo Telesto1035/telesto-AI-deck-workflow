@@ -5,6 +5,7 @@ import json
 import os
 import shutil
 import sys
+import time
 from pathlib import Path
 
 import pytest
@@ -103,3 +104,64 @@ def test_old_files_are_not_gated(workdir):
     old = 946684800  # 2000-01-01, before the transcript's first timestamp
     os.utime(workdir / "old.pptx", (old, old))
     assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None) == 0
+
+
+# --- patch 2026-09-14: file selection (last stop, exclusions, templates, .qc.pptx) ---------------
+
+
+TEMPLATE = FIXTURES / "telesto_v2_template.pptx"
+
+
+def test_template_is_skipped_and_logged(workdir):
+    shutil.copy(TEMPLATE, workdir / "telesto_v2_template.pptx")
+    out = []
+    assert qc_gate_hook.run(payload(workdir), workdir, out.append) == 0
+    assert any("template, not a deck" in line for line in out)
+
+
+def test_potx_is_skipped(workdir):
+    shutil.copy(CLEAN, workdir / "house.potx")
+    assert qc_gate_hook.is_template(workdir / "house.potx") is True
+
+
+def test_fix_safe_output_is_not_gated(workdir):
+    make_broken.make_broken(CLEAN, workdir / "out.qc.pptx")
+    assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None) == 0
+
+
+def test_bare_fixture_and_asset_folders_are_ignored(workdir):
+    for rel in ("handoff/fixtures", "manual-build/assets"):
+        dst = workdir / rel
+        dst.mkdir(parents=True)
+        make_broken.make_broken(CLEAN, dst / "x.pptx")
+    assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None) == 0
+
+
+def test_exclusions_come_from_qc_rules(workdir):
+    parts = qc_gate_hook.exclude_parts()
+    assert "assets" in parts and ".qc.pptx" in parts and "tests/fixtures" in parts
+
+
+def test_clean_file_is_not_regated_until_it_changes(workdir):
+    deck = workdir / "out.pptx"
+    shutil.copy(CLEAN, deck)
+    assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None) == 0
+    st = json.loads(qc_gate_hook.state_path("sess-test").read_text())
+    assert str(deck.resolve()) in st["gated"]
+    stamp = deck.stat().st_mtime
+    # broken behind the gate's back, mtime restored: the file reads as untouched, so it is not re-gated
+    make_broken.make_broken(CLEAN, deck)
+    os.utime(deck, (stamp, stamp))
+    assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None) == 0
+    # written again in this turn: gated, and it blocks
+    now = time.time()
+    os.utime(deck, (now, now))
+    assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None) == 2
+
+
+def test_a_blocking_file_is_gated_on_every_stop(workdir):
+    """The clean-file shortcut must never let a blocked deck through by standing still."""
+    make_broken.make_broken(CLEAN, workdir / "out.pptx")
+    codes = [qc_gate_hook.run(payload(workdir), workdir, lambda s: None) for _ in range(2)]
+    assert codes == [2, 2]
+
