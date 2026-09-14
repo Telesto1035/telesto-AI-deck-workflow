@@ -23,6 +23,10 @@ Two things. First, every draft is written for a named room: attach the roster an
 
 A human-built deck can enter at Revise with no brief. draft-deck offers once to run stakeholder-context if you have the roster; say yes or no and it proceeds. Reviewer shorthand ("more strategic", "so what", "roll up", "sharpen", "fix", "this doesn't work") is never interpreted on its own: each raises a pop-up with two or three readings and the change each would make, and only your choice is applied. The list lives in `draft-deck/references/comment-shorthand.md`.
 
+## Rules that learn without growing
+
+Writing rules learned from shipped decks live in `draft-deck/references/house-register.md`, capped at 25 and entered only after a pattern recurs in two decks or the CEO rules. Client formatting and voice live in `draft-deck/references/clients/<client>.md`, which never holds engagement content. Learn proposes at most three changes per pass; nothing enters without approval.
+
 ## Never remember the next step
 
 Every stage (build or revision, gate and render, evaluator, SUGGEST pop-ups) ends with one line naming the next stage and the words that start it. Answer that line and the deck moves on; say "skip" or "stop here" to leave it.

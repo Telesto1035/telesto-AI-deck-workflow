@@ -2,6 +2,8 @@
 
 Read only when the paper is Huron's (the attached deck uses its template, theme or fonts). Everything here is specific to this client; the firm-wide rules are in `house-register.md` and `build-rules.md`. Where this file conflicts with a freshly attached shipped Huron deck, the attachment wins.
 
+**Scope.** This file holds what the client publishes about itself or would recognise as house style: layouts, palette, fonts, table and chart formatting, voice register, claims precedent. It never holds engagement content: survey figures, quotes, non-public financial information, competitive reads, fee levels, strategic rulings about the client's business. Those stay in the engagement's ledger and never enter a skill file.
+
 ## Contents
 - Paper: layouts, fonts, palette
 - Tables, charts, callouts
@@ -26,7 +28,6 @@ Read only when the paper is Huron's (the attached deck uses its template, theme 
 - Findings written as Huron's opportunity, ending on Huron's position ("which is where Huron can highlight its track record").
 - Bands may point to a named Huron product where one exists; the draft names the service and leaves the product call to the consultant.
 - Cross-survey evidence is welcome when labelled: quotes from a sister survey under a head that names it, with question and n in the footnote.
-- Governance is a message for marketing, not a standalone service line (consultant ruling on the EDR AI minipack).
 - Section summary titles read as the section's question ("What the findings mean for Huron's AI report and marketing campaign"); no "Part 1 / Part 2" label on the slide.
 - Claims precedent: match the assertion level of the shipped EDR and Public Sector decks; an escalation beyond it is flagged, not made.
 

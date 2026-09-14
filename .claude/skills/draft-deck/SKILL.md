@@ -11,6 +11,9 @@ Content and layout outrank styling. Never spend effort on lines, icons, or decor
 
 ## The invariant
 
+The chain exists so that a deck, human- or AI-written, reaches the partner mistake-free, up to the firm's conventions, and informed by the client's responsibility. This skill owns the writing and the client context; deck-qc owns the checks. A human applies the finishing touches, so the skill carries principles and a capped register, not a rule for every edit.
+
+
 Every Telesto deck produces a call to action or a discussion, supported by statistics, quotes or data visualization, and it works at two reading speeds. Read only the titles on a phone and the message lands in 20 seconds. Read every chart and footnote for 30 minutes and nothing is ambiguous, unexplained or unsourced. Both tests apply to every type and every page. Density is not a style choice; it is set by the deck type and by each page's job.
 
 ## Division of labour: the AI phase builds the core three, a human adds the polish
