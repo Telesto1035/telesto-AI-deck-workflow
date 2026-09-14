@@ -8,4 +8,4 @@
 - Units are slides and pages, never beats.
 - Scratch files go in the session scratchpad, never inside this OneDrive-synced folder.
 - Layer 2 of deck-qc runs in the `deck-evaluator` subagent after the gate passes: "Use the deck-evaluator subagent on OUT.pptx."
-- Data rules in `GOVERNANCE.md`: read only attached or engagement-folder files; no client content in skill files, rule files, tests or memory; one engagement per session.
+- Data rules in `GOVERNANCE.md`: read only attached or engagement-folder files; write only what was asked for, where it was asked for (never modify an attached source, metadata included); no client content in skill files, rule files, tests or memory; one engagement per session.
