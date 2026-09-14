@@ -6,7 +6,7 @@ The report is for reading. The resolution is a set of choices, collected with th
 
 ## Sort every finding into a bucket first
 
-- **Settled.** A mechanical error with exactly one correct answer, a number the attached source decides, or anything in the hygiene pass. Apply it. Do not ask. List what you applied afterwards.
+- **Settled.** A mechanical error with exactly one correct answer, a number the attached source decides, or anything in the hygiene pass. Apply it. Do not ask. List what you applied afterward.
 - **Decided by the consultant's own message.** Anything they already ruled on in this conversation. Apply it as stated.
 - **Not a defect.** Anything under "What is not a defect". Drop it silently.
 - **Judgment.** Everything else. This goes to AskUserQuestion.
@@ -23,7 +23,7 @@ Reviewer shorthand ("more strategic", "so what", "fix", "this doesn't work") is 
 
 ## The bulk route, only for a sweeping mechanical change
 
-Group across slides only when the same fault appears in several places and the fix is identical in kind: harmonising one source line across six pages, replacing straight quote marks, spelling out an agency everywhere, removing the same title prefix from five pages, resizing sibling exhibits to one geometry. Say how many slides the option touches and list them. Anything that changes the meaning of one page's argument is not a bulk item.
+Group across slides only when the same fault appears in several places and the fix is identical in kind: harmonizing one source line across six pages, replacing straight quote marks, spelling out an agency everywhere, removing the same title prefix from five pages, resizing sibling exhibits to one geometry. Say how many slides the option touches and list them. Anything that changes the meaning of one page's argument is not a bulk item.
 
 ## Option rules
 
@@ -31,7 +31,7 @@ Group across slides only when the same fault appears in several places and the f
 - Write the full proposed replacement text in the option's `description`; use `preview` for a before-and-after.
 - Offer a real "do less" option in every question: leave as drafted, or flag only.
 - Set `multiSelect: true` where the items are independent.
-- The tool supplies the free-text "Other" path; do not add an option for it, and honour whatever the consultant writes in.
+- The tool supplies the free-text "Other" path; do not add an option for it, and honor whatever the consultant writes in.
 - A QUESTION-class item never gets a suggested default. Two disagreeing numbers with no source is a question asked straight, with the candidate values and their pages. You do not pick.
 
 Apply everything in one pass once the answers come back, then validate, re-render the touched pages, re-run the number ledger and report the delta. Ask a second round only for a new problem the first pass created.

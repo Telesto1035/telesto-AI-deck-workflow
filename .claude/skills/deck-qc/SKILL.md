@@ -34,7 +34,7 @@ python scripts/qc_check.py DECK.pptx --fix-safe     # settled fixes only, writes
 python scripts/pptx_comments.py DECK.pptx --open-only  # who asked for what, on which slide
 ```
 
-Exit 1 means blocking findings; fix them and run again until it exits 0. The gate is deterministic and owns hygiene and mechanics: author and metadata fields, speaker notes, generator fingerprints, text under 10pt outside footnotes, italics above the threshold, placeholders, footnote markers without footnotes, totals that do not sum, chart labels against cached data, reviewer notes, empty register labels, element consistency. What it blocks is not re-argued here; thresholds live in `scripts/qc_rules.json`. Read the summary and the BLOCK lines; WARN and INFO lines are for the fix pass. The `element-consistency` warning names a colour that an element class carries on only one or two pages while the rest of the deck uses another; two or three line colours in a deck are normal, a fourth on one page is the flag. Fix by copying the style from a sibling page. Pages after a divider titled Appendix, Crosstabs or Backup are data pages: no style check and no fix applies to them, only hygiene.
+Exit 1 means blocking findings; fix them and run again until it exits 0. The gate is deterministic and owns hygiene and mechanics: author and metadata fields, speaker notes, generator fingerprints, text under 10pt outside footnotes, italics above the threshold, placeholders, footnote markers without footnotes, totals that do not sum, chart labels against cached data, reviewer notes, empty register labels, element consistency. What it blocks is not re-argued here; thresholds live in `scripts/qc_rules.json`. Read the summary and the BLOCK lines; WARN and INFO lines are for the fix pass. The `element-consistency` warning names a color that an element class carries on only one or two pages while the rest of the deck uses another; two or three line colors in a deck are normal, a fourth on one page is the flag. Fix by copying the style from a sibling page. Pages after a divider titled Appendix, Crosstabs or Backup are data pages: no style check and no fix applies to them, only hygiene.
 
 **2. Render.** `scripts/render_check.py DECK.pptx` exports the body pages through PowerPoint, measures overflow, and tiles the pages into contact sheets of nine. Read the sheets, not single pages; open one `slideN.png` only to inspect a defect. On an iteration render only the changed pages (`--slides 4,7,12`); read the full sheets once before hand-back. Without PowerPoint, use soffice and pdftoppm, and treat a wrapped footer or clipped label as a renderer artifact until the original renders the same way ("verify in PowerPoint").
 
@@ -78,7 +78,7 @@ House convention, not error. Do not spend the consultant's attention on these.
 - Not every page carries a recommendation; flag a missing one only where the page makes a claim the reader must act on.
 - Not every page carries an eyebrow; supporting pages, dividers and appendix sit outside the numbering, and an eyebrow repeats across the pages of one finding.
 - Consulting rounding ("15+ times", "roughly a third") is fine; flag a number only where it contradicts another number or the source.
-- Two or three line colours across a deck; grey chart subtitles and dark grey footnotes on client paper where the client file allows them.
+- Two or three line colors across a deck; gray chart subtitles and dark gray footnotes on client paper where the client file allows them.
 
 ## Layer 1: mechanical checks, offered as FIX
 
@@ -89,8 +89,8 @@ Each finding names the page, quotes the text, states the fix. Group repeated ins
 - **Attribute wording.** With the questionnaire or crosstab attached, every chart label, table row, scale point and option quoted in prose is checked against the source wording. A shortening or dropped qualifier is FIX where the verbatim label fits and SUGGEST with the verbatim wording where it does not.
 - **Referents and terms.** A pronoun or "this" with no antecedent on the page; an acronym before its definition; the same thing named two ways; an agency abbreviated; a client stakeholder named on a slide; one count word used for different sets.
 - **Leftovers.** Placeholders, TBD, XX, template text, a DRAFT stamp inconsistent with the version, and anything the gate's hygiene pass reports.
-- **Text and shape mechanics.** Overflow or cut-off; a centre-anchored box riding over its heading; empty boxes; shapes off-canvas; legend swatches with no label; runs of spaces used as layout; a badge whose own text wraps; more than one font size inside a table; numeric labels inside bar segments; hanging one- or two-word last lines.
-- **Style drift between pages.** Title font or size changing mid-deck; footer or page number missing on some pages; colours outside the palette; a different band treatment on one page; sibling exhibits at different sizes; the gate's element-consistency list.
+- **Text and shape mechanics.** Overflow or cut-off; a center-anchored box riding over its heading; empty boxes; shapes off-canvas; legend swatches with no label; runs of spaces used as layout; a badge whose own text wraps; more than one font size inside a table; numeric labels inside bar segments; hanging one- or two-word last lines.
+- **Style drift between pages.** Title font or size changing mid-deck; footer or page number missing on some pages; colors outside the palette; a different band treatment on one page; sibling exhibits at different sizes; the gate's element-consistency list.
 
 ## Layer 2: logic and language, offered as SUGGEST
 

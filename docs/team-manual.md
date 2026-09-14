@@ -12,7 +12,7 @@
 
 ## What the AI phase builds
 
-Three things per slide, and nothing else until the storyline has settled: the title and message (is this the right claim for this room and what can we realistically recommend), the exhibit that shows the data, and the recommendation (what this changes or informs). Callouts, colours and polish are a human's afterwards. The storyline is always confirmed in text, one line per page, before a file is built or rebuilt.
+Three things per slide, and nothing else until the storyline has settled: the title and message (is this the right claim for this room and what can we realistically recommend), the exhibit that shows the data, and the recommendation (what this changes or informs). Callouts, colors and polish are a human's afterward. The storyline is always confirmed in text, one line per page, before a file is built or rebuilt.
 
 ## What the workflow is for
 
@@ -45,7 +45,7 @@ Every stage (build or revision, gate and render, evaluator, SUGGEST pop-ups) end
 
 ## Rules of the house the gate enforces
 
-Empty author field. Nothing below 10pt except footnotes, which stop at 8pt. Italics only as rare exceptions: a few are listed, more than four in a deck blocks. Grey text outside footnotes in a colour that is not in the palette is listed for the author, never blocked. The test behind both rules: title, body or footnote carries everything a reader needs in a five-second scan. No `[PLACEHOLDER]`, `TBD` or `XX` left in. Every footnote marker has its footnote on the same slide. Components sum to their stated total within one point. No client stakeholder named on a slide. Small tables are text boxes and horizontal lines, not the native table (warned). Text boxes zero-margin and top-anchored, section subtitles bold 14 or 16pt with a rule beneath (listed as information). Body pages stay under 200 words of title, body and chart labels (warned) and 275 (blocked); footnotes counted apart, appendix and quote pages exempt. Units are slides and pages.
+Empty author field. Nothing below 10pt except footnotes, which stop at 8pt. Italics only as rare exceptions: a few are listed, more than four in a deck blocks. Gray text outside footnotes in a color that is not in the palette is listed for the author, never blocked. The test behind both rules: title, body or footnote carries everything a reader needs in a five-second scan. No `[PLACEHOLDER]`, `TBD` or `XX` left in. Every footnote marker has its footnote on the same slide. Components sum to their stated total within one point. No client stakeholder named on a slide. Small tables are text boxes and horizontal lines, not the native table (warned). Text boxes zero-margin and top-anchored, section subtitles bold 14 or 16pt with a rule beneath (listed as information). Body pages stay under 200 words of title, body and chart labels (warned) and 275 (blocked); footnotes counted apart, appendix and quote pages exempt. Units are slides and pages.
 
 ## Seeing the page
 

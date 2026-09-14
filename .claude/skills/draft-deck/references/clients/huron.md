@@ -2,7 +2,7 @@
 
 Read only when the paper is Huron's (the attached deck uses its template, theme or fonts). Everything here is specific to this client; the firm-wide rules are in `house-register.md` and `build-rules.md`. Where this file conflicts with a freshly attached shipped Huron deck, the attachment wins.
 
-**Scope.** This file holds what the client publishes about itself or would recognise as house style: layouts, palette, fonts, table and chart formatting, voice register, claims precedent. It never holds engagement content: survey figures, quotes, non-public financial information, competitive reads, fee levels, strategic rulings about the client's business. Those stay in the engagement's ledger and never enter a skill file.
+**Scope.** This file holds what the client publishes about itself or would recognize as house style: layouts, palette, fonts, table and chart formatting, voice register, claims precedent. It never holds engagement content: survey figures, quotes, non-public financial information, competitive reads, fee levels, strategic rulings about the client's business. Those stay in the engagement's ledger and never enter a skill file.
 
 ## Contents
 - Paper: layouts, fonts, palette
@@ -13,12 +13,12 @@ Read only when the paper is Huron's (the attached deck uses its template, theme 
 ## Paper: layouts, fonts, palette
 - **Layouts:** Cover Option 1 (cover); Callout Option 1 (the one-sentence takeaway page, image background, about 30 words at 36pt); Content Header Only, white (every page with an exhibit); 1_Content Header Only, aubergine side panel (low-text pages only: exec summary, quote pages, next steps; never a chart page); Divider Option 1 (appendix divider). Layouts with a numeric prefix carry a side panel; use them to vary rhythm, not by default.
 - **Fonts:** Aptos Display 24pt titles on every content page, held to two lines (about 105 characters); Tahoma for body, tables and chart labels.
-- **Palette:** aubergine 5D013A (theme accent 2) for header fills, highlighted bars, bold lead-ins and number chips; tint F5E6EF for the client's own row; band fill EBE9E4 for takeaway and context boxes; footnotes dark grey 5A5A5A or 7F7F7F (the accepted exception to the grey-text rule); teal for Telesto owners on next-steps pages; everything else ink.
+- **Palette:** aubergine 5D013A (theme accent 2) for header fills, highlighted bars, bold lead-ins and number chips; tint F5E6EF for the client's own row; band fill EBE9E4 for takeaway and context boxes; footnotes dark gray 5A5A5A or 7F7F7F (the accepted exception to the gray-text rule); teal for Telesto owners on next-steps pages; everything else ink.
 - **Title placement:** about 0.4 inch from the top edge; number chips top-align with the first title line.
 
 ## Tables, charts, callouts
-- **Tables:** one font size within a grid (11pt comfortable for 8 to 10 rows); header row aubergine fill with white bold text; percentage columns centred, name column left; the client's row in the tint with bold aubergine text; bold the maximum per column; cells top-aligned.
-- **Charts:** native bars in one colour (aubergine); percentages centred inside bars in white Tahoma 10pt regular; category labels as a column of left-aligned 10pt text boxes (native axis labels hidden), plot area pinned; value axis, gridlines, ticks, legend and chart title removed; a one-line subtitle above carrying metric and denominator ("% of respondents selecting, n=302, top 6 of 10 shown"). Grey chart subtitles are accepted. Competitor rows carry logos; the client's row sits in a dashed outline box.
+- **Tables:** one font size within a grid (11pt comfortable for 8 to 10 rows); header row aubergine fill with white bold text; percentage columns centered, name column left; the client's row in the tint with bold aubergine text; bold the maximum per column; cells top-aligned.
+- **Charts:** native bars in one color (aubergine); percentages centered inside bars in white Tahoma 10pt regular; category labels as a column of left-aligned 10pt text boxes (native axis labels hidden), plot area pinned; value axis, gridlines, ticks, legend and chart title removed; a one-line subtitle above carrying metric and denominator ("% of respondents selecting, n=302, top 6 of 10 shown"). Gray chart subtitles are accepted. Competitor rows carry logos; the client's row sits in a dashed outline box.
 - **Callouts:** takeaway, discussion and context lines on the band fill, no outline, text inset about 0.12 inch, edges on the column grid; register labelled ("Recommendation:", "What this means for Huron:", "For discussion:"). Bold the key phrase and the number in aubergine.
 - **Stat callouts:** 26pt figure with the sentence at 10pt beside it.
 - **Next steps page:** numbered aubergine squares, bold lead phrase per step, owners bold in aubergine (client) or teal (Telesto), generous row spacing, no subtitle above.

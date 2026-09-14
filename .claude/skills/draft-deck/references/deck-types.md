@@ -1,6 +1,6 @@
 # Deck types
 
-Eight types. Each lists the elements that usually appear, the length such decks usually run, and a register. None of this is a fixed order or a limit: the storyline decides the order, the content decides the length (a minipack can run past 11 pages when the client should see it), and the consultant confirms both in text before any build. The gate reports length as information only, and the `--length` option passes a variant's range, such as `6-12` for a findings deck whose detail sits in a product. Paper (Telesto or client) sets colours, fonts and furniture only; density follows the type and the page's job.
+Eight types. Each lists the elements that usually appear, the length such decks usually run, and a register. None of this is a fixed order or a limit: the storyline decides the order, the content decides the length (a minipack can run past 11 pages when the client should see it), and the consultant confirms both in text before any build. The gate reports length as information only, and the `--length` option passes a variant's range, such as `6-12` for a findings deck whose detail sits in a product. Paper (Telesto or client) sets colors, fonts and furniture only; density follows the type and the page's job.
 
 ## Contents
 - Findings / survey report
@@ -46,7 +46,7 @@ Teaches a reader to operate a product or a workflow unassisted. It does not pitc
 - **Register:** plain instruction to the operator. Any gain claimed (time, iterations, cost) carries the measure that proves it, or is not claimed.
 
 ## Page patterns that recur across types
-Content structure only; colours, fonts and furniture come from the attached deck.
+Content structure only; colors, fonts and furniture come from the attached deck.
 - **Exec summary, numbered finding plus implication:** 4 to 6 items; item numbers carry through the deck as eyebrows on the detail pages.
 - **Chart plus takeaway rail:** main chart about two thirds width, two to four quantified takeaways beside it; chart subtitle carries metric and denominator.
 - **Dual-chart comparison:** two related questions side by side, each with its own denominator and footnote; a short callout strip quantifies the difference.

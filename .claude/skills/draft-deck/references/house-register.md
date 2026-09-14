@@ -33,7 +33,7 @@ Firm-wide rules for how Telesto writes a page, distilled from the edits consulta
 ### Numbers, sources, hygiene
 14. **Figures from 10 upward, words below; fiscal-year ranges as "FY24-25".** "Seventeen of the thirty-five markets" became "17 out of 35 markets". [evidence: 1 deck, 7 instances, 2026-09-12]
 15. **One source line per deck, stating what the source is, with no internal counts and no repository or dashboard names.** "310 coded quotes" and "Dashboard v27" were removed. [evidence: 1 deck, every page, 2026-09-12]
-16. **Symbols and quotes read without a key.** A legend symbol is explained in words; a quote gets curly marks, a bracketed referent for a bare pronoun, and an attribution with the organisation spelled out. [evidence: 1 deck, 2026-09-12]
+16. **Symbols and quotes read without a key.** A legend symbol is explained in words; a quote gets curly marks, a bracketed referent for a bare pronoun, and an attribution with the organization spelled out. [evidence: 1 deck, 2026-09-12]
 17. **Words the skill owner removes on sight:** earned, already, carry / carries, load-bearing, recast, hypothesis, "this confirms [client]". [evidence: owner ruling, 2026-09-12; "carry" confirmed by a consultant edit]
 
 ## Retired

@@ -18,14 +18,14 @@ Read at the Build stage and whenever a Revise adds a page or a new element. Univ
 4. **No hardcoded styling.** Colors and fonts come from the deck theme (scheme colors), not pasted hex values, wherever the format allows. A human opening the file must be able to edit any element the ordinary way.
 5. **Keep the deck's evidence furniture**: DRAFT stamp on working pages, copyright footer, page numbers, question-number footnotes, denominator lines.
 6. **One idea per page.** If a storyline line needs two ideas, it needs two pages.
-7. **Four homes for text** (`build-rules.md`, Tables and text boxes; client specifics in `clients/<client>.md`): action title, chart/table title, content text box, footnote. No small or grey text outside a footnote; few font treatments per page; one font size within any table. The typography floor above applies: 10pt minimum outside footnotes, italics and grey text only as rare exceptions. This rule overrides habits found in the attachment.
+7. **Four homes for text** (`build-rules.md`, Tables and text boxes; client specifics in `clients/<client>.md`): action title, chart/table title, content text box, footnote. No small or gray text outside a footnote; few font treatments per page; one font size within any table. The typography floor above applies: 10pt minimum outside footnotes, italics and gray text only as rare exceptions. This rule overrides habits found in the attachment.
 8. **Tables hold data, not prose pairs.** Deliverables→outcomes and similar paired lists are built as individual text boxes with drawn rules and numbered ovals. Multi-item cells become bullets, never semicolon runs. Where a column is headed Quotes, the cells hold verbatim quotes.
 9. **Preserve bold-lead runs when replacing text.** A find-and-replace spanning both runs collapses the paragraph into the bold run. Edit only the runs the match touches.
 10. **File integrity.** python-pptx API for slide content. Raw XML is permitted in exactly two places: the chart-cache patch, and `a:effectLst` (shadows) or `a:gradFill` (gradients) on shapes you created yourself. Never let two slides share an embedded OLE object: when duplicating a slide carrying hidden think-cell data, strip the object from the duplicate. Validate against the original file before handing off.
 11. **Leave the author / core-properties author field empty** on every generated file.
 12. Work with the pptx skill's mechanics for unpacking, duplicating (`add_slide.py`), editing slide XML, and validating. Content QA: no leftover placeholder text from the source slides, no orphaned visuals after text replacement.
 13. Apply `clients/<client>.md` for client-paper specifics (titles, tables, charts, callouts, footnotes). A freshly attached shipped deck beats it, except where the four-homes rule or the typography floor says otherwise.
-14. **Look at the render before handing off.** Convert to PDF with the pptx skill's soffice wrapper, rasterise with pdftoppm, and view every page. Overlaps, overflow, stranded titles and hanging single words on a last line are invisible in the XML and obvious in the image. Fix (widen the box, or reword a few words), re-render, then send.
+14. **Look at the render before handing off.** Convert to PDF with the pptx skill's soffice wrapper, rasterize with pdftoppm, and view every page. Overlaps, overflow, stranded titles and hanging single words on a last line are invisible in the XML and obvious in the image. Fix (widen the box, or reword a few words), re-render, then send.
 
 
 ## Construction conventions (house, every paper)
@@ -38,7 +38,7 @@ CEO rulings. They override habits found in an attachment.
 - **Bar charts keep the Y axis line.** The category axis is drawn as a thin ink line with no tick marks and no native labels; the label column to its left carries the attributes. Data labels sit outside the bar end.
 - **Chart subtitles fit on one line under the section rule.** The metric-and-denominator line ("% of buyers · Q2 and Q23 · n=302") must not spill below the rule. When it does, either give the box two lines and make sure the second line holds more than one word, or rephrase to fit one line. Never leave a single orphan word on a second line anywhere.
 - **Conclusion and discussion pages read left against right.** "What the findings add up to" on the left, "For discussion" (or "Implications", "Next") on the right, each under its own bold subtitle and rule, not stacked.
-- **Charts are native and editable, and match the think-cell look.** think-cell was the house tool and remains available but is not required. A native chart must keep its data editable (never a picture) and match the established format: category labels as a column of left-aligned text boxes sharing one left edge, data labels outside the bars, one series colour with a muted colour for non-focus series, no gridlines, no legend where one series is shown, source and denominator line beneath. Where a chart's data lives in an existing think-cell object, patch its cache; do not rebuild it.
+- **Charts are native and editable, and match the think-cell look.** think-cell was the house tool and remains available but is not required. A native chart must keep its data editable (never a picture) and match the established format: category labels as a column of left-aligned text boxes sharing one left edge, data labels outside the bars, one series color with a muted color for non-focus series, no gridlines, no legend where one series is shown, source and denominator line beneath. Where a chart's data lives in an existing think-cell object, patch its cache; do not rebuild it.
 
 
 ## Concept pages get real visual grammar
@@ -60,7 +60,7 @@ The 2.0 house paper is dark and built for screen. It is the default for Telesto-
 
 **Eyebrow.** A numbered eyebrow above the title is the storyline spine: `01 THE STAKES`, `02 THE RESPONSE`, or `01`, `02` on finding pages. The manual's variant is a multi-segment tracker with the active segment lit in teal and the rest muted; client decks use the single numbered eyebrow.
 
-**Analytical pages on dark paper.** Bars single-hue teal, with muted grey for non-focus series and a lighter teal for the highlighted item. Data labels white, outside the segment. Heatmaps in teal tints from ground to full teal, values white. Tables built from shapes, bucket labels in teal-tinted feature boxes to the left of the rows, one font size within a table. Source line and n under every exhibit, full size, white or muted; never small grey.
+**Analytical pages on dark paper.** Bars single-hue teal, with muted gray for non-focus series and a lighter teal for the highlighted item. Data labels white, outside the segment. Heatmaps in teal tints from ground to full teal, values white. Tables built from shapes, bucket labels in teal-tinted feature boxes to the left of the rows, one font size within a table. Source line and n under every exhibit, full size, white or muted; never small gray.
 
 ## Slide density
 
@@ -81,6 +81,6 @@ The convention (numbered superscripts, question wording verbatim, "Source:" for 
 ## Construction lessons from live revisions
 - **The eyebrow number is a finding number, not a page number.** Two pages that support finding 1 both carry "1". Never renumber to make pages consecutive.
 - **Appendix and data pages stay as they are.** Crosstabs, backup exhibits and methodology pages are not restyled, resized or re-fonted by the AI phase or by the gate; smaller type is allowed there. Only hygiene (author, notes, metadata) applies to the whole file.
-- **When a text run is reused, reset its formatting.** A first run inherited from an old paragraph can carry a hyperlink, an underline or a colour; strip them and set colour, size and weight explicitly.
+- **When a text run is reused, reset its formatting.** A first run inherited from an old paragraph can carry a hyperlink, an underline or a color; strip them and set color, size and weight explicitly.
 - **Use the client's plain layouts by default.** Side-panel or numbered layout variants are for varying rhythm on low-text pages; the client file says which.
 - **Look at the page before handing it over.** XML estimates of overflow and overlap are not enough: render (contact sheets, changed pages only on an iteration) and look.

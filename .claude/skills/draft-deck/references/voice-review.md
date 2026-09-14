@@ -4,7 +4,7 @@ Read at the handoff of a Build or a full rewrite, and whenever a Revise rewrites
 
 This pass hunts classes of pattern that instruction-tuned models produce at above-human rates, with the research that identified them. It is not a register of house preferences: a single reviewer edit never becomes a rule here. House and client wording preferences live in the house register and the client files (see SKILL.md, References), and reach this pass only as the word list below, which is reviewed annually and capped.
 
-Draft first, then review against the named patterns below. A single up-front instruction to "not sound like AI" does not hold: these patterns are optimised into the model and regenerate under pressure, so they have to be hunted deliberately. (Juzek and Ward, COLING 2025, traced them to instruction tuning rather than training data.)
+Draft first, then review against the named patterns below. A single up-front instruction to "not sound like AI" does not hold: these patterns are optimized into the model and regenerate under pressure, so they have to be hunted deliberately. (Juzek and Ward, COLING 2025, traced them to instruction tuning rather than training data.)
 
 Report what you changed. Never invent or alter a fact while de-slopping; a voice edit that moves a number is worse than the slop it replaced. Do not score the draft for "how AI it sounds", and never target an AI-detector result: detectors have real error rates, and the objective is that an experienced partner reads the page as competent human work.
 

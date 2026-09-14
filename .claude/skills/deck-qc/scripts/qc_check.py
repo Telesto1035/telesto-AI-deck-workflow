@@ -539,12 +539,12 @@ class Deck:
         return bool(FURNITURE_NAME_RE.search(si.name or ""))
 
     def allowed_palette(self):
-        """(colours, client) where colours is the rules palette plus the active client palette, if any."""
+        """(colors, client) where colors is the rules palette plus the active client palette, if any."""
         palette = set(c.upper() for c in self.rules.get("palette", []))
         active = self.rules.get("active_client_palette")
         client = (self.rules.get("client_palettes") or {}).get(active) if active else None
         if isinstance(client, dict):
-            palette |= set(c.upper() for c in client.get("colours", []))
+            palette |= set(c.upper() for c in client.get("colors", []))
         elif isinstance(client, list):
             palette |= set(c.upper() for c in client)
         return palette, client
@@ -700,13 +700,13 @@ def check_grey_text(d: Deck):
     severity = "warn" if total > threshold else "info"
     for sno, si, hits in found:
         d.add(
-            id="grey-text",
+            id="gray-text",
             severity=severity,
             slide=sno,
             shape=si.name,
             shape_id=si.shape_id,
             text=hits[0].para_text.strip()[:120],
-            detail="%d grey run%s outside a footnote home in a colour outside the palette, %d in the deck (threshold %d); title, body or footnote should carry it" % (
+            detail="%d gray run%s outside a footnote home in a color outside the palette, %d in the deck (threshold %d); title, body or footnote should carry it" % (
                 len(hits), "s" if len(hits) != 1 else "", total, threshold
             ),
             fix="reword",
@@ -1193,7 +1193,7 @@ def check_element_consistency(d: Deck):
                 ln = sh._element.find(".//" + q("a:ln"))
                 clr = ln.find(".//" + q("a:srgbClr")) if ln is not None else None
                 val = (clr.get("val") or "").upper() if clr is not None else "theme"
-                tallies.setdefault("rule line colour", {}).setdefault(val, set()).add(sno)
+                tallies.setdefault("rule line color", {}).setdefault(val, set()).add(sno)
                 continue
             if d.is_text_shape(si) and indicator_box(si):
                 fill = sh._element.find(q("p:spPr") + "/" + q("a:solidFill") + "/" + q("a:srgbClr"))
@@ -1212,7 +1212,7 @@ def check_element_consistency(d: Deck):
             rPr = first.find(q("a:rPr"))
             clr = rPr.find(q("a:solidFill") + "/" + q("a:srgbClr")) if rPr is not None else None
             val = (clr.get("val") or "").upper() if clr is not None else "inherit"
-            tallies.setdefault(name + " colour", {}).setdefault(val, set()).add(sno)
+            tallies.setdefault(name + " color", {}).setdefault(val, set()).add(sno)
     for cls, vals in tallies.items():
         if len(vals) < 2:
             continue
@@ -1931,7 +1931,7 @@ def check_style_drift(d: Deck):
         if offenders:
             d.add(
                 id="style-drift", severity="warn", slide=sno, shape=None, shape_id=None,
-                text="", detail="fill colour(s) outside theme palette (+/-%d per channel): %s" % (
+                text="", detail="fill color(s) outside theme palette (+/-%d per channel): %s" % (
                     tol, ", ".join("%s x%d" % kv for kv in sorted(offenders.items()))
                 ),
                 fix="none",
