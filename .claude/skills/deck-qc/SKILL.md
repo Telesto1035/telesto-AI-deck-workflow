@@ -35,6 +35,8 @@ Exit 1 means blocking findings; fix them (or apply `--fix-safe` and fix the rest
 
 If the deck type is not in a brief, infer it from the file (cover, page count, presence of options and prices, presence of methodology and footnotes) and state the inference in the report header. Ask only if two profiles fit equally.
 
+**Source data for quant decks (added 2026-09-13).** Ask for the raw survey or data file (xlsx or csv, respondent-level or the crosstab workbook) before the PDF crosstabs; a PDF needs an extraction step and can drop a row or a low-base marker. Accept the PDF if that is all the consultant has, say so once, and note in the report header which form was used. Never ask twice for the same deck.
+
 ## Mode profiles, so a proposal is not faulted for lacking charts
 
 Load the profile for the deck type. It sets what is required, what is not applicable, and expected length. Anything not applicable is reported N/A and never counted against the deck.

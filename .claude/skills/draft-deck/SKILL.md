@@ -46,6 +46,8 @@ There is no dot-dash step. The storyline comes from the inputs and you produce t
 
 Ask only what the inputs do not answer, in one round, and never ask for something the brief states.
 
+**Source data for quant decks (added 2026-09-13).** Ask for the raw survey or data file (xlsx or csv, respondent-level or the crosstab workbook) before the PDF crosstabs; a PDF needs an extraction step and can drop a row or a low-base marker. Accept the PDF if that is all the consultant has, say so once, and note in the report header which form was used. Never ask twice for the same deck.
+
 ## Modes
 
 ### Build
