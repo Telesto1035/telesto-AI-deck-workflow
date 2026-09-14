@@ -117,3 +117,16 @@ The consultant kept the storyline, the four findings and every recommendation ba
 - Two pages may share an eyebrow in any section, not only Part 2.
 - Section summary titles read as the section's question ("What the findings mean for Huron's AI report and marketing campaign", "Implications for Huron's digital and AI business"); the "Part 1 / Part 2" label is not carried on the slide.
 - Segment lines end in what the segment will want to see, in plain words, with less data than the draft carried.
+
+## Lessons from the first live Revise (moved from SKILL.md 2026-09-13, text unchanged) (EDR AI minipack, 2026-09-12)
+
+- **Use the client's plain layouts.** On Huron paper the team uses two or three: the cover ("Cover Option 1"), the white content page ("Content Header Only", title across the top, footer and page number placeholders), and the divider ("Divider Option 1"). Layouts whose name starts with a number ("1_Content Header Only", "3_…", "4_…") carry a coloured side panel and are for select pages only; a finding page never goes on one. Take footer and page-number placeholders from the layout, never by copying them from another slide.
+- **Look at the page before handing it over, cheaply.** Read the contact sheets `render_check.py` produces (nine pages per image), not one image per page; on an iteration render only the changed pages. Iterations patch the saved file with a short script; the full build script is written once. (Token rules in deck-qc, Token economy.)
+- **Look at the page before handing it over.** Estimates of overflow and overlap from the XML are not enough. On Windows, `deck-qc/scripts/render_check.py` exports each body page to PNG through PowerPoint and lists every text frame whose text is taller than its box; look at the PNGs. Elsewhere, soffice and pdftoppm. A page is not built until it has been seen.
+- **One implication band per page.** Never an implication line under every stat or bullet, even when a comment asks for it; propose the single closing band ("Recommendation:" or "What this means for [client]:") as the alternative and build that on approval.
+- **The eyebrow number is a finding number, not a page number.** Two pages that both support finding 1 both carry "1". Never renumber to make pages consecutive.
+- **Chart attribute labels are black.** The category label column, the data labels and the segment headers are ink; aubergine and the client accent are for the highlighted bar and for bold lead-ins only.
+- **Do not write "the good news" or "the bad news".** State the positive fact under a neutral head ("Where Huron already stands") and let the number carry it.
+- **Appendix and data pages stay as they are.** Crosstabs, backup exhibits and methodology pages are not restyled, resized or re-fonted by the AI phase or by the gate; smaller type is allowed there. Only hygiene (author, notes, metadata) applies to the whole file.
+- **When a text run is reused, reset its formatting.** A first run inherited from an old paragraph can carry a hyperlink, an underline or a colour; strip them and set colour, size and weight explicitly, or the new text comes out pink and underlined.
+
