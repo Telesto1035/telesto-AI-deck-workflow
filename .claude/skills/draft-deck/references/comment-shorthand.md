@@ -1,31 +1,34 @@
-# Comment shorthand: what senior reviewers mean
+# Comment shorthand: phrases that need a pop-up, never an automatic reading
 
-Partners and clients comment in shorthand. Most of these phrases are one instruction in different clothes: rewrite the line so it is grounded in the client's context and says the higher-level point, not the observation. Read this table before classifying comments in Revise. A phrase listed here is not "ambiguous" in the sense of needing a question; it has a default reading and a default action. Ask only when the row says so, or when the same phrase sits on a page where two readings lead to different pages.
+Partners and clients comment in shorthand. The phrases below are real ones that recur, and each can be read more than one way. The rule is fixed: when Revise meets one of these, it never chooses a reading. It raises an AskUserQuestion pop-up for that page, named by number and title, quoting the comment and the line or element it sits on, and offers two or three readings. Each reading carries the concrete change it would make, so the consultant is choosing between finished proposals, not between labels. "Leave as is" is always an option, and the free-text path takes the consultant's own words.
 
-Every rewrite made under this table is a SUGGEST: quote the current line, propose the new one, and let the consultant choose. The proposal is the work; the choice stays theirs.
+This is the case the "Ask" side of Ask vs. do was written for. Nothing in this table is executed without the answer, including on phrases that look mechanical ("fix", "rewrite").
 
-## The table
+## The phrases and the readings to offer
 
-| Comment | Usual meaning | Default action | Ask when |
-|---|---|---|---|
-| "Can we make this more strategic?" | The line reports a data point; it should state what the client should conclude or do about its priority | Rewrite as an implication for the named client priority (from the brief or audience brief); the number moves to the support line | No brief and no audience brief exist: propose two readings |
-| "What's the so-what?" | The page has an exhibit and a title but no consequence | Add or rewrite the recommendation band; title becomes the conclusion, not the description | The consequence depends on a client decision the deck has not recorded |
-| "Roll this up to a higher level" / "too in the weeds" | Too many sub-points or figures; the reader wants the pattern | Collapse to one claim plus at most two supporting figures; detail moves to a second page or the appendix | Never; propose the collapsed version |
-| "Sharpen the language" / "tighten" | Hedges, passive voice, doubled nouns, a title over two lines | Apply the Craft rules in language-rules.md: verbs, one clause, no hedge unless the evidence demands it | Never |
-| "Make this pop" / "punchier" | The claim is buried mid-sentence or the page has no visual hierarchy | Lead with the claim; bold the lead-in; one exhibit; check subtitle and band conventions | The consultant may mean design (colour, size): if the text already leads with the claim, ask |
-| "Not sure this is right" / "check this" | A number, attribution or inference the reviewer doubts | Trace to the crosstab or transcript; report the source and the exact figure; fix if wrong | The source is not attached: ask for it once |
-| "Feels generic" / "could be any client" | The line would read the same for a competitor | Anchor it in the client's position: their service line, market, precedent, the stakeholder's remit | No client context available beyond the deck |
-| "Too negative" / "softer" | Burning-platform tone on a finding page | Pair the finding with the opportunity it opens (house rule: negative findings carry their opportunity) | Never |
-| "Too soft" / "say it" | Hedged conclusion where the data is clear | State the finding plainly; keep the qualifier only where the base is low | Never |
-| "Simplify" | Word count or exhibit density | Cut to the word-count warn line; one message per page | Never |
-| "Where does this come from?" | Missing footnote or source | Footnote with question wording verbatim or "Source:" for external material | Never |
-| "Flow doesn't work" / "order" | The title chain does not read as one argument | Read the titles alone as a paragraph; propose a reorder in text before touching pages | Always, in text, before any move |
-| "Who is this for?" | The page does not speak to the primary stakeholder | Rewrite the title and band for the primary stakeholder named in the audience brief | No audience brief: offer to run stakeholder-context first |
-| "Can we say more here?" | The exhibit supports a claim the page does not make | Look for the unclaimed pattern in the data; propose one more line, never a new page unless asked | Never |
-| "Cut" / "do we need this?" | The page or line does not serve the storyline | Propose the cut and where any surviving figure moves | Never; the consultant decides on the proposal |
+| Comment | Readings to offer (each with the proposed change spelled out) | Note |
+|---|---|---|
+| "Can we make this more strategic?" | (a) State the implication for the client's named priority, number moved to the support line. (b) Lift the claim one level: from this question to the pattern across questions. (c) Connect it to the client's own offer or position (from the deck or the audience brief). | Without a brief or audience brief, readings (a) and (c) are weaker; say so in the pop-up. |
+| "What's the so-what?" | (a) Add a recommendation band drawing the consequence. (b) Rewrite the title as the conclusion, exhibit unchanged. (c) Both. | Quote the exhibit's finding in the pop-up so the consultant sees what the consequence would rest on. |
+| "Roll this up" / "higher level" / "in the weeds" | (a) Collapse to one claim and two supporting figures, rest to the appendix. (b) Keep the figures, add a summary line above them. (c) Split into a summary page and a detail page. | Show the resulting word count for (a). |
+| "Sharpen" / "tighten" | (a) Cut hedges and passive voice, meaning unchanged. (b) Shorten to one clause, drop the qualifier. (c) Replace the abstract noun with the concrete finding. | Quote all three rewrites in full. |
+| "Make this pop" / "punchier" | (a) Text: lead with the claim, bold lead-in. (b) Visual: one element emphasised, and name which (band colour, larger figure, callout). (c) Structure: one exhibit instead of two. | Even "visual" is open (colour, size, weight, a box); the pop-up names one concrete visual change per option and offers free text for another. Never add effects (shadow, gradient, outline) unless named. |
+| "This doesn't work" / "not working" | (a) The claim: rewrite the title (proposed line). (b) The exhibit: replace or re-cut (proposed cut). (c) The page: cut it, surviving figure moved (where). | Three different pages result; the consultant must pick. |
+| "Fix" / "fix this" | (a) The number or attribution, traced to source (state what the source says). (b) The wording (proposed line). (c) The layout (what moves). | A one-word comment is the most ambiguous kind; the pop-up quotes the whole element it sits on. |
+| "Rewrite" | (a) Same point, plainer words. (b) Same evidence, higher-level point. (c) Reframed for the primary stakeholder. | Three full rewrites, not descriptions. |
+| "Not sure this is right" / "check this" | (a) Number traced: state source and exact figure, then correct or confirm. (b) The inference: propose the narrower claim the data supports. | Always trace first, then ask; if the source is not attached, the pop-up asks for it. |
+| "Feels generic" / "could be any client" | (a) Anchor in the client's service line or offer. (b) Anchor in the stakeholder's remit. (c) Anchor in the client's precedent from prior decks. | Each option names the anchor it would use. |
+| "Too negative" / "softer" | (a) Pair the finding with its opportunity. (b) Reword the finding without the burning-platform framing. (c) Move the finding down the page, opportunity first. | |
+| "Too soft" / "just say it" | (a) State the finding plainly. (b) State it and keep the low-base qualifier as a footnote. | |
+| "Simplify" | (a) Cut words to the warn line, one message. (b) Cut one exhibit. (c) Cut a section of the page to the appendix. | |
+| "Where does this come from?" | (a) Footnote with the question wording verbatim. (b) "Source:" line for external material. (c) The figure cannot be traced: flag it. | Mostly (a); still asked, because the consultant may know the source the deck does not carry. |
+| "Flow doesn't work" / "order" | Reorder proposals in text first, never by pop-up alone: two candidate orders as title chains, then the pop-up to choose. | Storyline change: version bump applies. |
+| "Who is this for?" | (a) Rewrite for the primary stakeholder named in the audience brief. (b) No brief: offer to run stakeholder-context before rewriting. (c) Add the audience to the title's frame. | |
+| "Can we say more here?" | (a) One more line from an unclaimed pattern in the exhibit (quoted). (b) A second exhibit from the source. (c) A new page. | (c) is offered but marked as a length change. |
+| "Cut" / "do we need this?" | (a) Cut the page, surviving figure to (named page). (b) Cut the line only. (c) Keep, and state why in one line for the consultant to weigh. | |
 
 ## How the table is used
 
-- Revise reads a comment, matches it here, then writes the SUGGEST with the row's default action applied. The comment text is quoted in the proposal so the consultant sees which reading was taken.
-- The evaluator uses the same register when it phrases its own SUGGEST items, so an AI suggestion and a resolved human comment read alike.
-- Learn appends a row whenever a shipped deck shows a comment phrase that recurred or was read wrongly; the before-and-after that motivated it goes in the row's meaning column. Nothing is added without approval.
+- **Revise:** match the comment, build the pop-up with the readings and their concrete changes, ask in slide order with the other SUGGEST items, apply only what the consultant chooses. Log the choice in the revision ledger as "judgment, pop-up".
+- **Evaluator:** phrases its own SUGGEST items in the same shape, current line and proposed line, so an AI suggestion and a resolved human comment read alike. It never applies them.
+- **Learn:** when a shipped deck shows a phrase that is not in the table, or one that was read a way not listed, propose a row or a new reading with the before and after that motivated it. Nothing is added without approval.

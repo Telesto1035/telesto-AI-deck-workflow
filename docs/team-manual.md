@@ -21,7 +21,7 @@ Two things. First, every draft is written for a named room: attach the roster an
 
 ## Decks that arrive mid-stream
 
-A human-built deck can enter at Revise with no brief. draft-deck offers once to run stakeholder-context if you have the roster; say yes or no and it proceeds. Reviewer shorthand ("more strategic", "so what", "roll up", "sharpen") is read from `draft-deck/references/comment-shorthand.md` and resolved as proposals you accept or reject.
+A human-built deck can enter at Revise with no brief. draft-deck offers once to run stakeholder-context if you have the roster; say yes or no and it proceeds. Reviewer shorthand ("more strategic", "so what", "roll up", "sharpen", "fix", "this doesn't work") is never interpreted on its own: each raises a pop-up with two or three readings and the change each would make, and only your choice is applied. The list lives in `draft-deck/references/comment-shorthand.md`.
 
 ## Never remember the next step
 

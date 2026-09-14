@@ -56,7 +56,7 @@ An existing deck plus partner comments (in-file, email, or a list). A deck can e
 
 **Entering mid-stream (added 2026-09-13).** Most decks will arrive here human-built for some time. On entry, if no audience brief is attached and none sits beside the deck, say so in one line and offer, in text, to run `stakeholder-context` first if a roster or meeting invite is available; then proceed either way. Offer it once per deck, not per round. A brief raises the quality of every SUGGEST written afterwards, because "more strategic" and "so what" need a named stakeholder to aim at.
 
-**Comment shorthand (added 2026-09-13).** Before classifying comments, read `references/comment-shorthand.md`. "More strategic", "what's the so-what", "roll this up", "sharpen", "make it pop" and their kin are not ambiguous; they have a default reading and a default action, and they resolve as SUGGEST items that quote the comment and the proposed line. Ask only where the table says so.
+**Comment shorthand (added 2026-09-13).** Before classifying comments, read `references/comment-shorthand.md`. "More strategic", "what's the so-what", "roll this up", "sharpen", "make it pop", "this doesn't work", "fix", "rewrite" and their kin can each be read more than one way. They are never interpreted automatically, not even the ones that look mechanical. Each raises an AskUserQuestion pop-up for its page, quoting the comment and the element it sits on, with two or three readings and the concrete change each would make; "leave as is" and free text are always offered. Only the chosen reading is applied.
 
 ### Rewrite
 Titles, an exec summary block, a takeaway rail, or any slide text, no file touched. Full language ruleset; two variants with a recommendation where the framing is a judgment call.
@@ -321,7 +321,7 @@ Every Build ends with two things alongside the file:
 - Scatter small or grey context text outside the four text homes, set any text below 10pt outside a footnote, or use italics as a style.
 - Stamp one shadow, one border and one radius on every block.
 - Build narrator-dependent speaking slides (an image plus a phrase). Presentation decks are in scope; every page still passes the standalone test.
-- Guess at an ambiguous senior comment (shorthand listed in `references/comment-shorthand.md` is not ambiguous; it has a default reading).
+- Guess at an ambiguous senior comment; the shorthand in `references/comment-shorthand.md` always goes to a pop-up with readings.
 - Make legal or regulatory judgments the dataset does not support.
 - Name the client stakeholder on a slide, whether from the brief or from an audience brief.
 - Chase an AI-detector score.
