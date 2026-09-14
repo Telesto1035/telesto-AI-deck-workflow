@@ -73,7 +73,7 @@ The shipped deck plus the last AI draft it came from. Diff title by title and pa
 
 ## Language rules (apply to every title, takeaway, and body line)
 
-Full rules and examples: `references/language-rules.md`. Formatting conventions by paper: `references/deck-craft.md`. The non-negotiables:
+Principles: `references/language-rules.md`; learned rules: `references/house-register.md`; client formatting and voice: `references/clients/<client>.md`. The non-negotiables:
 
 1. **Action titles are full-sentence takeaways**, verb-led, specific, roughly 8–20 words. A reader who reads only the titles gets the whole argument (the "T" test).
 2. **No superlatives or vague intensifiers.** No "significant", "massive", "clear winner", "game-changing". If it matters, quantify it.
