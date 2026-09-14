@@ -1,0 +1,73 @@
+"""render_check must never close a PowerPoint the consultant has open.
+
+PowerPoint is a single-instance COM server: `New-Object -ComObject PowerPoint.Application`
+attaches to a running instance rather than starting a private one, so an unconditional
+`$app.Quit()` in the teardown closes the consultant's windows and discards unsaved work.
+A clean COM quit also deletes the AutoRecover files, so nothing is recoverable afterwards.
+These tests pin the two guards that prevent it.
+"""
+import re
+import sys
+from pathlib import Path
+
+import pytest
+
+HERE = Path(__file__).resolve().parent
+SCRIPTS = HERE.parent / ".claude" / "skills" / "deck-qc" / "scripts"
+sys.path.insert(0, str(SCRIPTS))
+
+import render_check  # noqa: E402
+
+
+def rendered_script() -> str:
+    return render_check.PS_TEMPLATE.format(slides="", scale=1200, all="$false")
+
+
+def test_busy_guard_precedes_any_com_object():
+    """The running-PowerPoint check must come before the first COM call, or it is useless."""
+    script = rendered_script()
+    guard = script.find("POWERPNT")
+    com = script.find("New-Object -ComObject PowerPoint.Application")
+    assert guard != -1, "no POWERPNT process guard in the PowerShell template"
+    assert com != -1, "template no longer creates the COM object; update this test"
+    assert guard < com, "the POWERPNT guard must run before the COM object is created"
+
+
+def test_busy_guard_exits_without_rendering():
+    script = rendered_script()
+    line = next(ln for ln in script.splitlines() if "POWERPNT" in ln)
+    assert "PPTBUSY" in line
+    assert "exit 2" in line, "a busy skip must exit 2, the gate's non-blocking skip code"
+
+
+def test_quit_is_conditional_on_an_empty_instance():
+    """Quit only when no presentation is left open: the consultant may have launched
+    PowerPoint into our instance while the export was running."""
+    script = rendered_script()
+    assert "$app.Quit()" in script
+    quit_line = next(ln for ln in script.splitlines() if "$app.Quit()" in ln)
+    assert "$others -eq 0" in quit_line, "Quit() must be guarded by an empty-instance check"
+    assert "Presentations.Count" in script, "nothing establishes how many decks are open"
+
+
+def test_no_unconditional_quit_anywhere():
+    script = rendered_script()
+    for ln in script.splitlines():
+        if "$app.Quit()" not in ln:
+            continue
+        assert re.search(r"if\s*\(", ln), "found an unguarded $app.Quit(): %r" % ln
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="the busy path is Windows-only")
+def test_busy_skip_returns_two(monkeypatch, tmp_path):
+    """When the shell reports PPTBUSY, main() reports a skip rather than a pass or a block."""
+    class FakeProc:
+        returncode = 2
+        stdout = "PPTBUSY\n"
+        stderr = ""
+
+    monkeypatch.setattr(render_check.subprocess, "run", lambda *a, **k: FakeProc())
+    deck = tmp_path / "deck.pptx"
+    deck.write_bytes(b"not a real pptx; the shell call is stubbed")
+    rc = render_check.main([str(deck), "--out", str(tmp_path / "out"), "--no-sheet"])
+    assert rc == 2, "a busy skip must not read as a clean render (0) or an overflow block (1)"

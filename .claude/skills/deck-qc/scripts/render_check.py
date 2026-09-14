@@ -28,11 +28,17 @@ from pathlib import Path
 
 # Paths reach PowerShell through environment variables, never by string interpolation: a deck named
 # "Q4 $ale$.pptx" or one with a quote in it must not break or run as code.
+#
+# PowerPoint is a single-instance COM server. New-Object does not start a private copy: it attaches
+# to the PowerPoint the consultant already has open, and Quit() then closes their windows and loses
+# whatever they had not saved. So the render never runs while PowerPoint is in use; it reports
+# PPTBUSY and exits 2, which the gate treats as a skip and retries on the next write.
 PS_TEMPLATE = r'''
 $ErrorActionPreference = "Stop"
 $p = $env:QC_RENDER_DECK
 $out = $env:QC_RENDER_OUT
 New-Item -ItemType Directory -Force $out | Out-Null
+if (Get-Process -Name POWERPNT -ErrorAction SilentlyContinue) {{ Write-Output "PPTBUSY"; exit 2 }}
 try {{ $app = New-Object -ComObject PowerPoint.Application }} catch {{ Write-Output "NOPPT"; exit 2 }}
 $pres = $null
 try {{
@@ -75,7 +81,11 @@ foreach ($i in $wanted) {{
 Write-Output ("OVERFLOWS {{0}}" -f $over)
 }} finally {{
   if ($pres -ne $null) {{ try {{ $pres.Close() }} catch {{}} }}
-  try {{ $app.Quit() }} catch {{}}
+  # Quit only if nothing else is open in this instance: the consultant may have launched
+  # PowerPoint while the render was running, and COM would have handed them our instance.
+  $others = 1
+  try {{ $others = $app.Presentations.Count }} catch {{}}
+  if ($others -eq 0) {{ try {{ $app.Quit() }} catch {{}} }}
 }}
 '''
 
@@ -118,6 +128,10 @@ def main(argv=None) -> int:
     print(text)
     if proc.returncode != 0 and proc.stderr.strip():
         print(proc.stderr.strip()[:800])
+    if "PPTBUSY" in text:
+        print("render skipped: PowerPoint is open. Exporting would attach to that instance and "
+              "closing it would lose unsaved work. Close PowerPoint and re-run.")
+        return 2
     if proc.returncode == 2 or "NOPPT" in text:
         return 2
     if not args.no_sheet:

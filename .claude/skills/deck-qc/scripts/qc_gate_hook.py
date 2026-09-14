@@ -241,6 +241,9 @@ def gate(paths: list[Path], session_id: str, out) -> int:
             elif r.returncode == 0:
                 rendered[str(p)] = stamp
                 out("qc gate: rendered %s, no text overflow; PNGs in %s" % (p.name, p.parent / ("render_" + p.stem)))
+            elif "PPTBUSY" in r.stdout:
+                out("qc gate: render check skipped for %s, PowerPoint is open; close it and the "
+                    "next write will render" % p.name)
     for p in paths:
         if p in blocked:
             gated.pop(str(p), None)  # always re-gate a file that is still blocking
