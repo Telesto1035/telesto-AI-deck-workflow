@@ -270,7 +270,7 @@ A body page carries at most 200 words of title, body and chart labels before the
 
 ## Match the deck, not your constants (added 2026-09-13)
 
-When adding a page or an element to an existing deck, copy the style of the nearest element of the same kind already in the deck: section subtitle colour and size, the colour and weight of the rule line beneath it, footnote colour and size, chart label colour, band fill and lead-in colour. Read them from the file, never from a palette constant. A page that is right by the house palette but differs from the pages beside it reads as built by another hand, and the consultant spends the review recolouring lines. The gate lists minority colours per element class as `element-consistency`; the render step then looks at the pages side by side.
+When adding a page or an element to an existing deck, copy the style of the nearest element of the same kind already in the deck: section subtitle colour and size, the colour and weight of the rule line beneath it, footnote colour and size, chart label colour, band fill and lead-in colour. Read them from the file, never from a palette constant. A page that is right by the house palette but differs from the pages beside it reads as built by another hand, and the consultant spends the review recolouring lines. Elements that recur across pages (numbered indicator boxes, section subtitles, rule lines, callout boxes, bands) match each other; the deck may use two or three line colours, but a fourth on one page is a defect. The gate lists rare colours per element class as `element-consistency`; the render step then looks at the pages side by side.
 
 ## Construction conventions (house, every paper)
 
@@ -324,4 +324,4 @@ Every Build ends with two things alongside the file:
 
 ## After saving (added 2026-09-13)
 
-Every build or revision ends by invoking the `deck-chain` skill: it runs the gate and the render, then asks by pop-up whether to run the evaluator and resolve its SUGGEST items. The consultant never has to remember to prompt the evaluator.
+Every build or revision ends by running the deck-qc gate and the render on the saved file and fixing what they find. The closing message then names the next stage in one line: "Gate and render pass. Next: run the evaluator. Say 'run the evaluator on FILE'." The consultant should never have to remember what comes after a save; the reminder carries it (stage list in deck-qc, "The chain").

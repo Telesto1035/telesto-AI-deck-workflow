@@ -13,6 +13,8 @@ What you catch well: numbers that do not reconcile across pages or to source, mi
 
 ## Run the code gate first (added 2026-09-12)
 
+The `element-consistency` warning lists a colour that an element class (section subtitle, footnote, chart label, band, callout, rule line, numbered indicator box) carries on only one or two pages while the rest of the deck uses another. Two or three line colours across a deck are normal; a fourth on a single page is the flag. Fix by copying the style from a sibling page.
+
 This skill folder carries `scripts/qc_check.py`, `scripts/qc_rules.json`, `scripts/pptx_comments.py` (lists the reviewer comments in a deck with slide, author and status; `--resolve` marks them resolved) and `scripts/render_check.py`. Paths below are relative to the skill folder; in Cowork the folder is wherever the account stored the skill, so locate `qc_check.py` first and, if the account copy has no `scripts` folder, say so in the report header and run the same checks by hand from the list below. Before any judgment, run the gate on the file and paste its table into the report:
 
 ```
@@ -202,6 +204,10 @@ Pages after a divider titled Appendix, Crosstabs or Backup are data: crosstabs, 
 
 Where PowerPoint is installed, `scripts/render_check.py DECK.pptx` exports the body pages to PNG through PowerPoint and lists every text frame whose laid-out text is taller than its box. Look at the PNGs before reporting; the PowerPoint render is the authoritative one, so a LibreOffice artifact is not a concern on this route.
 
+
+## The chain, and the reminder at the end of every stage (added 2026-09-13)
+
+A deck moves through five stages in order: gate (`qc_check.py`, FIX items executed as an iteration `_vN_k`), render (`render_check.py`, every body page looked at for overflow, collisions and pages whose colours or lines differ from their neighbours), evaluator (the `deck-evaluator` subagent with crosstabs and audience brief attached; FIX items executed), SUGGEST resolution (pop-ups in slide order, one page per question, "leave as drafted" always offered), ledger and hand-back. Every stage ends with one line in text naming the next stage and the prompt that starts it, for example: "Gate and render pass, 0 blocks. Next: run the evaluator. Say 'run the evaluator on FILE' or 'skip to hand-back'." The consultant never has to remember the order; the reminder carries it. Never start the evaluator or apply SUGGEST items without that prompt.
 
 ## Attribute wording check (added 2026-09-13)
 

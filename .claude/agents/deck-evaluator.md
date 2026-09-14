@@ -21,3 +21,6 @@ SUGGEST items are listed in slide order, and every item names the page by number
 
 
 When source data is attached, check every attribute label and quoted option on the body pages against the questionnaire wording and list any shortening as FIX (fits) or SUGGEST (does not fit), with the verbatim label. Findings decks field questions on how attributes were defined; a paraphrase is a defect, not a style choice.
+
+
+Close the report with one line naming the next stage: "Next: execute the FIX list, then resolve the SUGGEST items by pop-up in slide order. Say 'apply the fixes and go through the suggestions'."

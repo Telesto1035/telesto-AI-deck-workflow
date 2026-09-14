@@ -28,6 +28,7 @@ from typing import Iterable, Optional
 from lxml import etree
 from pptx import Presentation
 from pptx.enum.shapes import MSO_SHAPE_TYPE, PP_PLACEHOLDER
+from pptx.util import Inches
 from pptx.opc.constants import RELATIONSHIP_TYPE as RT
 
 NS = {
@@ -1176,6 +1177,11 @@ def check_element_consistency(d: Deck):
     line beneath it, footnote colour, chart label colour, band colour. A minority value on a few pages is
     the signature of pages built by a different hand (or a script with its own palette constants)."""
     classes = {"Section subtitle", "Footnotes", "Chart label", "Chart subtitle", "Recommendation band", "Callouts"}
+
+    def indicator_box(si) -> bool:
+        """A small shape whose whole text is one or two characters: the numbered 1, 2, 3 boxes."""
+        txt = (d.shape_text(si) or "").strip()
+        return 0 < len(txt) <= 2 and si.shape.width < Inches(0.8) and si.shape.height < Inches(0.8)
     tallies: dict = {}
     for sno, shapes in d.shapes_by_slide.items():
         if d.is_appendix(sno):
@@ -1189,7 +1195,12 @@ def check_element_consistency(d: Deck):
                 val = (clr.get("val") or "").upper() if clr is not None else "theme"
                 tallies.setdefault("rule line colour", {}).setdefault(val, set()).add(sno)
                 continue
-            if name not in classes or not d.is_text_shape(si):
+            if d.is_text_shape(si) and indicator_box(si):
+                fill = sh._element.find(q("p:spPr") + "/" + q("a:solidFill") + "/" + q("a:srgbClr"))
+                val = (fill.get("val") or "").upper() if fill is not None else "theme"
+                tallies.setdefault("Indicator box fill", {}).setdefault(val, set()).add(sno)
+                name = "Indicator box"
+            elif name not in classes or not d.is_text_shape(si):
                 continue
             first = None
             for r in sh._element.iter(q("a:r")):
@@ -1205,10 +1216,12 @@ def check_element_consistency(d: Deck):
     for cls, vals in tallies.items():
         if len(vals) < 2:
             continue
+        # Several colours may be legitimate (the house uses two or three line colours). The flag is a value
+        # that is rare: on at most two pages, and on fewer than a quarter of the class's occurrences.
         total = sum(len(v) for v in vals.values())
         majority = max(vals, key=lambda k: len(vals[k]))
         for val, pages in vals.items():
-            if val == majority or len(pages) > total * 0.4:
+            if val == majority or len(pages) > 2 or len(pages) >= total * 0.25:
                 continue
             plist = ", ".join(str(x) for x in sorted(pages))
             d.add(

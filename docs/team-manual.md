@@ -19,9 +19,9 @@ Three things per slide, and nothing else until the storyline has settled: the ti
 
 Two things. First, every draft is written for a named room: attach the roster and `stakeholder-context` maps who is there to the questions they need answered, and `draft-deck` orders the storyline around them. Second, revisions run themselves: `draft-deck` Revise reads the partner's comments from the file, executes the mechanical ones, proposes options for the judgment ones, asks only about the ambiguous ones ("make this pop"), and logs every comment to the engagement's revision ledger. Learn reads the ledgers and the shipped diffs and proposes rule changes, including loosening a rule partners no longer want. Every rule lives in a markdown skill or a JSON threshold, so any of it can be changed by hand when minds change.
 
-## Running the chain without remembering it
+## Never remember the next step
 
-Say "run the chain on DECK.pptx". The `deck-chain` skill walks the deck through gate, render, evaluator and slide-by-slide SUGGEST pop-ups, asking before each stage, and writes the ledger at the end. draft-deck calls it on its own after every build or revision.
+Every stage (build or revision, gate and render, evaluator, SUGGEST pop-ups) ends with one line naming the next stage and the words that start it. Answer that line and the deck moves on; say "skip" or "stop here" to leave it.
 
 ## Commands (repo root, Claude Code users)
 

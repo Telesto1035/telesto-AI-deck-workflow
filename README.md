@@ -18,7 +18,6 @@ The Build Brief (onepagebrief-builder) is a branch taken only when the package i
     draft-deck/                 SKILL.md v2.2 + references/
     deck-qc/                    SKILL.md v4 + scripts/qc_check.py, qc_rules.json, qc_gate_hook.py
     onepagebrief-builder/       SKILL.md v1.2 (10pt floor)
-    deck-chain/                 SKILL.md v1: pop-up driver through gate, render, evaluator, SUGGEST, ledger
     stakeholder-context/        SKILL.md v1 (rebuilt from docs/workflow-and-skills.md; review before publishing)
 docs/                           handoff, QC design, workflow notes, chain chart
 scripts/publish_skills.py       diff repo skills against the account (Cowork) copies
