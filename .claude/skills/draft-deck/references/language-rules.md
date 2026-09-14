@@ -11,8 +11,8 @@ The title IS the takeaway. A reader skimming only titles gets the full argument.
 - Full sentence, verb-led, specific, ~8–20 words.
 - Good: "Buyers select based on peer referrals, higher-ed experience, and personalized proposals, rather than cost."
 - Good: "When forced to prioritize, leaders rank financial sustainability and AI as top challenges, while deprioritizing public trust and student preparedness."
-- Bad: "Selection factors" (label, not takeaway). Bad: "Huron dominates the market" (over-claim).
-- No label prefix on a title. "Where to play:", "Who to target |" and "What to say |" were removed from every title on the Sep 2026 public sector deck before it shipped; the storyline position is carried by the eyebrow or the section divider, and the title is the assertion alone. The older series-prefix pattern (`Mainstream | …`) is retired.
+- Bad: "Selection factors" (label, not takeaway). Bad: "[Client] dominates the market" (over-claim).
+- No label prefix on a title. "Where to play:", "Who to target |" and "What to say |" were removed from every title on a shipped findings deck; the storyline position is carried by the eyebrow or the section divider, and the title is the assertion alone. The older series-prefix pattern (`Mainstream | …`) is retired.
 - Two-part titles (title + subtitle continuation, "…despite top challenges' lack of resource and leadership attention") are allowed sparingly for tension between two facts.
 
 ## Sizing claims to evidence
@@ -37,7 +37,7 @@ The title IS the takeaway. A reader skimming only titles gets the full argument.
 
 Two registers, kept separate:
 - **Finding**: declarative, data-anchored. "AI is changing what buyers will pay for, posing material risk to 2027 revenue. 68% agree consultant fees should be lower if the firm is using AI tools…"
-- **Implication**: imperative, action-anchored, labeled. "Implication: Position Huron's digital modernization as building a safe foundation for future AI deployment…"
+- **Implication**: imperative, action-anchored, labeled. "Implication: Position [the client's] modernization work as the safe foundation for the next deployment…"
 
 A finding never smuggles in a recommendation; an implication never introduces new data.
 

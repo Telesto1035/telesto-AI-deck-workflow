@@ -101,7 +101,7 @@ Principles: `references/language-rules.md`; learned rules: `references/house-reg
 Recommendations are read by Fortune 500 executives who decide for themselves. Prescription and urgency read as junior.
 
 - **No urgency framing.** No "start now", "act immediately", "the window is closing", "time is running out", "planning starts now". On a proposal, urgency is a quantified cost of waiting on its own line, not an adverb.
-- **No bare command that removes the client's judgment.** Frame as what the evidence supports and what the client will need to decide: "Huron will need a displacement or teaming strategy for VA and DHA"; "For discussion: decide by mid-2027 whether displacement or a deal closes the last $45M".
+- **No bare command that removes the client's judgment.** Frame as what the evidence supports and what the client will need to decide: "The client will need a displacement or teaming strategy for the two agencies where incumbents hold the work"; "For discussion: decide by [date] whether displacement or a deal closes the remaining gap".
 - A directive verb is fine when it is specific and unhurried ("Decide the 5 to 10 pursuits this quarter"). The fault is urgency and prescription, not the imperative mood.
 - **Every recommendation names the action, and where the material allows it the owner, the cost and the date.** A recommendation carrying none of the four is a slogan.
 - **No stakes inflation.** "This represents a pivotal opportunity to transform…" is the AI signature on a recommendation slide. Say what changes and by how much.

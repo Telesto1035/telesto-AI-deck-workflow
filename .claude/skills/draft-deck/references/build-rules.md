@@ -24,7 +24,7 @@ Read at the Build stage and whenever a Revise adds a page or a new element. Univ
 10. **File integrity.** python-pptx API for slide content. Raw XML is permitted in exactly two places: the chart-cache patch, and `a:effectLst` (shadows) or `a:gradFill` (gradients) on shapes you created yourself. Never let two slides share an embedded OLE object: when duplicating a slide carrying hidden think-cell data, strip the object from the duplicate. Validate against the original file before handing off.
 11. **Leave the author / core-properties author field empty** on every generated file.
 12. Work with the pptx skill's mechanics for unpacking, duplicating (`add_slide.py`), editing slide XML, and validating. Content QA: no leftover placeholder text from the source slides, no orphaned visuals after text replacement.
-13. Apply `clients/<client>.md` for client-paper specifics (Huron/EDR titles, tables, charts, callouts, footnotes, versioning). A freshly attached shipped deck beats it, except where the four-homes rule or the typography floor says otherwise.
+13. Apply `clients/<client>.md` for client-paper specifics (titles, tables, charts, callouts, footnotes). A freshly attached shipped deck beats it, except where the four-homes rule or the typography floor says otherwise.
 14. **Look at the render before handing off.** Convert to PDF with the pptx skill's soffice wrapper, rasterise with pdftoppm, and view every page. Overlaps, overflow, stranded titles and hanging single words on a last line are invisible in the XML and obvious in the image. Fix (widen the box, or reword a few words), re-render, then send.
 
 
