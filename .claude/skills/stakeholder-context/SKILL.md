@@ -13,7 +13,7 @@ You produce the audience brief that `draft-deck` accepts as an optional input. I
 
 - **The roster**, required: names, titles, organisations, and where known each person's role in the decision (sponsor, approver, user, forwarder). A calendar invite, an email thread or a typed list all work.
 - **The meeting purpose**, one line: what the room decides or discusses.
-- **The Build Brief or the prompt** for the deck, optional. With it you map questions to the storyline lines and evidence already planned.
+- **The brief or the prompt** for the deck, optional. With it you map questions to the storyline lines and evidence already planned.
 - **The evidence inventory**, optional: the files draft-deck will build from (survey export, crosstabs, transcripts, model). With it the question-to-data map names exhibits; without it, it names gaps.
 
 Ask once for a missing roster.

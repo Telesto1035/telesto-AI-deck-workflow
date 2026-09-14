@@ -1,12 +1,11 @@
 # telesto-deck-skills
 
-Telesto's agentic PPT workflow: the skills, the code gate, the hook and the evaluator that turn a Build Brief or prompt into a partner-ready deck. Spec: `docs/HANDOFF.md`. Start with the chart, `docs/telesto_deck_chain.png`: it is the visual readme of the chain and is updated whenever the workflow changes (edit the HTML beside it and re-render). One-page manual: `docs/team-manual.md`.
+Telesto's agentic PPT workflow: the skills, the code gate, the hook and the evaluator that turn a prompt and files into a partner-ready deck. Spec: `docs/HANDOFF.md`. Start with the chart, `docs/telesto_deck_chain.png`: it is the visual readme of the chain and is updated whenever the workflow changes (edit the HTML beside it and re-render). One-page manual: `docs/team-manual.md`.
 
 ## The chain
 
 stakeholder-context (agent) → draft-deck (router, then generator) → **qc_check.py** (code gate, loops back to the generator until clean, cap 3) → deck-evaluator subagent (deck-qc Layer 2, fresh context) → human comments in the PPTX → draft-deck Revise → ship → draft-deck Learn.
 
-The Build Brief (onepagebrief-builder) is a branch taken only when the package includes a product or engineer time.
 
 ## Layout
 
@@ -17,7 +16,6 @@ The Build Brief (onepagebrief-builder) is a branch taken only when the package i
   skills/
     draft-deck/                 SKILL.md v2.2 + references/
     deck-qc/                    SKILL.md v4 + scripts/qc_check.py, qc_rules.json, qc_gate_hook.py
-    onepagebrief-builder/       SKILL.md v1.2 (10pt floor)
     stakeholder-context/        SKILL.md v1 (rebuilt from docs/workflow-and-skills.md; review before publishing)
 docs/                           handoff, QC design, workflow notes, chain chart
 scripts/publish_skills.py       diff repo skills against the account (Cowork) copies

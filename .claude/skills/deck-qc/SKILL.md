@@ -50,7 +50,7 @@ Token discipline throughout: never read a whole crosstab PDF or transcript into 
 
 - **The PPTX**, required.
 - **The source data**, strongly preferred. Ask once for the raw survey or data file (xlsx or csv, respondent-level or the crosstab workbook) before PDF crosstabs; a PDF needs an extraction step and can drop a row or a low-base marker. Accept the PDF if that is all there is, and say in the report header which form was used. Without any source, every number check is internal consistency only; say so. Never ask twice for the same deck.
-- **The Build Brief** and **the audience brief**, optional. They supply deck type, audience, the takeaway and the storyline lines.
+- **A written brief** and **the audience brief**, optional. They supply deck type, audience, the takeaway and the storyline lines.
 - **A prior version**, optional: with it you diff what changed, which flags closed, what regressed.
 - **A prior shipped deck for the client**, optional: claims precedent.
 
@@ -120,7 +120,7 @@ Four dimensions, 1 to 5. The score is the summary; the lists are the product. Va
 
 Technical accuracy below 3 goes in the report header regardless of the overall.
 
-Report, in order: header (type and package, inferred or from the brief; page count and version; whether and in what form source data was attached; the one thing to act on first); scorecard with a one-line reason each; hygiene (what the gate stripped, every speaker note quoted); FIX list; SUGGEST list in slide order, each naming the page by number and title, with QUESTION items stated as questions; brief check when a brief is attached; diff when a prior version is attached; and the "not checked" line every time. Short enough to act on.
+Report, in order: header (deck type, inferred or from the brief; page count and version; whether and in what form source data was attached; the one thing to act on first); scorecard with a one-line reason each; hygiene (what the gate stripped, every speaker note quoted); FIX list; SUGGEST list in slide order, each naming the page by number and title, with QUESTION items stated as questions; brief check when a brief is attached; diff when a prior version is attached; and the "not checked" line every time. Short enough to act on.
 
 ## What this skill never does
 
