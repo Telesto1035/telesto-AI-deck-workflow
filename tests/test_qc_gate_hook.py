@@ -60,7 +60,10 @@ def test_broken_deck_blocks_then_caps(workdir):
         logs.append("\n".join(out))
     assert codes == [2, 2, 0, 0], codes
     assert "blocked stop 1 of 3" in logs[0]
-    assert "author-empty" in logs[0] and "font-size-floor" in logs[0]
+    # author-empty is a hand-back condition now, so the mid-session gate warns rather than
+    # blocks on it; a content fault is what holds the stop.
+    assert "font-size-floor" in logs[0]
+    assert "author-empty" not in logs[0], "property hygiene must not block the consultant mid-session"
     assert "--fix-safe" in logs[0]
     assert "gate cap reached, handing off with findings attached" in logs[2]
     assert "gate cap reached" in logs[3]

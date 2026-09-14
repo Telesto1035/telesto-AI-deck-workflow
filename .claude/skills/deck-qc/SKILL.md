@@ -1,6 +1,6 @@
 ---
 name: deck-qc
-description: "Score and flag a finished or in-progress PPTX deck before partner review: catches numbers that do not reconcile, missing sources and footnotes, undefined terms, placeholders, overflow, style drift and conclusions that do not follow, strips speaker notes and scrubs file metadata before the deck leaves the building, then resolves the list slide by slide through multiple-choice prompts. Triggers: QC this deck, run the QC bot, score the deck, deck QC, pre-review check."
+description: "Score and flag a finished or in-progress PPTX deck before partner review: catches numbers that do not reconcile, missing sources and footnotes, undefined terms, placeholders, overflow, style drift and conclusions that do not follow, strips speaker notes and verifies the file metadata was cleared before the deck leaves the building, then resolves the list slide by slide through multiple-choice prompts. The input is always a .pptx file. Triggers: QC this deck, QC this PPTX, run the QC bot on the deck, score the deck, deck QC, pre-review check on the deck. Not for data: a request to QC, validate or check survey data, a questionnaire, crosstabs, a topline or a spreadsheet is the survey-qc skill, not this one, even when the word QC appears; this skill inspects slides and never opens raw data as the subject of the check."
 ---
 
 # Deck QC (Telesto) v5
@@ -30,11 +30,14 @@ Five stages, in order. Every stage ends with one line in text naming the next st
 
 ```
 python scripts/qc_check.py DECK.pptx --profile <findings|proposal|minipack|...> [--length 6-12] [--no-length]
+python scripts/qc_check.py DECK.pptx --handback     # stage 5 only: document properties block instead of warn
 python scripts/qc_check.py DECK.pptx --fix-safe     # settled fixes only, writes DECK.qc.pptx
 python scripts/pptx_comments.py DECK.pptx --open-only  # who asked for what, on which slide
 ```
 
-Exit 1 means blocking findings; fix them and run again until it exits 0. The gate is deterministic and owns hygiene and mechanics: author and metadata fields, speaker notes, generator fingerprints, text under 10pt outside footnotes, italics above the threshold, placeholders, footnote markers without footnotes, totals that do not sum, chart labels against cached data, reviewer notes, empty register labels, element consistency. What it blocks is not re-argued here; thresholds live in `scripts/qc_rules.json`. Read the summary and the BLOCK lines; WARN and INFO lines are for the fix pass. The `element-consistency` warning names a color that an element class carries on only one or two pages while the rest of the deck uses another; two or three line colors in a deck are normal, a fourth on one page is the flag. Fix by copying the style from a sibling page. Pages after a divider titled Appendix, Crosstabs or Backup are data pages: no style check and no fix applies to them, only hygiene.
+Exit 1 means blocking findings; fix them and run again until it exits 0. The gate is deterministic and owns hygiene and mechanics: speaker notes, generator fingerprints, text under 10pt outside footnotes, italics above the threshold, placeholders, footnote markers without footnotes, totals that do not sum, chart labels against cached data, reviewer notes, empty register labels, element consistency. What it blocks is not re-argued here; thresholds live in `scripts/qc_rules.json`. Read the summary and the BLOCK lines; WARN and INFO lines are for the fix pass. The `element-consistency` warning names a color that an element class carries on only one or two pages while the rest of the deck uses another; two or three line colors in a deck are normal, a fourth on one page is the flag. Fix by copying the style from a sibling page. Pages after a divider titled Appendix, Crosstabs or Backup are data pages: no style check and no fix applies to them, only hygiene.
+
+**Document properties are a hand-back condition, not a draft defect.** The author field, title, TotalTime and custom properties warn during a session and block only under `--handback`, because PowerPoint restamps them on every save and blocking on them interrupts the consultant's own editing over something that is not yet wrong. The gate never writes them: **PowerPoint's Document Inspector owns that scrub** (File > Info > Check for Issues > Inspect Document), run by a human at stage 5, and the gate's job is to verify it was run. Generator fingerprints are the exception and keep blocking, because Inspector leaves those in place.
 
 **2. Render.** `scripts/render_check.py DECK.pptx` exports the body pages through PowerPoint, measures overflow, and tiles the pages into contact sheets of nine. Read the sheets, not single pages; open one `slideN.png` only to inspect a defect. On an iteration render only the changed pages (`--slides 4,7,12`); read the full sheets once before hand-back. Without PowerPoint, use soffice and pdftoppm, and treat a wrapped footer or clipped label as a renderer artifact until the original renders the same way ("verify in PowerPoint").
 
@@ -42,7 +45,7 @@ Exit 1 means blocking findings; fix them and run again until it exits 0. The gat
 
 **4. Resolution.** SUGGEST items go to the consultant as pop-ups, one page per question, in slide order. Rules in `references/resolving.md`. Apply the answers as one iteration (`references/applying-fixes.md`), re-render the touched pages, re-run the number ledger, report the delta.
 
-**5. Hand-back.** Append the round to the revision ledger, attach the file, state what is still open.
+**5. Hand-back.** Run PowerPoint's Document Inspector on the file, then `qc_check.py DECK.pptx --handback` to confirm nothing was missed; document properties block here and nowhere else. Append the round to the revision ledger, attach the file, state what is still open.
 
 Token discipline throughout: never read a whole crosstab PDF or transcript into context (extract once to the scratchpad and search it for the cited questions); extract the deck's text once per iteration and diff it against the last extract; patch the saved file with a short script per iteration rather than regenerating a build script.
 
@@ -79,6 +82,8 @@ House convention, not error. Do not spend the consultant's attention on these.
 - Not every page carries an eyebrow; supporting pages, dividers and appendix sit outside the numbering, and an eyebrow repeats across the pages of one finding.
 - Consulting rounding ("15+ times", "roughly a third") is fine; flag a number only where it contradicts another number or the source.
 - Two or three line colors across a deck; gray chart subtitles and dark gray footnotes on client paper where the client file allows them.
+- A shortened attribute label whose footnote carries the verbatim source wording and its question number.
+- A comment left open because it is held (draft-deck class `scope`: it needs evidence nobody has yet), where the hand-back names it and says what scoping it would take.
 
 ## Layer 1: mechanical checks, offered as FIX
 
@@ -86,7 +91,7 @@ Each finding names the page, quotes the text, states the fix. Group repeated ins
 
 - **Numbers reconcile.** Same metric with different values across pages; exec summary against body; chart cache against label or title; components against a stated total (one point of rounding allowed, said so); a figure absent from the source; a pool quoted as a total on one page and an annual rate on another.
 - **Sources and footnotes.** An exhibit with no source or n where required; footnote numbers out of sequence, duplicated or orphaned; a definition with no marker; a cross-reference to a page that does not exist; one source written five ways; a question cited without its wording; two questions on a page without each labelled.
-- **Attribute wording.** With the questionnaire or crosstab attached, every chart label, table row, scale point and option quoted in prose is checked against the source wording. A shortening or dropped qualifier is FIX where the verbatim label fits and SUGGEST with the verbatim wording where it does not.
+- **Attribute wording.** With the questionnaire or crosstab attached, every chart label, table row, scale point and option quoted in prose is checked against the source wording. A shortening is not a defect where a footnote on the page carries the verbatim wording and its question number. Where nothing on the page carries the source wording, the FIX is the footnote, not a rewrite of the label: renaming a data-derived label is class `label`, it reaches every other page carrying that label, and it goes to the consultant. A short form that merges two categories the source keeps apart is SUGGEST, and the item names the other category and what the merge implies about the denominator.
 - **Referents and terms.** A pronoun or "this" with no antecedent on the page; an acronym before its definition; the same thing named two ways; an agency abbreviated; a client stakeholder named on a slide; one count word used for different sets.
 - **Leftovers.** Placeholders, TBD, XX, template text, a DRAFT stamp inconsistent with the version, and anything the gate's hygiene pass reports.
 - **Text and shape mechanics.** Overflow or cut-off; a center-anchored box riding over its heading; empty boxes; shapes off-canvas; legend swatches with no label; runs of spaces used as layout; a badge whose own text wraps; more than one font size inside a table; numeric labels inside bar segments; hanging one- or two-word last lines.
@@ -133,7 +138,9 @@ Full rules in the repo's `GOVERNANCE.md`. In short: read only the files attached
 - Rewrite a title, recommendation or exec-summary line without approval.
 - Change a number during a voice fix.
 - Collapse two distinct source rows into one label to make the deck look consistent.
+- Rename a label that traces to a survey item, banner or source without the consultant, or answer a reviewer comment that needs evidence nobody has yet.
 - Delete a speaker note without first showing the author what it said.
+- Write a deck's document properties. It reports them; a human clears them with Document Inspector.
 - Score visual excellence or storyline choice.
 - Fault a deck for something its profile marks not applicable, or for house convention.
 - Restyle, resize or re-font appendix and data pages.

@@ -2,7 +2,7 @@
 """qc_check.py: the deterministic gate of deck-qc Layer 1 plus the hygiene pass.
 
 Usage:
-    python qc_check.py DECK.pptx [--rules qc_rules.json] [--json out.json] [--fix-safe]
+    python qc_check.py DECK.pptx [--rules qc_rules.json] [--json out.json] [--fix-safe] [--handback]
                         [--profile findings|proposal|kickoff|minipack|presentation|update|workshop|manual]
 
 Exit 0: no blocking findings. Exit 1: blocking findings present. Exit 2: file could not be opened.
@@ -767,6 +767,12 @@ def check_table_one_size(d: Deck):
 
 
 def check_metadata(d: Deck):
+    """Document properties (author, title, TotalTime, custom fields) are PowerPoint's Document
+    Inspector to remove, not ours: the gate verifies, it does not write. They are a hand-back
+    condition, not a defect in a draft, so they only block under --handback. A file open in
+    PowerPoint restamps them on every save, and blocking on that interrupts the consultant's own
+    editing. Generator fingerprints keep blocking: Inspector does not remove those."""
+    props = "block" if getattr(d, "handback", False) else "warn"
     core = d.xml("docProps/core.xml")
     app = d.xml("docProps/app.xml")
     if core is not None:
@@ -774,41 +780,41 @@ def check_metadata(d: Deck):
             node = core.find(q(tag))
             if node is not None and visible(node.text or ""):
                 d.add(
-                    id=fid, severity="block", slide=None, shape=None, shape_id=None,
+                    id=fid, severity=props, slide=None, shape=None, shape_id=None,
                     text=(node.text or "").strip(),
                     detail="docProps/core.xml %s must be empty" % tag,
-                    fix="clear", auto_fixable=True,
+                    fix="clear", auto_fixable=False,
                 )
         for tag in ("dc:title", "dc:subject", "cp:keywords", "dc:description", "cp:category", "cp:contentStatus"):
             node = core.find(q(tag))
             if node is not None and visible(node.text or ""):
                 d.add(
-                    id="metadata-scrub", severity="block", slide=None, shape=None, shape_id=None,
+                    id="metadata-scrub", severity=props, slide=None, shape=None, shape_id=None,
                     text=(node.text or "").strip()[:120],
                     detail="docProps/core.xml %s is set" % tag,
-                    fix="clear", auto_fixable=True,
+                    fix="clear", auto_fixable=False,
                 )
     if app is not None:
         tt = app.find(q("ep:TotalTime"))
         if tt is not None and (tt.text or "").strip() not in ("", "0"):
             d.add(
-                id="metadata-scrub", severity="block", slide=None, shape=None, shape_id=None,
+                id="metadata-scrub", severity=props, slide=None, shape=None, shape_id=None,
                 text=tt.text.strip(), detail="docProps/app.xml TotalTime > 0 (minutes of editing leak)",
-                fix="clear", auto_fixable=True,
+                fix="clear", auto_fixable=False,
             )
         tpl = app.find(q("ep:Template"))
         if tpl is not None and visible(tpl.text or ""):
             d.add(
-                id="metadata-scrub", severity="block", slide=None, shape=None, shape_id=None,
+                id="metadata-scrub", severity=props, slide=None, shape=None, shape_id=None,
                 text=tpl.text.strip(), detail="docProps/app.xml Template is set",
-                fix="clear", auto_fixable=True,
+                fix="clear", auto_fixable=False,
             )
         comp = app.find(q("ep:Company"))
         if comp is not None and visible(comp.text or ""):
             d.add(
-                id="metadata-scrub", severity="warn", slide=None, shape=None, shape_id=None,
+                id="metadata-scrub", severity=props, slide=None, shape=None, shape_id=None,
                 text=comp.text.strip(), detail="docProps/app.xml Company is set",
-                fix="clear", auto_fixable=True,
+                fix="clear", auto_fixable=False,
             )
     if "docProps/custom.xml" in d.parts:
         custom = d.xml("docProps/custom.xml")
@@ -816,10 +822,10 @@ def check_metadata(d: Deck):
         if custom is not None:
             names = [p.get("name") for p in custom if p.get("name")]
         d.add(
-            id="metadata-scrub", severity="block", slide=None, shape=None, shape_id=None,
+            id="metadata-scrub", severity=props, slide=None, shape=None, shape_id=None,
             text=", ".join(names)[:160],
             detail="docProps/custom.xml present (%d custom propert%s)" % (len(names), "y" if len(names) == 1 else "ies"),
-            fix="delete", auto_fixable=True,
+            fix="delete", auto_fixable=False,
         )
     # generator fingerprints
     fps = d.rules.get("generator_fingerprints", [])
@@ -2009,8 +2015,10 @@ ALL_CHECKS = [
 ]
 
 
-def run_checks(path: Path, rules: dict, profile: Optional[str] = None, length: Optional[tuple] = None) -> tuple[Deck, list[Finding]]:
+def run_checks(path: Path, rules: dict, profile: Optional[str] = None,
+               length: Optional[tuple] = None, handback: bool = False) -> tuple[Deck, list[Finding]]:
     deck = Deck(path, rules)
+    deck.handback = handback
     for fn in ALL_CHECKS:
         fn(deck)
     check_profile_length(deck, profile, length)
@@ -2046,54 +2054,10 @@ def fix_safe(deck: Deck, findings: list[Finding], out_path: Path, log) -> Path:
 
     ids = {f.id for f in findings if f.auto_fixable}
 
-    # core.xml
-    core = load("docProps/core.xml")
-    if core is not None and ({"author-empty", "metadata-scrub"} & ids):
-        for tag in ("dc:creator", "cp:lastModifiedBy", "dc:title", "dc:subject", "cp:keywords",
-                    "dc:description", "cp:category", "cp:contentStatus"):
-            node = core.find(q(tag))
-            if node is not None and visible(node.text or ""):
-                node.text = ""
-                applied.append("cleared core.xml %s" % tag)
-        rev = core.find(q("cp:revision"))
-        if rev is not None and (rev.text or "").strip() not in ("", "1"):
-            rev.text = "1"
-            applied.append("reset core.xml revision")
-        store("docProps/core.xml", core)
-
-    # app.xml
-    app = load("docProps/app.xml")
-    if app is not None and "metadata-scrub" in ids:
-        tt = app.find(q("ep:TotalTime"))
-        if tt is not None and (tt.text or "").strip() not in ("", "0"):
-            tt.text = "0"
-            applied.append("app.xml TotalTime -> 0")
-        tpl = app.find(q("ep:Template"))
-        if tpl is not None and visible(tpl.text or ""):
-            tpl.text = ""
-            applied.append("app.xml Template cleared")
-        comp = app.find(q("ep:Company"))
-        if comp is not None and visible(comp.text or ""):
-            comp.text = ""
-            applied.append("app.xml Company cleared")
-        store("docProps/app.xml", app)
-
-    # custom.xml
-    if "docProps/custom.xml" in parts and "metadata-scrub" in ids:
-        del parts["docProps/custom.xml"]
-        rels = load("_rels/.rels")
-        if rels is not None:
-            for rel in list(rels):
-                if rel.get("Type", "").endswith("/custom-properties"):
-                    rels.remove(rel)
-            store("_rels/.rels", rels)
-        ct = load("[Content_Types].xml")
-        if ct is not None:
-            for ov in list(ct):
-                if ov.get("PartName") == "/docProps/custom.xml":
-                    ct.remove(ov)
-            store("[Content_Types].xml", ct)
-        applied.append("removed docProps/custom.xml and its relationship")
+    # Document properties are not written here. PowerPoint's Document Inspector owns that scrub
+    # (File > Info > Check for Issues > Inspect Document); the gate verifies it was run and blocks
+    # under --handback. Nothing in the chain edits a deck's properties behind the consultant.
+    # Generator fingerprints, further down, are still cleared: Inspector leaves those in place.
 
     # speaker notes
     if "speaker-notes" in ids:
@@ -2278,6 +2242,10 @@ def main(argv=None) -> int:
     ap.add_argument("--profile", choices=["findings", "proposal", "kickoff", "minipack", "presentation", "update", "workshop", "manual"])
     ap.add_argument("--length", default=None, help="typical page range for a variant, e.g. 6-12 for a findings deck whose detail sits in a product; info only")
     ap.add_argument("--no-length", action="store_true", help="skip the length line: the consultant has confirmed the page plan")
+    ap.add_argument("--handback", action="store_true",
+                    help="final check before the deck leaves the building: document properties "
+                         "(author, title, TotalTime, custom fields) block instead of warn. Run "
+                         "PowerPoint's Document Inspector first; this verifies it was done.")
     args = ap.parse_args(argv)
 
     try:
@@ -2294,7 +2262,7 @@ def main(argv=None) -> int:
         return 2
     try:
         length = tuple(int(x) for x in args.length.split("-")) if args.length else None
-        deck, findings = run_checks(path, rules, args.profile, length)
+        deck, findings = run_checks(path, rules, args.profile, length, handback=args.handback)
         if args.no_length:
             findings = [f for f in findings if f.id != "deck-length"]
     except Exception as exc:  # noqa: BLE001

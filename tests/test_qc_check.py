@@ -7,6 +7,7 @@ may appear beyond what the clean deck already reports.
 from __future__ import annotations
 
 import json
+import re
 import sys
 import time
 from pathlib import Path
@@ -75,7 +76,9 @@ def by_id(findings, fid):
 
 @pytest.mark.parametrize("src", CLEAN, ids=[p.stem for p in CLEAN])
 def test_clean_fixture_block_set_is_known(src, rules):
-    _deck, findings = qc_check.run_checks(src, rules)
+    # --handback: document properties block only at the exit, so the known-block set is the
+    # hand-back set. Mid-session they are warnings (test_properties_warn_until_handback).
+    _deck, findings = qc_check.run_checks(src, rules, handback=True)
     assert ids(findings, "block") == KNOWN_CLEAN_BLOCKS[src.stem], [
         (f.id, f.slide, f.detail) for f in findings if f.severity == "block"
     ]
@@ -94,8 +97,8 @@ def test_fixtures_not_modified_in_place():
 @pytest.mark.parametrize("src", CLEAN, ids=[p.stem for p in CLEAN])
 def test_broken_fixture_finds_every_planted_fault(src, broken_dir, rules, name_rules):
     broken = broken_dir / (src.stem + ".broken.pptx")
-    _cd, clean_findings = qc_check.run_checks(src, rules)
-    deck, findings = qc_check.run_checks(broken, name_rules)
+    _cd, clean_findings = qc_check.run_checks(src, rules, handback=True)
+    deck, findings = qc_check.run_checks(broken, name_rules, handback=True)
     multi = len(deck.slides) > 1
 
     expected_blocks = KNOWN_CLEAN_BLOCKS[src.stem] | make_broken.PLANTED_BLOCK_IDS | make_broken.PLANTED_WITH_NAME_RULES
@@ -190,9 +193,12 @@ def test_fix_safe_clears_settled_faults_and_nothing_else(broken_dir, name_rules,
     assert any("Build sequence" in line for line in log), "notes must be printed before they are stripped"
 
     _d2, after = qc_check.run_checks(out, name_rules)
-    gone = {"author-empty", "speaker-notes", "semicolon-runs", "quote-marks"}
+    gone = {"speaker-notes", "semicolon-runs", "quote-marks"}
     assert not (gone & ids(after)), sorted(gone & ids(after))
-    assert not [f for f in by_id(after, "metadata-scrub") if "TotalTime" in f.detail or "custom.xml" in f.detail]
+    # Document properties survive: PowerPoint's Document Inspector owns that scrub, and nothing
+    # in the chain rewrites a deck's properties behind the consultant.
+    assert "author-empty" in ids(after), "fix_safe must not clear the author field"
+    assert [f for f in by_id(after, "metadata-scrub") if "TotalTime" in f.detail], "TotalTime must survive"
     # never changes a number, a size or wording
     kept = {"font-size-floor", "totals-sum", "chart-cache-label", "placeholders", "footnote-sequence", "stakeholder-name"}
     assert kept <= ids(after), sorted(kept - ids(after))
@@ -316,3 +322,63 @@ def test_skill_files_carry_no_engagement_figures():
             if re.search(r"\b\d{1,3}%|\$\d", line):
                 hits.append((f.name, line.strip()[:100]))
     assert not hits, hits
+
+
+# --- document properties: a hand-back condition, not a mid-session defect -----------------------
+# PowerPoint restamps the author field and the edit timer on every save, so blocking on them while
+# a consultant has the deck open interrupts their own work over something that is not yet wrong.
+# The scrub itself is PowerPoint's Document Inspector; the gate only verifies it was run.
+
+def test_properties_warn_until_handback(broken_dir, name_rules):
+    broken = broken_dir / "Telesto_Standard_v2_P3-P5.broken.pptx"
+
+    _d, mid = qc_check.run_checks(broken, name_rules)
+    assert "author-empty" in {f.id for f in mid if f.severity == "warn"}
+    assert "author-empty" not in ids(mid, "block")
+    assert not [f for f in mid if f.id == "metadata-scrub" and f.severity == "block"
+                and ("TotalTime" in f.detail or "custom.xml" in f.detail)]
+
+    _d2, final = qc_check.run_checks(broken, name_rules, handback=True)
+    assert "author-empty" in ids(final, "block")
+    assert [f for f in final if f.id == "metadata-scrub" and f.severity == "block"
+            and "TotalTime" in f.detail]
+
+
+def test_properties_are_never_auto_fixable(broken_dir, name_rules):
+    """The 'N of these are auto-fixable' line must never offer to rewrite a deck's properties."""
+    _d, findings = qc_check.run_checks(broken_dir / "Telesto_Standard_v2_P3-P5.broken.pptx", name_rules)
+    for f in findings:
+        if f.id in ("author-empty", "metadata-scrub") and "fingerprint" not in f.detail:
+            assert not f.auto_fixable, f.detail
+
+
+def test_generator_fingerprints_still_block_and_still_fix(tmp_path, name_rules):
+    """Document Inspector removes properties but leaves generator fingerprints, so those keep
+    blocking and keep being fixed. They share the metadata-scrub id with the properties, which is
+    exactly why this guards against them being downgraded alongside."""
+    import zipfile
+    src = CLEAN[0]
+    planted = tmp_path / "fp.pptx"
+    zin = zipfile.ZipFile(src)
+    with zipfile.ZipFile(planted, "w", zipfile.ZIP_DEFLATED) as zout:
+        for it in zin.infolist():
+            data = zin.read(it.filename)
+            if it.filename == "docProps/app.xml":
+                t = data.decode("utf-8")
+                t = re.sub(r"<Application>.*?</Application>", "<Application>python-pptx</Application>", t)
+                if "<Application>" not in t:
+                    t = t.replace("</Properties>", "<Application>python-pptx</Application></Properties>")
+                data = t.encode("utf-8")
+            zout.writestr(it, data)
+    zin.close()
+
+    deck, findings = qc_check.run_checks(planted, name_rules)
+    fps = [f for f in findings if f.id == "metadata-scrub" and "fingerprint" in f.detail]
+    assert fps, "planted fingerprint not detected"
+    assert all(f.severity == "block" for f in fps), [f.severity for f in fps]
+    assert all(f.auto_fixable for f in fps), fps
+
+    out = tmp_path / "fp.qc.pptx"
+    qc_check.fix_safe(deck, findings, out, lambda _s: None)
+    _d2, after = qc_check.run_checks(out, name_rules)
+    assert not [f for f in after if f.id == "metadata-scrub" and "fingerprint" in f.detail]
