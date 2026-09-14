@@ -3,6 +3,8 @@
 Telesto's agentic PPT workflow: the skills, the code gate, the hook and the evaluator that turn a prompt and files into a partner-ready deck. Spec: `docs/HANDOFF.md`. Start with the chart, `docs/telesto_deck_chain.png`: it is the visual readme of the chain and is updated whenever the workflow changes (edit the HTML beside it and re-render). One-page manual: `docs/team-manual.md`.
 
 
+Install: `python scripts/build_plugin.py` builds `dist/telesto-deck-workflow.zip`, one plugin with skills, references, scripts, agent and hook, for Cowork and Claude Code alike.
+
 Data governance: `GOVERNANCE.md` (data classes, what the skills may read, client statements, items for counsel).
 
 ## The chain

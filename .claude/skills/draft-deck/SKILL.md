@@ -74,7 +74,7 @@ An existing deck plus partner comments (in-file, email, or a list). A deck can e
 Titles, an exec summary block, a takeaway rail, or any slide text, no file touched. Full language ruleset; two variants with a recommendation where the framing is a judgment call.
 
 ### Learn
-The shipped deck plus the last AI draft it came from. Diff title by title and page by page (`scripts/deck_diff.py`), classify every edit as style, structure, number or storyline, and count them. Write the diff summary to the revision ledger. Then propose at most three changes to the rule files, each with the before-and-after that motivates it and its evidence count: a promotion into `house-register.md` (only when the pattern recurs in two decks or the CEO ruled), an entry under "Observed, not yet promoted" in the client file, a retirement, or a new row or reading in `comment-shorthand.md`. A single edit is an observation, not a rule. Nothing is written to a rule file without approval; the register cap holds.
+The shipped deck plus the last AI draft it came from. Diff title by title and page by page (`deck-qc/scripts/deck_diff.py`), classify every edit as style, structure, number or storyline, and count them. Write the diff summary to the revision ledger. Then propose at most three changes to the rule files, each with the before-and-after that motivates it and its evidence count: a promotion into `house-register.md` (only when the pattern recurs in two decks or the CEO ruled), an entry under "Observed, not yet promoted" in the client file, a retirement, or a new row or reading in `comment-shorthand.md`. A single edit is an observation, not a rule. Nothing is written to a rule file without approval; the register cap holds.
 
 ## Ask vs. do
 
