@@ -165,3 +165,49 @@ def test_a_blocking_file_is_gated_on_every_stop(workdir):
     codes = [qc_gate_hook.run(payload(workdir), workdir, lambda s: None) for _ in range(2)]
     assert codes == [2, 2]
 
+
+# --- candidate scoping: only decks this session wrote -------------------------------------------
+# The gate used to treat any .pptx path appearing in the transcript as a candidate, so merely naming
+# a deck put it up for gating. That blocked stops over the reviewers' input file and over a deck in
+# another agent's worktree, neither of which the session had written.
+
+def _deck(path: Path, mtime: float) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy(CLEAN, path)
+    os.utime(path, (mtime, mtime))
+    return path
+
+
+def test_mentioned_but_unwritten_deck_is_not_a_candidate(tmp_path):
+    since = time.time()
+    stale = _deck(tmp_path / "reviewers_copy.pptx", since - 3600)
+    text = "I read %s and quoted slide 4 from it." % stale
+    assert find(tmp_path, text, since) == []
+
+
+def test_mentioned_and_written_deck_is_a_candidate(tmp_path):
+    since = time.time()
+    fresh = _deck(tmp_path / "we_wrote_this.pptx", since + 5)
+    text = "Saved %s" % fresh
+    assert find(tmp_path, text, since) == [fresh.resolve()]
+
+
+def test_deck_in_another_agents_worktree_is_pruned(tmp_path):
+    since = time.time()
+    other = _deck(tmp_path / ".claude" / "worktrees" / "abc123" / "manual" / "m.pptx", since + 5)
+    mine = _deck(tmp_path / "mine.pptx", since + 5)
+    got = find(tmp_path, "touched %s and %s" % (other, mine), since)
+    assert mine.resolve() in got
+    assert other.resolve() not in got, "a worktree deck belongs to another session"
+
+
+def test_no_session_start_gates_nothing(tmp_path):
+    _deck(tmp_path / "whatever.pptx", time.time())
+    assert qc_gate_hook.find_candidates(tmp_path, None, None, text="whatever.pptx") == []
+
+
+def find(cwd: Path, text: str, since: float) -> list:
+    """find_candidates with a transcript that exists, so rule 1 runs against `text`."""
+    t = cwd / "transcript.jsonl"
+    t.write_text("{}\n", encoding="utf-8")
+    return qc_gate_hook.find_candidates(cwd, str(t), since, text=text)

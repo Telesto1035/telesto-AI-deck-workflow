@@ -5,14 +5,18 @@ Wired in .claude/settings.json. Claude Code passes a JSON payload on stdin:
     {"session_id": ..., "transcript_path": ..., "cwd": ..., "hook_event_name": "Stop", "stop_hook_active": bool}
 
 Behaviour:
-  * Find PPTX files written or modified since the LAST STOP: paths mentioned in the transcript that exist,
-    plus any *.pptx under cwd whose mtime is at or after the session start (first transcript timestamp, the
-    floor for a first run). A file that gated clean has its mtime recorded in the state file and is not gated
-    again until it changes; a file that blocked is always re-gated. A Cowork session that runs for days would
-    otherwise gate the whole workspace.
+  * Find PPTX files THIS SESSION WROTE: a path mentioned in the transcript, or any *.pptx under cwd, but in
+    both cases only when its mtime is at or after the session start (first transcript timestamp, the floor
+    for a first run). Naming a deck is not touching it — a deck the conversation read, quoted or discussed
+    keeps its old mtime and is not gated, because gating someone else's file blocks this session's stop over
+    work it did not do. With no transcript timestamp there is nothing to measure against, so nothing is gated.
+    A file that gated clean has its mtime recorded in the state file and is not gated again until it changes;
+    a file that blocked is always re-gated. A Cowork session that runs for days would otherwise gate the
+    whole workspace.
   * Ignored: the path fragments in qc_rules.json `gate_exclude` (fixtures, asset folders, the .qc.pptx output
-    of --fix-safe), and templates (*template*.pptx, *.potx, or a file with no slide parts), which are specimen
-    layouts rather than decks. Every skip is logged, never silent.
+    of --fix-safe), any `worktrees` folder (another agent's session owns those files), and templates
+    (*template*.pptx, *.potx, or a file with no slide parts), which are specimen layouts rather than decks.
+    Every skip is logged, never silent.
   * Run qc_check on each. If any `block` finding exists, print the findings and exit 2 so the turn cannot end.
   * Keep a counter per session in a state file. After 3 blocked stops, exit 0 and print
     "gate cap reached, handing off with findings attached" so the loop terminates.
@@ -128,16 +132,26 @@ def session_start(transcript_path: str | None, text: str | None = None) -> float
 
 def excluded(path: Path, cwd: Path) -> bool:
     try:
-        rel = path.resolve().relative_to(cwd.resolve()).as_posix()
+        resolved = path.resolve()
+        rel = resolved.relative_to(cwd.resolve()).as_posix()
     except ValueError:
+        resolved = path
         rel = path.as_posix()
+    # A git worktree belongs to another agent's session, whether the path was walked or named in the
+    # transcript. Checked on the whole path, not just the part under cwd, so a worktree elsewhere on
+    # disk is skipped too.
+    if "worktrees" in resolved.parts:
+        return True
     return any(part in rel for part in exclude_parts())
 
 
 def _walk_pptx(cwd: Path):
-    """Every *.pptx under cwd, pruning the venv and other excluded folders before descending."""
+    """Every *.pptx under cwd, pruning the venv and other excluded folders before descending.
+
+    `worktrees` is pruned because a git worktree under .claude/ belongs to another agent's session: its
+    files carry fresh mtimes from work this session did not do and must not block this session's stop."""
     for root, dirnames, filenames in os.walk(cwd):
-        prune = exclude_dirs()
+        prune = exclude_dirs() | {"worktrees"}
         dirnames[:] = [d for d in dirnames if d not in prune]
         for fn in filenames:
             if fn.lower().endswith(".pptx"):
@@ -167,9 +181,24 @@ def unchanged_since_last_gate(p: Path, gated: dict) -> bool:
         return False
 
 
+def written_since(p: Path, since: float) -> bool:
+    """True when this file was written during the session. Naming a deck is not touching it: a deck the
+    conversation only read or discussed keeps its old mtime and is not this session's to gate."""
+    try:
+        return p.stat().st_mtime >= since - 1
+    except OSError:
+        return False
+
+
 def find_candidates(cwd: Path, transcript_path: str | None, since: float | None, text: str | None = None) -> list[Path]:
+    """Decks this session wrote. Both sources are filtered on mtime, so a deck that was only mentioned,
+    opened or read is never a candidate, and neither is one another session owns."""
     found: dict[str, Path] = {}
-    # 1. paths named in the transcript
+    if since is None:
+        # No transcript timestamp: nothing establishes what this session wrote, and gating on a guess
+        # would sweep in decks that belong to someone else. Gate nothing.
+        return []
+    # 1. paths named in the transcript, kept only if the session actually wrote them
     if transcript_path and Path(transcript_path).exists():
         text = read_transcript(transcript_path) if text is None else text
         for m in PPTX_PATH_RE.finditer(text):
@@ -177,18 +206,14 @@ def find_candidates(cwd: Path, transcript_path: str | None, since: float | None,
             p = Path(raw)
             if not p.is_absolute():
                 p = cwd / p
-            if p.exists() and p.is_file() and not excluded(p, cwd):
+            if p.exists() and p.is_file() and not excluded(p, cwd) and written_since(p, since):
                 found[str(p.resolve())] = p.resolve()
-    # 2. anything under cwd modified since the session started
-    if since is not None:
-        for p in _walk_pptx(cwd):
-            if excluded(p, cwd):
-                continue
-            try:
-                if p.stat().st_mtime >= since - 1:
-                    found[str(p.resolve())] = p.resolve()
-            except OSError:
-                continue
+    # 2. anything under cwd written since the session started
+    for p in _walk_pptx(cwd):
+        if excluded(p, cwd):
+            continue
+        if written_since(p, since):
+            found[str(p.resolve())] = p.resolve()
     return sorted(found.values())
 
 
