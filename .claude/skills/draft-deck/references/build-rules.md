@@ -7,7 +7,7 @@ Read at the Build stage and whenever a Revise adds a page or a new element. Univ
 - Construction conventions
 - Concept pages
 - Telesto dark paper
-- Slide density, footnotes, versioning, tables and text boxes
+- Slide density, footnotes, versioning, rating columns
 - Construction lessons from live revisions
 
 ## Build rules — native and human-editable, nothing hardcoded
@@ -30,7 +30,7 @@ Read at the Build stage and whenever a Revise adds a page or a new element. Univ
 
 ## Construction conventions (house, every paper)
 
-Stated by the CEO 2026-09-12. They override habits found in an attachment.
+CEO rulings. They override habits found in an attachment.
 
 - **Text boxes are zero-margin and top-anchored.** Every text box you create has all four insets at 0 and its text anchored to the top, so edges align to the grid and a one-line and a three-line box start at the same height. python-pptx: `tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0` and `tf.vertical_anchor = MSO_ANCHOR.TOP`. The gate lists departures as information.
 - **Section subtitles are a bold line with a rule beneath.** A section or panel inside a page is announced by a bold subtitle at 14 or 16pt and a thin horizontal line directly below it, not by a filled band or a box. One subtitle size per page.
@@ -70,17 +70,11 @@ The 2.0 house paper is dark and built for screen. It is the default for Telesto-
 - Certain pages can be text-heavy (methodology, discussion), but never a wall of text for executive audiences.
 ## Footnotes
 
-- Write the whole question text verbatim, numbered; never paraphrase. Replace survey piping tokens (e.g., $HQ14_text) with the actual piped value, following the shipped deck's precedent.
-- End the footnote with source and base: "; Competitive Intelligence survey, n=302."
+The convention (numbered superscripts, question wording verbatim, "Source:" for external material) is in SKILL.md. Two construction points: replace survey piping tokens (such as $HQ14_text) with the piped value, following the shipped deck; end a survey footnote with the survey name and base ("; Competitive Intelligence survey, n=302").
 ## Versioning
 
 - The version number _vN moves up only after a CEO or client revision, or when the storyline or page order changes. Everything else is an iteration of the same version: gate fixes, evaluator FIX items, resolved SUGGEST items, render fixes. Iterations are saved as _vN_1, _vN_2 and so on, never as a new N. When the consultant hands back an edited file, that edit is the new version and the AI iterations on it start again at _1. Never bump the version on your own; a build script that writes a new file writes the next iteration.
-## Tables and text boxes
-
-- Consulting tables (about four columns, three to five rows) are text boxes on a grid with thin horizontal divider lines between rows; the header row is bold; no vertical rules or cell fills. Native tables only for large tables and heatmaps. The Public Sector deck (Sep 2026) carries both constructions; the lines-and-text-boxes one is the preferred form.
-- Section subtitles inside a page: bold, 14 or 16pt, with a thin horizontal line directly beneath.
-- Every text box: zero insets on all four sides, top-anchored, so the grid aligns and boxes of different lengths share a top edge.
-- Charts: think-cell was used before and is still acceptable; a native chart is fine when its data stays editable and its format matches the think-cell look described above (left-aligned label column, labels outside bars, one colour, no gridlines).
+## Rating columns
 
 - An analyst rating column (readiness, maturity, fit) carries a footnote marker and a footnote that says whose estimate it is and what it rests on. The data beside it justifies the call; the footnote says so.
 

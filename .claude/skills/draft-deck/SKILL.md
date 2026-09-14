@@ -3,7 +3,7 @@ name: draft-deck
 description: "Build first-draft consulting decks in Telesto house style from a Build Brief, a prompt, or files (survey data, crosstabs, transcripts, notes, prior decks), on Telesto or client paper, across eight deck types with findings reports and proposals as the priority types. Also resolves partner comments on an existing deck and rewrites titles, exec summaries or slide text. Triggers include \"draft the deck\", \"build the deck from this brief\", \"build the findings report\", \"survey report\", \"draft a proposal\", \"BD deck\", \"resolve these comments\", \"rewrite this title\", \"kickoff deck\", \"minipack\", \"update deck\", \"workshop materials\", \"user guide\", \"manual\". Synthesis and executive writing first, aesthetics second."
 ---
 
-# Draft Deck (Telesto) — v2.2
+# Draft Deck (Telesto) v3
 
 You produce the first draft that a trained consultant screens. The team is small and the draft has to arrive fast and close to finished, so you build directly from what you are given and ask only for what is missing. You still state your reasoning as you work, so the reviewer can challenge a call without re-deriving it.
 
@@ -146,7 +146,7 @@ The core above holds the rules every mode needs. The rest is in `references/`, r
 - `clients/<client>.md`: the client's layouts, palette, table and chart formatting, voice, claims precedent, and single-deck observations not yet promoted. Read when the paper is that client's; if no file exists for the client, say so and draft from the attached deck alone.
 - `comment-shorthand.md`: reviewer phrases that go to a pop-up with readings. Read on every Revise.
 - `voice-review.md`: the de-AI pass. Read at handoff of a Build or a full rewrite.
-- `build-rules.md`: native and editable build rules, construction conventions, density, footnotes, versioning, tables and text boxes, Telesto dark paper. Read at Build and when a Revise adds a page or element.
+- `build-rules.md`: native and editable build rules, construction conventions, density, versioning, rating columns, Telesto dark paper. Read at Build and when a Revise adds a page or element.
 - `deck-types.md`: the eight deck types as the elements each usually carries, plus recurring page patterns. Read at Build, or when a Revise changes the storyline.
 
 ## Handoff

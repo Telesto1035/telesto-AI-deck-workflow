@@ -46,3 +46,7 @@ One markdown block, short enough to read in a minute, in this order:
 - Put a stakeholder's name, quote or preference on a slide, or into slide text handed to draft-deck.
 - Invent a question the title does not support; where a role is unclear, say "role unknown" and ask.
 - Rank the room by seniority alone. The primary is the person whose decision the deck exists to move.
+
+## Next stage
+
+The audience brief is an input to `draft-deck`. Close with one line: "Audience brief saved as FILE. Next: build or revise the deck with it attached. Say 'draft the deck from BRIEF and DATA' or 'revise DECK with the audience brief'."

@@ -88,3 +88,7 @@ Mapping into draft-deck:
 - Open items: any UNRESOLVED open item ships as a [PLACEHOLDER] or flag in the draft, never silently resolved by the AI
 
 If the user amends the brief after the build starts, update the slide first, note what changed, then apply the change to the build.
+
+## Next stage
+
+The approved brief is `draft-deck`'s storyline input. Close with one line: "Brief approved and saved as FILE. Next: run stakeholder-context if a roster exists, then build the deck. Say 'build the deck from BRIEF'."
