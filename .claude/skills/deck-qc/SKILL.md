@@ -29,7 +29,7 @@ Five stages, in order. Every stage ends with one line in text naming the next st
 **1. Gate.** This skill folder carries `scripts/qc_check.py`, `scripts/qc_rules.json`, `scripts/pptx_comments.py` and `scripts/render_check.py`. Paths are relative to the skill folder; in Cowork locate `qc_check.py` first and, if the account copy has no `scripts` folder, say so in the report header and run the same checks by hand from Layer 1.
 
 ```
-python scripts/qc_check.py DECK.pptx --profile <findings|proposal|minipack|...> [--length 6-12]
+python scripts/qc_check.py DECK.pptx --profile <findings|proposal|minipack|...> [--length 6-12] [--no-length]
 python scripts/qc_check.py DECK.pptx --fix-safe     # settled fixes only, writes DECK.qc.pptx
 python scripts/pptx_comments.py DECK.pptx --open-only  # who asked for what, on which slide
 ```
@@ -58,7 +58,7 @@ If the deck type is not in a brief, infer it from the file and state the inferen
 
 ## Profiles by deck type
 
-Shape and length per type are defined once, in draft-deck `references/deck-types.md`; do not restate them here. Length is information only, never a block; pass `--length lo-hi` for a variant such as a findings deck whose detail sits in a product. The gate profile adds only what the check requires and what is not applicable, so a proposal is never faulted for lacking charts.
+Shape and length per type are defined once, in draft-deck `references/deck-types.md`; do not restate them here. Length is information only, never a block; pass `--length lo-hi` for a variant such as a findings deck whose detail sits in a product, and `--no-length` once the consultant has confirmed the page plan, since the line is then noise. The gate profile adds only what the check requires and what is not applicable, so a proposal is never faulted for lacking charts.
 
 | Type | The check requires | Not applicable |
 |---|---|---|

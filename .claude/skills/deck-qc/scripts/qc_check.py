@@ -2277,6 +2277,7 @@ def main(argv=None) -> int:
     ap.add_argument("--fix-safe", action="store_true")
     ap.add_argument("--profile", choices=["findings", "proposal", "kickoff", "minipack", "presentation", "update", "workshop", "manual"])
     ap.add_argument("--length", default=None, help="typical page range for a variant, e.g. 6-12 for a findings deck whose detail sits in a product; info only")
+    ap.add_argument("--no-length", action="store_true", help="skip the length line: the consultant has confirmed the page plan")
     args = ap.parse_args(argv)
 
     try:
@@ -2294,6 +2295,8 @@ def main(argv=None) -> int:
     try:
         length = tuple(int(x) for x in args.length.split("-")) if args.length else None
         deck, findings = run_checks(path, rules, args.profile, length)
+        if args.no_length:
+            findings = [f for f in findings if f.id != "deck-length"]
     except Exception as exc:  # noqa: BLE001
         print("cannot open %s: %s" % (path, exc))
         return 2
