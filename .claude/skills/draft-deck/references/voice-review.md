@@ -1,4 +1,4 @@
-# Voice review pass (moved from SKILL.md 2026-09-13, text unchanged)
+# Voice review pass
 
 Read at the handoff of a Build or a full rewrite, and whenever a Revise rewrites more than a title or a band. Not needed on gate-fix iterations.
 

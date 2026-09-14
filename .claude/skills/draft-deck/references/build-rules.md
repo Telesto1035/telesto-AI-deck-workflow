@@ -1,6 +1,14 @@
-# Build rules and construction conventions (moved from SKILL.md 2026-09-13, text unchanged)
+# Build rules and construction conventions
 
-Read at the Build stage and whenever a Revise adds a page or a new element. Sections: build rules (native, editable, nothing hardcoded), house construction conventions, concept pages, Telesto dark paper.
+Read at the Build stage and whenever a Revise adds a page or a new element. Universal to every paper; client formatting is in `clients/<client>.md`.
+
+## Contents
+- Build rules (native, editable, nothing hardcoded)
+- Construction conventions
+- Concept pages
+- Telesto dark paper
+- Slide density, footnotes, versioning, tables and text boxes
+- Construction lessons from live revisions
 
 ## Build rules — native and human-editable, nothing hardcoded
 
@@ -54,3 +62,31 @@ The 2.0 house paper is dark and built for screen. It is the default for Telesto-
 
 **Analytical pages on dark paper.** Bars single-hue teal, with muted grey for non-focus series and a lighter teal for the highlighted item. Data labels white, outside the segment. Heatmaps in teal tints from ground to full teal, values white. Tables built from shapes, bucket labels in teal-tinted feature boxes to the left of the rows, one font size within a table. Source line and n under every exhibit, full size, white or muted; never small grey.
 
+## Slide density
+
+- Executive summary: at most 5 rows, 3 columns (findings / implications / recommendations). Six rows or a fourth column taxes the eye; move the overflow to a discussion page or appendix.
+- 2-3 exhibits maximum per slide; one idea per page. Anything more goes to appendix.
+- Each exec-summary point double-clicks into 1 body slide (rarely 2) that expands the point with data.
+- Certain pages can be text-heavy (methodology, discussion), but never a wall of text for executive audiences.
+## Footnotes
+
+- Write the whole question text verbatim, numbered; never paraphrase. Replace survey piping tokens (e.g., $HQ14_text) with the actual piped value, following the shipped deck's precedent.
+- End the footnote with source and base: "; Competitive Intelligence survey, n=302."
+## Versioning
+
+- The version number _vN moves up only after a CEO or client revision, or when the storyline or page order changes. Everything else is an iteration of the same version: gate fixes, evaluator FIX items, resolved SUGGEST items, render fixes. Iterations are saved as _vN_1, _vN_2 and so on, never as a new N. When the consultant hands back an edited file, that edit is the new version and the AI iterations on it start again at _1. Never bump the version on your own; a build script that writes a new file writes the next iteration.
+## Tables and text boxes
+
+- Consulting tables (about four columns, three to five rows) are text boxes on a grid with thin horizontal divider lines between rows; the header row is bold; no vertical rules or cell fills. Native tables only for large tables and heatmaps. The Public Sector deck (Sep 2026) carries both constructions; the lines-and-text-boxes one is the preferred form.
+- Section subtitles inside a page: bold, 14 or 16pt, with a thin horizontal line directly beneath.
+- Every text box: zero insets on all four sides, top-anchored, so the grid aligns and boxes of different lengths share a top edge.
+- Charts: think-cell was used before and is still acceptable; a native chart is fine when its data stays editable and its format matches the think-cell look described above (left-aligned label column, labels outside bars, one colour, no gridlines).
+
+- An analyst rating column (readiness, maturity, fit) carries a footnote marker and a footnote that says whose estimate it is and what it rests on. The data beside it justifies the call; the footnote says so.
+
+## Construction lessons from live revisions
+- **The eyebrow number is a finding number, not a page number.** Two pages that support finding 1 both carry "1". Never renumber to make pages consecutive.
+- **Appendix and data pages stay as they are.** Crosstabs, backup exhibits and methodology pages are not restyled, resized or re-fonted by the AI phase or by the gate; smaller type is allowed there. Only hygiene (author, notes, metadata) applies to the whole file.
+- **When a text run is reused, reset its formatting.** A first run inherited from an old paragraph can carry a hyperlink, an underline or a colour; strip them and set colour, size and weight explicitly.
+- **Use the client's plain layouts by default.** Side-panel or numbered layout variants are for varying rhythm on low-text pages; the client file says which.
+- **Look at the page before handing it over.** XML estimates of overflow and overlap are not enough: render (contact sheets, changed pages only on an iteration) and look.

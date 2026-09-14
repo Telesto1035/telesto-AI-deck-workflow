@@ -46,7 +46,7 @@ There is no dot-dash step. The storyline comes from the inputs and you produce t
 
 Ask only what the inputs do not answer, in one round, and never ask for something the brief states.
 
-**Source data for quant decks (added 2026-09-13).** Ask for the raw survey or data file (xlsx or csv, respondent-level or the crosstab workbook) before the PDF crosstabs; a PDF needs an extraction step and can drop a row or a low-base marker. Accept the PDF if that is all the consultant has, say so once, and note in the report header which form was used. Never ask twice for the same deck.
+**Source data for quant decks.** Ask for the raw survey or data file (xlsx or csv, respondent-level or the crosstab workbook) before the PDF crosstabs; a PDF needs an extraction step and can drop a row or a low-base marker. Accept the PDF if that is all the consultant has, say so once, and note in the report header which form was used. Never ask twice for the same deck.
 
 ## Modes
 
@@ -56,15 +56,15 @@ Inputs in, deck out. Infer package, type and paper; ask once for anything missin
 ### Revise
 An existing deck plus partner comments (in-file, email, or a list). A deck can enter the workflow here at any stage: a human-built draft that has never seen the Build step, a deck with the CEO's comments already on it, a v6 that a colleague edited by hand. Nothing upstream is required. The deck under revision is the example attachment (it carries the paper, the title conventions and the claims precedent), so do not ask for another; ask once for the source data if a comment needs a number the deck does not hold. In-file comments are read from both stores, legacy `ppt/comments/comment*.xml` and modern `ppt/comments/modernComment_*.xml`, with `deck-qc/scripts/pptx_comments.py DECK.pptx` (slide, author, date, status, replies; `--open-only` skips the ones already resolved), and each is quoted with its slide, author and thread before a resolution is proposed. Where the scripts are not available (Cowork without the scripts folder), unzip the file and read the two comment stores by hand; the slide a comment belongs to is the slide whose `_rels` file points at that comment part. Where the comments change the storyline (a finding reordered or added, a page cut, a new closing page), the revised page plan is confirmed in text first. Mechanical comments (typo, renumber, move, denominator) are executed, and so are the evaluator's FIX items (grammar, citations, labels, missing n); its SUGGEST items (titles, bands, exec-summary lines, storyline) are put to the consultant through AskUserQuestion, in slide order, one question per page naming the page number and title, each option quoting the current and proposed line with a leave-as-drafted choice and free text for the consultant's own wording; applied only on approval. In Cowork the same tool is used. Judgment comments (reframe a title, cut a page, soften or sharpen a claim, reorder) get two or three proposed resolutions with a recommendation, then the chosen one is applied. Ambiguous comments ("sharpen this", "make this pop", "tighten") get a targeted question that offers two concrete readings of the ask, each with the line it would produce; never guess what a senior meant. Mark comments resolved rather than deleting them where the format allows; say which comments were left open and why. Output: revised slides plus a comment-by-comment log with before and after text, each comment classed as mechanical, judgment or ambiguous. Build the log from the file, not from memory: `scripts/deck_diff.py BEFORE.pptx AFTER.pptx --comments --ledger-rows` lists every comment in BEFORE next to the changes on its slide and prints the ledger rows with class and resolution left blank; fill those two columns and append the rows to the engagement's revision ledger (`docs/client/revision-ledger.md`, gitignored). When the reviewer's comments have been dealt with, `pptx_comments.py AFTER.pptx --resolve all --out AFTER.pptx` marks the modern-format ones resolved in the file (legacy-format comments have no status and stay as they are); tell the reviewer which numbers were marked. The target is that mechanical and judgment comments resolve without a second prompt; only ambiguous ones need the consultant, and the ledger shows whether that is holding.
 
-**Entering mid-stream (added 2026-09-13).** Most decks will arrive here human-built for some time. On entry, if no audience brief is attached and none sits beside the deck, say so in one line and offer, in text, to run `stakeholder-context` first if a roster or meeting invite is available; then proceed either way. Offer it once per deck, not per round. A brief raises the quality of every SUGGEST written afterwards, because "more strategic" and "so what" need a named stakeholder to aim at.
+**Entering mid-stream.** Most decks will arrive here human-built for some time. On entry, if no audience brief is attached and none sits beside the deck, say so in one line and offer, in text, to run `stakeholder-context` first if a roster or meeting invite is available; then proceed either way. Offer it once per deck, not per round. A brief raises the quality of every SUGGEST written afterwards, because "more strategic" and "so what" need a named stakeholder to aim at.
 
-**Comment shorthand (added 2026-09-13).** Before classifying comments, read `references/comment-shorthand.md`. "More strategic", "what's the so-what", "roll this up", "sharpen", "make it pop", "this doesn't work", "fix", "rewrite" and their kin can each be read more than one way. They are never interpreted automatically, not even the ones that look mechanical. Each raises an AskUserQuestion pop-up for its page, quoting the comment and the element it sits on, with two or three readings and the concrete change each would make; "leave as is" and free text are always offered. Only the chosen reading is applied.
+**Comment shorthand.** Before classifying comments, read `references/comment-shorthand.md`. "More strategic", "what's the so-what", "roll this up", "sharpen", "make it pop", "this doesn't work", "fix", "rewrite" and their kin can each be read more than one way. They are never interpreted automatically, not even the ones that look mechanical. Each raises an AskUserQuestion pop-up for its page, quoting the comment and the element it sits on, with two or three readings and the concrete change each would make; "leave as is" and free text are always offered. Only the chosen reading is applied.
 
 ### Rewrite
 Titles, an exec summary block, a takeaway rail, or any slide text, no file touched. Full language ruleset; two variants with a recommendation where the framing is a judgment call.
 
 ### Learn
-The shipped deck plus the last AI draft it came from. Diff title by title and page by page, classify every edit as style, structure, number or storyline, and count them. From the style and structure edits, propose patterns for the title rewrite table, the word list and the comment-shorthand table (`references/comment-shorthand.md`), each with the before and after that motivates it. Read the revision ledgers and the gate's findings for the same decks alongside the diff: a class of comment or flag that recurs across decks is a rule the draft should already follow, and is proposed as one. Nothing is added to this skill without approval; the output is a proposal list and the counts, which feed the prompts-per-deck measure. Rules change when people change their minds: a proposal may also retire or loosen an existing rule when the ledger shows partners now accept what it forbids.
+The shipped deck plus the last AI draft it came from. Diff title by title and page by page (`scripts/deck_diff.py`), classify every edit as style, structure, number or storyline, and count them. Write the diff summary to the revision ledger. Then propose at most three changes to the rule files, each with the before-and-after that motivates it and its evidence count: a promotion into `house-register.md` (only when the pattern recurs in two decks or the CEO ruled), an entry under "Observed, not yet promoted" in the client file, a retirement, or a new row or reading in `comment-shorthand.md`. A single edit is an observation, not a rule. Nothing is written to a rule file without approval; the register cap holds.
 
 ## Ask vs. do
 
@@ -112,7 +112,7 @@ A flat page is the most common failure of a dark deck, and the fix is not shadow
 
 One shadow stamped on every block flattens the hierarchy again, which is the problem it was meant to solve.
 
-## Attribute labels are verbatim (rule added 2026-09-13)
+## Attribute labels are verbatim
 
 Treat every quotation from Telesto's own research, an attribute, an answer option, a scale point, a segment name, a question, as a citation that will be checked against the source in the room. Full context, every time: the label as worded, the question it came from, the base it rests on. A consultant may decide to shorten; the AI never does.
 
@@ -120,30 +120,31 @@ Every survey attribute, answer option, segment name and scale point appears on t
 
 Where the verbatim label does not fit the space, the fix is layout, not wording: widen the label column, allow a two-line label, reduce the number of rows shown and say so in the subtitle, or move the exhibit to a page with room. If none of those works, the shortened label is a SUGGEST to the consultant with the verbatim wording beside it, and the verbatim label goes in the footnote. In prose, quote the option in full the first time; a short form is allowed afterwards on the same page only if the full label is on the page. Segment names follow the crosstab headers ("VP/Dir", "Other 4-year") or their evident expansion, never a new coinage.
 
-## Footnote convention (reinforced 2026-09-12)
+## Footnote convention
 
 - **Question-level citations use numbered superscripts.** Where a figure, quote set or exhibit draws on a survey question, a superscript ¹ ² ³ sits on the word, number, subtitle or column head it supports, and the footnote reads "1. Q21. How would you characterize the current state of AI adoption at your institution?" with the question wording verbatim, never paraphrased, then the survey name and n. Free-response quotes are cited the same way: the marker on the section subtitle, the footnote giving the question and that it was free response.
 - **"Source:" is for external material.** A website, a report, a different survey from the rest of the deck, a client dataset: "Source: Semrush API, US database, pulled 10 September 2026." A sister survey used beside the main one takes a numbered footnote that names it ("2. Q31. … 2026 Healthcare Intelligence Survey, n=300").
 - Every marker has its footnote on the same page and every footnote has its marker; the gate checks both directions.
 
-## Word budget (set 2026-09-12)
+## Word budget
 
 A body page carries at most 200 words of title, body and chart labels before the gate warns and 275 before it blocks; footnotes are counted apart (warn above 100) and appendix pages are exempt, as are pages that are mostly verbatim quotes. A wordy page draws a partner comment before anything else on it is read. Exec summaries may run long but sit under the same cap: keep percentages to a minimum there and explain the finding in words; a summary line with four figures in it is a table, not a sentence. Detail pages carry the numbers.
 
-## Match the deck, not your constants (added 2026-09-13)
+## Match the deck, not your constants
 
 When adding a page or an element to an existing deck, copy the style of the nearest element of the same kind already in the deck: section subtitle colour and size, the colour and weight of the rule line beneath it, footnote colour and size, chart label colour, band fill and lead-in colour. Read them from the file, never from a palette constant. A page that is right by the house palette but differs from the pages beside it reads as built by another hand, and the consultant spends the review recolouring lines. Elements that recur across pages (numbered indicator boxes, section subtitles, rule lines, callout boxes, bands) match each other; the deck may use two or three line colours, but a fourth on one page is a defect. The gate lists rare colours per element class as `element-consistency`; the render step then looks at the pages side by side.
 
-## References, and when to read them (added 2026-09-13)
+## References, and when to read them
 
 The core above holds the rules every mode needs. The rest is in `references/`, read by mode, so a Revise round does not carry Build material:
 
-- `language-rules.md`: titles, sizing, provenance, craft, and every Learn pass. Read on every Revise, Rewrite and Learn.
+- `language-rules.md`: principles for titles, claims, provenance and craft. Read on every Revise, Rewrite and Learn.
+- `house-register.md`: firm-wide writing rules learned from shipped decks, capped at 25, each with one example and its evidence. Read on every Revise, Rewrite and Learn. Governance (entry, conflict, retirement) is at the top of the file.
+- `clients/<client>.md`: the client's layouts, palette, table and chart formatting, voice, claims precedent, and single-deck observations not yet promoted. Read when the paper is that client's; if no file exists for the client, say so and draft from the attached deck alone.
 - `comment-shorthand.md`: reviewer phrases that go to a pop-up with readings. Read on every Revise.
 - `voice-review.md`: the de-AI pass. Read at handoff of a Build or a full rewrite.
-- `build-rules.md`: native and editable build rules, construction conventions, concept pages, Telesto dark paper. Read at Build and when a Revise adds a page or element.
-- `deck-types.md`: the eight deck types as the elements each usually carries (not fixed skeletons), plus the page patterns that recur across types. Read at Build, or when a Revise changes the storyline.
-- `deck-craft.md`: formatting detail from shipped work, part client-specific. Read at Build. (Under review: universal rules move to build-rules, client rules to a client file.)
+- `build-rules.md`: native and editable build rules, construction conventions, density, footnotes, versioning, tables and text boxes, Telesto dark paper. Read at Build and when a Revise adds a page or element.
+- `deck-types.md`: the eight deck types as the elements each usually carries, plus recurring page patterns. Read at Build, or when a Revise changes the storyline.
 
 ## Handoff
 
@@ -172,6 +173,6 @@ Every Build ends with two things alongside the file:
 - Name the client stakeholder on a slide, whether from the brief or from an audience brief.
 - Chase an AI-detector score.
 
-## After saving (added 2026-09-13)
+## After saving
 
 Every build or revision ends by running the deck-qc gate and the render on the saved file and fixing what they find. The closing message then names the next stage in one line: "Gate and render pass. Next: run the evaluator. Say 'run the evaluator on FILE'." The consultant should never have to remember what comes after a save; the reminder carries it (stage list in deck-qc, "The chain").
