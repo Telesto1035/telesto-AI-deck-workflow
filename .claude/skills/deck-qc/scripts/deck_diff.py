@@ -31,7 +31,7 @@ from pptx import Presentation
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE.parent / ".claude" / "skills" / "deck-qc" / "scripts"))
+sys.path.insert(0, str(HERE))  # pptx_comments.py sits beside this file in deck-qc/scripts
 try:
     import pptx_comments  # noqa: E402
 except ImportError:  # pragma: no cover
