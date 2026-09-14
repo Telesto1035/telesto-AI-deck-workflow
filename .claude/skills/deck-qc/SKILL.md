@@ -38,7 +38,7 @@ Exit 1 means blocking findings; fix them and run again until it exits 0. The gat
 
 **2. Render.** `scripts/render_check.py DECK.pptx` exports the body pages through PowerPoint, measures overflow, and tiles the pages into contact sheets of nine. Read the sheets, not single pages; open one `slideN.png` only to inspect a defect. On an iteration render only the changed pages (`--slides 4,7,12`); read the full sheets once before hand-back. Without PowerPoint, use soffice and pdftoppm, and treat a wrapped footer or clipped label as a renderer artifact until the original renders the same way ("verify in PowerPoint").
 
-**3. Evaluator.** Layer 2 runs in the `deck-evaluator` subagent, in a fresh context, with the source data and the audience brief attached. It returns FIX and SUGGEST lists. Execute FIX.
+**3. Evaluator.** Layer 2 runs in the `deck-evaluator` subagent, in a fresh context, with the source data and the audience brief attached. It returns FIX and SUGGEST lists. Execute FIX. The evaluator runs on Opus: in Claude Code the subagent file sets this; in Cowork, before starting it, remind the consultant in one line to switch the model to Opus for this stage (it is the largest single token consumer and mostly mechanical tracing) and switch back for storyline work.
 
 **4. Resolution.** SUGGEST items go to the consultant as pop-ups, one page per question, in slide order. Rules in `references/resolving.md`. Apply the answers as one iteration (`references/applying-fixes.md`), re-render the touched pages, re-run the number ledger, report the delta.
 
