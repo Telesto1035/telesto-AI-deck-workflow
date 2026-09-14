@@ -9,7 +9,7 @@ Planted faults (all on slide 1 unless noted), each mapped to the qc_check.py fin
     body run at 9pt .................... font-size-floor  (shape "QC body 9pt")
     footnote list at 7pt ............... font-size-floor  (shape "QC footnotes", bottom band)
     italic quote in straight quotes .... italics, quote-marks
-    author "Doyoung Lim" ............... author-empty (x2: creator and lastModifiedBy)
+    author "Reviewer One" ............... author-empty (x2: creator and lastModifiedBy)
     TotalTime 214 ...................... metadata-scrub
     custom.xml with SharePoint fields .. metadata-scrub
     speaker note "Build sequence: ..." . speaker-notes
@@ -47,7 +47,7 @@ from pptx.util import Emu, Inches, Pt
 HERE = Path(__file__).resolve().parent
 FIXTURES = HERE / "fixtures"
 
-AUTHOR = "Doyoung Lim"
+AUTHOR = "Reviewer One"
 TOTAL_TIME = "214"
 NOTE_TEXT = "Build sequence: title first, then the exhibit, then the recommendation band. Do not ship this note."
 STAKEHOLDER = "Jane Q. Stakeholder"

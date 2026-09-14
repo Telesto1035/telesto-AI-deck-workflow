@@ -27,8 +27,8 @@ LEGACY_AUTHORS_REL = "http://schemas.openxmlformats.org/officeDocument/2006/rela
 # what the tests expect to read back, in slide order
 EXPECTED = [
     # (slide, author, text, status, store)
-    (1, "Alex Kruzel", "Make this title more descriptive", "active", "modern"),
-    (1, "Alex Kruzel", "Add the recommendation band", "resolved", "modern"),
+    (1, "the CEO", "Make this title more descriptive", "active", "modern"),
+    (1, "the CEO", "Add the recommendation band", "resolved", "modern"),
     (2, "Fiona Kalensky", "Please add the footnotes", "active", "legacy"),
 ]
 
@@ -57,7 +57,7 @@ AUTHORS_XML = (
     '<p188:authorLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
     'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
     'xmlns:p188="http://schemas.microsoft.com/office/powerpoint/2018/8/main">'
-    '<p188:author id="%s" name="Alex Kruzel" initials="AK" userId="test" providerId="None"/>'
+    '<p188:author id="%s" name="the CEO" initials="AK" userId="test" providerId="None"/>'
     '</p188:authorLst>'
 ) % MODERN_AUTHOR_ID
 

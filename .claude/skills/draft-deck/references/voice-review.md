@@ -29,7 +29,7 @@ Em dashes; three-item lists; stacked hedges ("could potentially", "might arguabl
 
 Recheck annually. The vocabulary drifts by model generation, and a word that was a tell in 2024 may not be one now. Never extend a flagged word to its synonyms; that only flattens the prose.
 
-- **Doyoung edits these out on sight:** earned, already, carry / carries, load-bearing, recast, hypothesis, "this confirms [client]".
+- **The skill owner edits these out on sight:** earned, already, carry / carries, load-bearing, recast, hypothesis, "this confirms [client]".
 - **Business-register tells:** leverage (verb), utilize, facilitate, empower, streamline, harness, navigate (challenges), unpack, lean into, double down, robust, comprehensive, crucial, pivotal, key (adjective), landscape (abstract), realm, testament, underscore (verb), delve, showcase, seamless, ecosystem, transformative, game-changer, paradigm shift, ever-evolving, multifaceted, at its core, in today's [X], it's worth noting, when it comes to, going forward.
 - **Consulting hollow-speak:** force multiplier, boil the ocean, synergies, move the needle, low-hanging fruit, north star, at pace.
 - **Empty intensifiers:** just, really, literally, genuinely, honestly, simply, actually, truly, deeply, fundamentally, inevitably, remarkably, arguably.

@@ -9,17 +9,17 @@ One manual. It replaces the CFM, which is the older consulting manual written be
 - **PPT is internal**, the working file. **PDF is what ships** to the CEO and the team.
 - **21 pages.** Ceiling is 25.
 - Built on the dark Telesto v2 template, in the grammar already established on the P3-P5 pages.
-- Built through the workflow it documents: use `draft-deck` to build it and `deck-qc` to score it, so the artifact is its own proof. Say so on the closing handoff to Alex.
+- Built through the workflow it documents: use `draft-deck` to build it and `deck-qc` to score it, so the artifact is its own proof. Say so on the closing handoff to the CEO.
 
 ## 1. Deadlines
 
-- **Fri 9/25** updated standard to Alex. Deliver Thu 9/24 so the 25th has slack.
+- **Fri 9/25** updated standard to the CEO. Deliver Thu 9/24 so the 25th has slack.
 - **Wed 10/7** standard live, CFM retired.
 - **Tue 10/20** full team trained and certified.
 
 A gate at risk is raised the week before, not discovered after. That is a standing instruction from the CEO and it applies to this build.
 
-## 2. The bar (Alex, 9/9). Use as acceptance criteria for every page
+## 2. The bar (CEO, 9/9). Use as acceptance criteria for every page
 
 - Work starts in AI, with our role as direction and QC, rather than AI accelerating a draft we would have written anyway.
 - Quality is scored against a published scorecard before anything ships, rather than settled by the reviewer's judgment.
@@ -114,7 +114,7 @@ Inherit from the template, do not rebuild it. Add slides from `Blank (Contrast -
 
 ## 7. OPEN items
 
-- **The tools and skills inventory.** Alex asked for this on 9/10: a table by path showing the skills and the build tools, with Gamma, portals and GitHub named. It was built as the old P5. The new structure has no home for it. Decide whether it folds into P3, becomes a page in Services, or is dropped with the CEO told why. Do not drop it silently.
+- **The tools and skills inventory.** The CEO asked for this on 9/10: a table by path showing the skills and the build tools, with Gamma, portals and GitHub named. It was built as the old P5. The new structure has no home for it. Decide whether it folds into P3, becomes a page in Services, or is dropped with the CEO told why. Do not drop it silently.
 - **The fifth product type**, if the user adds one. Adds one demo page and makes the document 22 pages.
 - **Certification.** The 10/20 gate needs a definition. Proposed to the CEO but not agreed: a consultant runs one deck end to end unassisted, the QC score clears a stated threshold, and the edit log shows no mechanical fixes. If she agrees, it belongs on a page; if not, it stays out of the manual and lives in the training material.
 - **`deck-qc` scripts in Cowork.** As of 9/13 the account copy of `deck-qc` shows no `scripts/` folder. If the scripts do not survive upload to account skill storage, the code gate is a Claude Code feature only, and P8 must say that plainly rather than implying the team gets it in Cowork. Resolve before the manual describes the gate as universal.
@@ -135,7 +135,7 @@ Inherit from the template, do not rebuild it. Add slides from `Blank (Contrast -
 5. Services + product, pages 13, 14 and 19, plus the four blank demo frames.
 6. Product, pages 20 and 21.
 7. Page 4, the AI page, written last.
-8. Run `deck-qc` on the file. Fix what the gate blocks. Record the score, it goes to Alex as evidence.
+8. Run `deck-qc` on the file. Fix what the gate blocks. Record the score, it goes to the CEO as evidence.
 9. Export the PDF. Keep the PPT internal.
 
 ## 10. First prompt for the Claude Code session

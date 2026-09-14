@@ -48,7 +48,7 @@ Sources: [Anthropic PDF](https://www-cdn.anthropic.com/58284b19e702b49db9302d5b6
 
 | Practice | How it lands in the manual |
 |---|---|
-| Contents page with action-phrased sections | Not a separate page (page budget), but the eyebrow tracker plays this role. The four segment names should read as what the reader does, not what the section is about. Revisit "ORIENTATION / SERVICES / SERVICES + PRODUCT / PRODUCT" once Alex has reacted. |
+| Contents page with action-phrased sections | Not a separate page (page budget), but the eyebrow tracker plays this role. The four segment names should read as what the reader does, not what the section is about. Revisit "ORIENTATION / SERVICES / SERVICES + PRODUCT / PRODUCT" once the CEO has reacted. |
 | One repeating template per section | Every Services operation page (5 to 10) uses the same three-column anatomy: what you do, what comes back, what you decide. Every demo page uses the same frame plus caption. The reader learns the shape once. |
 | Numbered 01-04 lists as the main exhibit | Already the Palantir-numbered card system on page 12. Use it on page 6 (five inputs) and page 10 (four decisions) too. |
 | One-sentence definition in a callout | Page 5 needs one: what the workflow is, in one sentence, before the chart. Candidate: the workflow versus agent line already in the chart's footnote. |

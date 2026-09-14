@@ -1,6 +1,6 @@
 # The Vanguard Standard: storyline (proposed 2026-09-13, awaiting CEO review)
 
-Status: workflow chart sent to Alex (CEO) 2026-09-13 for a quick review. Titles below are proposed, not confirmed. No content build until confirmed. Consultant decisions 2026-09-13: former page 2 (CFM comparison) removed; AI page carries no takeaway band.
+Status: workflow chart sent to the CEO 2026-09-13 for a quick review. Titles below are proposed, not confirmed. No content build until confirmed. Consultant decisions 2026-09-13: former page 2 (CFM comparison) removed; AI page carries no takeaway band.
 
 (T) = takeaway band closes the page. Demo pages, cover, dividers and the AI page carry none.
 

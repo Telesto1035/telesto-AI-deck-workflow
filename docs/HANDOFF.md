@@ -156,7 +156,7 @@ Fixtures come in pairs: a clean deck and a broken copy with known faults, so `te
 Broken variants to generate with a small script (`tests/make_broken.py`) from each clean deck:
 - one body run at 9pt, one footnote at 7pt
 - one italic quote
-- author field "Doyoung Lim", `TotalTime` 214, a `custom.xml` with SharePoint fields
+- author field "Reviewer One", `TotalTime` 214, a `custom.xml` with SharePoint fields
 - a speaker note containing "Build sequence: ..."
 - a `[PLACEHOLDER: source needed]`
 - a table row whose components sum to 98 against a stated 100

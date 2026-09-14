@@ -72,9 +72,9 @@ def test_comments_join_and_ledger_rows(pair, capsys):
     assert deck_diff.main([str(before), str(after), "--comments", "--ledger-rows", "--date", "2026-09-13"]) == 0
     out = capsys.readouterr().out
     assert "## Comments in BEFORE and what changed on their slides" in out
-    assert "### 1. slide 1 -> 1 (Alex Kruzel, active)" in out
+    assert "### 1. slide 1 -> 1 (the CEO, active)" in out
     assert "> Make this title more descriptive" in out
-    assert "> reply, Alex Kruzel: Agreed, will do" in out
+    assert "> reply, the CEO: Agreed, will do" in out
     assert "no change on this slide" in out  # the legacy comment on slide 2, which was not edited
     assert "## Ledger rows" in out
     assert "| 2026-09-13 | deck | v1 | v2 | 1 |  |  | TODO: Make this title more descriptive |" in out
