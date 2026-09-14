@@ -6,6 +6,7 @@ What data the skills may touch, where each class may live, and what the firm can
 - Platform footing: training and retention
 - Three data classes and where each may live
 - Rules the skills follow
+- What Telesto learns from an engagement, and what it does not
 - What a consultant may tell a client
 - For counsel and the CEO to confirm
 
@@ -40,18 +41,30 @@ Personal information follows the narrowest path: `stakeholder-context` reads a r
 
 The repo enforces what it can: the client folders are gitignored; a test fails if a skill file carries a percentage or dollar figure; the gate blocks a non-empty author field.
 
+## What Telesto learns from an engagement, and what it does not
+
+A client who sees this workflow may ask: "Are you building this on our data?" The position, stated so a consultant can give it in the room:
+
+- **The workflow improves in form, not content.** Learn compares an AI draft with the deck the firm shipped and proposes writing rules ("a title states the finding, not the method"). Rules enter the house register with placeholder examples. No figure, quote, finding or recommendation from any client's work is kept in a reusable file, and a test fails if one appears.
+- **A client's style conventions are held only to build that client's decks.** The client style file records layouts, palette and formatting the client already publishes, so their next deck matches their last. It holds no engagement content, and it is deleted on the client's request.
+- **The decks the firm builds are Telesto's work product.** Shipped decks and drafts are used to calibrate the gate and benchmark the evaluator. They are Telesto's data and IP under the firm's working assumption; the client's raw data inside them (survey files, transcripts) is the client's and is handled under the engagement data rules above.
+
+**Open, for the CEO to confirm (raised 2026-09-14):** how much of the shipped work Telesto owns as against the client, under current contracts, and therefore whether calibrating tooling on shipped decks needs a contract clause or client consent. Until confirmed, calibration uses only decks the firm built, never a client's own files or raw data.
+
+**Suggested contract position, for counsel:** the client owns the deliverables; Telesto retains its methods, templates, tooling and know-how, including improvements arising from the engagement, provided they contain no client confidential information; client data is processed by AI tools under commercial terms that prohibit training on it and is used only for the engagement; the client may exclude a named dataset from AI processing on request. Common consulting practice, not legal advice; the firm's contracts are currently silent on AI use.
+
 ## What a consultant may tell a client
 
 Plain statements the firm can make today, on a commercial account:
 - The firm uses Anthropic's Claude under commercial terms that prohibit training on customer content; the client's data is not used to train a model.
-- The client's material is used only to produce the client's deliverable and is not retained in the firm's reusable tooling.
+- The client's material is used only to produce the client's deliverable and is not retained in the firm's reusable tooling. The firm's tooling learns from how the firm writes, not from what the client's data says.
 - Working files and file metadata are scrubbed before any deliverable is handed over.
 
 Statements not to make: that data never leaves the firm's systems (it is processed by Anthropic under its terms), or that any specific retention period applies to the client's data beyond what Anthropic's current terms state.
 
 ## For counsel and the CEO to confirm
 
-- Add an AI-use clause to the standard SOW or MSA: the firm uses AI tools under commercial terms that prohibit training on client data; client data is used only for the engagement; the client may ask that a named dataset not be processed by AI tools.
+- Confirm ownership of shipped work as against the client (see the open item above), then add an AI-use and know-how clause to the standard SOW or MSA: the firm uses AI tools under commercial terms that prohibit training on client data; client data is used only for the engagement; the client may ask that a named dataset not be processed by AI tools.
 - Confirm the account tier (Team or Enterprise) and that every consultant running client work uses it, with "Rate chats" disabled at the organization level.
 - Decide whether Anthropic's Data Processing Addendum needs to be referenced in client contracts for any client with personal data in survey files.
 - Decide a retention rule for the engagement folders: how long client files stay on consultants' machines after a deck ships.
