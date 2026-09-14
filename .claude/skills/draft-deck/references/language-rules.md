@@ -110,3 +110,10 @@ The consultant kept the storyline, the four findings and every recommendation ba
 - **Next steps soften to "Discuss and select…"** and the theme list was cut back to "themes that will lead into 2027"; naming the themes was left to the room.
 - **Softer verbs in segment sentences:** "does not see it deployed actively" for "has the least of it deployed".
 - **Recommendation bands may point to a Huron product where one exists:** "a branded Huron product should lead the conversation" replaced "should lead the service conversation". The consultant knows the offer; the draft names the service and leaves the product call to them.
+
+## Learn pass 4 (2026-09-13, EDR AI minipack v4 edit)
+
+- When two survey findings in a section say the same thing, the consultant replaced one with a finding from another source in the pack (the media scan) that spoke to the same audience. Check the appendix for a finding before letting two summary points overlap.
+- Two pages may share an eyebrow in any section, not only Part 2.
+- Section summary titles read as the section's question ("What the findings mean for Huron's AI report and marketing campaign", "Implications for Huron's digital and AI business"); the "Part 1 / Part 2" label is not carried on the slide.
+- Segment lines end in what the segment will want to see, in plain words, with less data than the draft carried.
