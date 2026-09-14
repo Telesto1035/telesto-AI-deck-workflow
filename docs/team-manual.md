@@ -19,6 +19,10 @@ Three things per slide, and nothing else until the storyline has settled: the ti
 
 Two things. First, every draft is written for a named room: attach the roster and `stakeholder-context` maps who is there to the questions they need answered, and `draft-deck` orders the storyline around them. Second, revisions run themselves: `draft-deck` Revise reads the partner's comments from the file, executes the mechanical ones, proposes options for the judgment ones, asks only about the ambiguous ones ("make this pop"), and logs every comment to the engagement's revision ledger. Learn reads the ledgers and the shipped diffs and proposes rule changes, including loosening a rule partners no longer want. Every rule lives in a markdown skill or a JSON threshold, so any of it can be changed by hand when minds change.
 
+## Decks that arrive mid-stream
+
+A human-built deck can enter at Revise with no brief. draft-deck offers once to run stakeholder-context if you have the roster; say yes or no and it proceeds. Reviewer shorthand ("more strategic", "so what", "roll up", "sharpen") is read from `draft-deck/references/comment-shorthand.md` and resolved as proposals you accept or reject.
+
 ## Never remember the next step
 
 Every stage (build or revision, gate and render, evaluator, SUGGEST pop-ups) ends with one line naming the next stage and the words that start it. Answer that line and the deck moves on; say "skip" or "stop here" to leave it.
