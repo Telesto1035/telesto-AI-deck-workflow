@@ -1959,19 +1959,21 @@ def check_draft_stamp(d: Deck):
         )
 
 
-def check_profile_length(d: Deck, profile: Optional[str]):
-    if not profile:
+def check_profile_length(d: Deck, profile: Optional[str], length: Optional[tuple] = None):
+    """Length is guidance, never a gate: this finding stays info and never touches the exit code. `length`
+    overrides the profile's typical range, for a variant such as a findings deck whose detail sits in a product."""
+    if not profile and not length:
         return
-    prof = (d.rules.get("profiles") or {}).get(profile)
-    if not prof or "length" not in prof:
+    prof = (d.rules.get("profiles") or {}).get(profile) or {}
+    if length is None and "length" not in prof:
         return
-    lo, hi = prof["length"]
+    lo, hi = length or prof["length"]
     # appendix pages do not count: the body ends at the first divider titled Appendix, Crosstabs or Backup
     n = (d.appendix_start - 1) if d.appendix_start else len(d.slides)
     if n < lo or n > hi:
         d.add(
             id="deck-length", severity="info", slide=None, shape=None, shape_id=None,
-            text="%d slides" % n, detail="%s profile expects %d-%d pages (appendix after a divider not counted)" % (profile, lo, hi), fix="none",
+            text="%d slides" % n, detail="%s decks usually run %d-%d pages (appendix after a divider not counted); longer is fine when the content earns it" % (profile or "these", lo, hi), fix="none",
         )
 
 
@@ -2007,11 +2009,11 @@ ALL_CHECKS = [
 ]
 
 
-def run_checks(path: Path, rules: dict, profile: Optional[str] = None) -> tuple[Deck, list[Finding]]:
+def run_checks(path: Path, rules: dict, profile: Optional[str] = None, length: Optional[tuple] = None) -> tuple[Deck, list[Finding]]:
     deck = Deck(path, rules)
     for fn in ALL_CHECKS:
         fn(deck)
-    check_profile_length(deck, profile)
+    check_profile_length(deck, profile, length)
     if deck.appendix_start is not None:
         keep_ids = {"speaker-notes", "hidden-slides", "comments-open", "placeholders", "reviewer-note",
                     "stakeholder-name", "chart-cache-label", "totals-sum"}
@@ -2274,6 +2276,7 @@ def main(argv=None) -> int:
     ap.add_argument("--json", dest="json_out", default=None)
     ap.add_argument("--fix-safe", action="store_true")
     ap.add_argument("--profile", choices=["findings", "proposal", "kickoff", "minipack", "presentation", "update", "workshop", "manual"])
+    ap.add_argument("--length", default=None, help="typical page range for a variant, e.g. 6-12 for a findings deck whose detail sits in a product; info only")
     args = ap.parse_args(argv)
 
     try:
@@ -2289,7 +2292,8 @@ def main(argv=None) -> int:
         print("cannot read rules: %s" % exc)
         return 2
     try:
-        deck, findings = run_checks(path, rules, args.profile)
+        length = tuple(int(x) for x in args.length.split("-")) if args.length else None
+        deck, findings = run_checks(path, rules, args.profile, length)
     except Exception as exc:  # noqa: BLE001
         print("cannot open %s: %s" % (path, exc))
         return 2

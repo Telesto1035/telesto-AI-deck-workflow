@@ -255,7 +255,13 @@ def test_profile_length_is_info_only(rules):
     _deck, findings = qc_check.run_checks(src, rules, profile="findings")
     dl = by_id(findings, "deck-length")
     assert dl and dl[0].severity == "info"
+    # a 3-slide file is short for a minipack too (8 to 11 usual): still info, never a block
     _deck, findings = qc_check.run_checks(src, rules, profile="minipack")
+    dl = by_id(findings, "deck-length")
+    assert dl and dl[0].severity == "info" and "usually run" in dl[0].detail
+    assert not [f for f in findings if f.id == "deck-length" and f.severity == "block"]
+    # a variant range passed on the CLI replaces the profile's typical range
+    _deck, findings = qc_check.run_checks(src, rules, profile="findings", length=(1, 5))
     assert not by_id(findings, "deck-length")
 
 
@@ -274,3 +280,27 @@ def test_element_consistency_flags_minority_colour(tmp_path):
     deck, findings = qc_check.run_checks(out, qc_check.load_rules(None))
     hits = [f for f in findings if f.id == "element-consistency"]
     assert len(hits) == 1 and "2B2623" in hits[0].text and hits[0].slide == 5
+
+
+def test_profile_lengths_match_deck_types():
+    """Every profile range in qc_rules.json matches the typical range in draft-deck's deck-types.md.
+    The two files are coupled by prose only; this test is the machine check that stops them drifting."""
+    import re
+    dt = REPO / ".claude" / "skills" / "draft-deck" / "references" / "deck-types.md"
+    if not dt.exists():
+        pytest.skip("draft-deck/references/deck-types.md not on this path; deck-qc tested standalone")
+    text = dt.read_text(encoding="utf-8")
+    rules = qc_check.load_rules(None)["profiles"]
+    heads = {"findings": "## Findings", "proposal": "## Proposal", "minipack": "## Minipack", "manual": "## Manual"}
+    found = {}
+    for key, head in heads.items():
+        i = text.find(head); j = text.find("\n## ", i + 1)
+        m = re.search(r"\*\*Length:\*\* (\d+) to (\d+)", text[i:j if j > 0 else None])
+        assert m, "no Length line for %s" % key
+        found[key] = [int(m.group(1)), int(m.group(2))]
+    for key, label in (("kickoff", "Kickoff:"), ("presentation", "Presentation:"), ("update", "Update:"), ("workshop", "Workshop:")):
+        m = re.search(r"\*\*%s\*\*[^\n]*?(\d+) to (\d+) pages" % re.escape(label), text)
+        assert m, "no inline length for %s" % key
+        found[key] = [int(m.group(1)), int(m.group(2))]
+    mismatches = {k: (found[k], rules[k]["length"]) for k in found if list(rules[k]["length"]) != found[k]}
+    assert not mismatches, "qc_rules.json disagrees with deck-types.md: %s" % mismatches

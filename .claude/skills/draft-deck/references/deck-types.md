@@ -1,6 +1,6 @@
 # Deck types
 
-Eight types. Each lists the elements that usually appear, a length range and a register. None of this is a fixed order: the storyline decides the order, and the consultant confirms it in text before any build. Paper (Telesto or client) sets colours, fonts and furniture only; density follows the type and the page's job.
+Eight types. Each lists the elements that usually appear, the length such decks usually run, and a register. None of this is a fixed order or a limit: the storyline decides the order, the content decides the length (a minipack can run past 11 pages when the client should see it), and the consultant confirms both in text before any build. The gate reports length as information only, and the `--length` option passes a variant's range, such as `6-12` for a findings deck whose detail sits in a product. Paper (Telesto or client) sets colours, fonts and furniture only; density follows the type and the page's job.
 
 ## Contents
 - Findings / survey report
@@ -14,7 +14,7 @@ Eight types. Each lists the elements that usually appear, a length range and a r
 The deck a room of MDs, team leads and directors reads for an hour. No ambiguity, no AI-speak, no unexplained number.
 - **Usually present:** cover with the takeaway as title; executive summary with numbered findings, each a bold finding sentence with the key numbers inline and a labelled implication; methodology with n and margin of error, stating which cuts are directional; one or two pages per finding (numbered eyebrow, full-sentence action title, one or two exhibits, recommendation band, source and n under every exhibit, question wording verbatim in the footnote); closing recommendations or next steps; appendix after a divider, not counted in length.
 - **Exhibits:** native, editable charts from the data files. Bars and heatmaps for many percentages; paired bars for two groups; stacked scales for rating batteries; quote pages with verbatim attributed quotes.
-- **Length:** 10 to 25 pages; 6 to 12 when a product holds the detail.
+- **Length:** 10 to 25 pages usually; 6 to 12 when a product holds the detail.
 - **Register:** findings declarative and data-anchored; implications labelled and separate; bands in the should-register.
 
 ## Proposal / BD
@@ -29,7 +29,7 @@ Speaks the buyer's language: why now, what problem, what dollars, what the buyer
 The between-milestones deck that answers one question with evidence. Its shape is stable so a reader who has seen one can read the next without orientation; the order can still bend to the storyline.
 - **Usually present:** cover with the topic and the stake as title; callout page with the one-sentence takeaway in large type; executive summary with four numbered findings written as the client's opportunity, each with a one-line implication; one or two detail pages per finding sharing the eyebrow number; next steps with owners and dates. No conclusion page: the bands and the next steps close the argument. Appendix after a divider.
 - **Page patterns:** stat column beside quote cards; two ranked bar charts side by side; a small-multiple matrix of attributes by segment; a quotes page in two themed groups; a readiness table with a key-takeaways panel.
-- **Length:** 8 to 11 body pages.
+- **Length:** 8 to 11 body pages usually.
 - **Register:** findings as the client's opportunity; bands bold the action phrase and carry the client proof the consultant supplies.
 
 ## Kickoff, Presentation, Update, Workshop
