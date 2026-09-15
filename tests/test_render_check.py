@@ -5,6 +5,12 @@ attaches to a running instance rather than starting a private one, so an uncondi
 `$app.Quit()` in the teardown closes the consultant's windows and discards unsaved work.
 A clean COM quit also deletes the AutoRecover files, so nothing is recoverable afterwards.
 These tests pin the two guards that prevent it.
+
+The busy guard asks what is open, not whether a POWERPNT process exists: PowerPoint lingers
+as a process with no document window and consultants leave it running all day, so a process
+check refuses every render and asks them to kill the program. It refuses only on work that
+could actually be lost -- an unsaved presentation, or the target deck itself, which Open()
+would hand back as the consultant's own window.
 """
 import re
 import sys
@@ -23,20 +29,53 @@ def rendered_script() -> str:
     return render_check.PS_TEMPLATE.format(slides="", scale=1200, all="$false")
 
 
-def test_busy_guard_precedes_any_com_object():
-    """The running-PowerPoint check must come before the first COM call, or it is useless."""
+def test_busy_guard_precedes_any_slide_export():
+    """The busy check must come before anything is opened or exported, or it is useless."""
     script = rendered_script()
-    guard = script.find("POWERPNT")
+    guard = script.find("PPTBUSY")
+    opened = script.find("$app.Presentations.Open(")
+    assert guard != -1, "no busy guard in the PowerShell template"
+    assert opened != -1, "template no longer opens the deck; update this test"
+    assert guard < opened, "the busy guard must run before the deck is opened"
+
+
+def test_busy_guard_attaches_before_it_decides():
+    """Attach first, then ask what is open -- the same question the cleanup asks."""
+    script = rendered_script()
+    attach = script.find('GetActiveObject("PowerPoint.Application")')
+    decide = script.find("PPTBUSY")
+    assert attach != -1, "the guard must attach with GetActiveObject, not start a new instance"
+    assert attach < decide, "the busy decision must follow the attach, not precede it"
+
+
+def test_busy_guard_does_not_test_for_a_process():
+    """A POWERPNT process with no open document is not a reason to refuse."""
+    script = rendered_script()
+    assert "POWERPNT" not in script, (
+        "the guard is back to testing for a process; PowerPoint lingers with no document window"
+    )
+    assert "Get-Process" not in script
+
+
+def test_busy_guard_refuses_only_on_unsaved_work_or_the_target():
+    script = rendered_script()
+    assert "$op.Saved -eq $false" in script, "nothing checks for unsaved changes"
+    assert "$op.FullName" in script, "nothing checks whether the target deck is the open one"
+
+
+def test_new_com_object_only_when_nothing_was_attached():
+    """New-Object must sit in the else branch: attaching first is what makes Quit() safe."""
+    script = rendered_script()
     com = script.find("New-Object -ComObject PowerPoint.Application")
-    assert guard != -1, "no POWERPNT process guard in the PowerShell template"
     assert com != -1, "template no longer creates the COM object; update this test"
-    assert guard < com, "the POWERPNT guard must run before the COM object is created"
+    assert script.find("} else {", script.find("PPTBUSY")) < com, (
+        "New-Object must run only when GetActiveObject found no running instance"
+    )
 
 
 def test_busy_guard_exits_without_rendering():
     script = rendered_script()
-    line = next(ln for ln in script.splitlines() if "POWERPNT" in ln)
-    assert "PPTBUSY" in line
+    line = next(ln for ln in script.splitlines() if "PPTBUSY" in ln)
     assert "exit 2" in line, "a busy skip must exit 2, the gate's non-blocking skip code"
 
 
@@ -48,6 +87,15 @@ def test_quit_is_conditional_on_an_empty_instance():
     quit_line = next(ln for ln in script.splitlines() if "$app.Quit()" in ln)
     assert "$others -eq 0" in quit_line, "Quit() must be guarded by an empty-instance check"
     assert "Presentations.Count" in script, "nothing establishes how many decks are open"
+
+
+def test_an_attached_instance_is_never_quit():
+    """If PowerPoint was already running, the instance is the consultant's; leave it running."""
+    script = rendered_script()
+    quit_line = next(ln for ln in script.splitlines() if "$app.Quit()" in ln)
+    assert "-not $attached" in quit_line, (
+        "Quit() must also be guarded on having started the instance ourselves"
+    )
 
 
 def test_no_unconditional_quit_anywhere():

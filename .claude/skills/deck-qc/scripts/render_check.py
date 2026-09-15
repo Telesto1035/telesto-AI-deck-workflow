@@ -31,15 +31,38 @@ from pathlib import Path
 #
 # PowerPoint is a single-instance COM server. New-Object does not start a private copy: it attaches
 # to the PowerPoint the consultant already has open, and Quit() then closes their windows and loses
-# whatever they had not saved. So the render never runs while PowerPoint is in use; it reports
-# PPTBUSY and exits 2, which the gate treats as a skip and retries on the next write.
+# whatever they had not saved.
+#
+# A POWERPNT process is not the test for that. PowerPoint lingers as a process with no document
+# window, and consultants leave it running all day; asking them to kill the process is not how
+# anyone closes a program. So the guard attaches first and then asks what is actually open, the
+# same question the cleanup already asks. It refuses only on the two cases that can lose work:
+# an open presentation with unsaved changes, and the target deck itself, which Open() would hand
+# back as the consultant's own window for Close() to shut. Either way it reports PPTBUSY and exits
+# 2, which the gate treats as a skip and retries on the next write. An instance we attached to is
+# never quit, whatever the cleanup finds.
 PS_TEMPLATE = r'''
 $ErrorActionPreference = "Stop"
 $p = $env:QC_RENDER_DECK
 $out = $env:QC_RENDER_OUT
 New-Item -ItemType Directory -Force $out | Out-Null
-if (Get-Process -Name POWERPNT -ErrorAction SilentlyContinue) {{ Write-Output "PPTBUSY"; exit 2 }}
-try {{ $app = New-Object -ComObject PowerPoint.Application }} catch {{ Write-Output "NOPPT"; exit 2 }}
+$attached = $false
+try {{
+  $app = [Runtime.InteropServices.Marshal]::GetActiveObject("PowerPoint.Application")
+  $attached = $true
+}} catch {{ $app = $null }}
+if ($attached) {{
+  $busy = $false
+  try {{
+    foreach ($op in $app.Presentations) {{
+      if ($op.Saved -eq $false) {{ $busy = $true; break }}
+      if ($op.FullName -and ([string]$op.FullName).ToLower() -eq ([string]$p).ToLower()) {{ $busy = $true; break }}
+    }}
+  }} catch {{ $busy = $true }}
+  if ($busy) {{ Write-Output "PPTBUSY"; exit 2 }}
+}} else {{
+  try {{ $app = New-Object -ComObject PowerPoint.Application }} catch {{ Write-Output "NOPPT"; exit 2 }}
+}}
 $pres = $null
 try {{
 $pres = $app.Presentations.Open($p, $true, $false, $false)
@@ -81,11 +104,12 @@ foreach ($i in $wanted) {{
 Write-Output ("OVERFLOWS {{0}}" -f $over)
 }} finally {{
   if ($pres -ne $null) {{ try {{ $pres.Close() }} catch {{}} }}
-  # Quit only if nothing else is open in this instance: the consultant may have launched
-  # PowerPoint while the render was running, and COM would have handed them our instance.
+  # Quit only an instance we started ourselves, and only if nothing else is open in it: the
+  # consultant may have launched PowerPoint while the render was running, and COM would have
+  # handed them our instance. An instance we attached to is theirs; we leave it running.
   $others = 1
   try {{ $others = $app.Presentations.Count }} catch {{}}
-  if ($others -eq 0) {{ try {{ $app.Quit() }} catch {{}} }}
+  if ((-not $attached) -and ($others -eq 0)) {{ try {{ $app.Quit() }} catch {{}} }}
 }}
 '''
 
@@ -129,8 +153,9 @@ def main(argv=None) -> int:
     if proc.returncode != 0 and proc.stderr.strip():
         print(proc.stderr.strip()[:800])
     if "PPTBUSY" in text:
-        print("render skipped: PowerPoint is open. Exporting would attach to that instance and "
-              "closing it would lose unsaved work. Close PowerPoint and re-run.")
+        print("render skipped: PowerPoint has unsaved changes open, or the deck itself is open in it. "
+              "Exporting attaches to that instance, so closing the export would close the consultant's "
+              "own window. Save or close that presentation and re-run; PowerPoint itself can stay open.")
         return 2
     if proc.returncode == 2 or "NOPPT" in text:
         return 2
