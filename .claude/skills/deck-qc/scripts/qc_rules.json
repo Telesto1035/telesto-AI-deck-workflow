@@ -15,28 +15,7 @@
     "8A8F92"
   ],
   "palette_tolerance": 40,
-  "client_palettes": {
-    "huron_edr": {
-      "colours": [
-        "5D013A",
-        "EBE9E4",
-        "F7F6F4",
-        "2B2623",
-        "1C1A19",
-        "5D5652",
-        "9E9995",
-        "C9C6C2",
-        "E4C9DA",
-        "1E9BB0",
-        "2E8B7A",
-        "FFFFFF",
-        "000000"
-      ],
-      "fonts": [
-        "Tahoma"
-      ]
-    }
-  },
+  "client_palettes": {},
   "active_client_palette": null,
   "expand": {
     "State": "Department of State",
@@ -140,8 +119,33 @@
         15,
         25
       ]
+    },
+    "brief": {
+      "length": [
+        1,
+        1
+      ],
+      "words_warn": null,
+      "words_block": null,
+      "size_floor_exempt": [
+        "header strip",
+        "label row"
+      ],
+      "_note": "One-slide Build Brief. Dense by design and approved as such. Hygiene, author field, placeholders and number checks still apply; page-density rules do not. Inferred when a deck is one slide headed 'Build Brief'."
     }
   },
+  "gate_exclude": [
+    "tests/fixtures",
+    "fixtures",
+    ".venv",
+    "_handoff",
+    "handoff",
+    "node_modules",
+    "__pycache__",
+    "assets",
+    ".qc.pptx"
+  ],
+  "_gate_exclude_note": "Path fragments qc_gate_hook.py never gates: fixtures, templates' asset folders, and the .qc.pptx output of --fix-safe (gating it cascades a second block on what --fix-safe could not fix).",
   "totals_window_pct": 10,
   "_totals_note": "totals-sum fires only when components miss the stated total by more than 1 and by at most totals_window_pct of it (or 5 units); a wider miss means the Total is a different quantity, such as a crosstab total column.",
   "reviewer_note_patterns": [
@@ -154,7 +158,7 @@
   "fonts": [
     "Arial"
   ],
-  "_client_palettes_note": "colours seen on shipped Huron/EDR paper (Sep 2026); fonts is the typeface allowlist for style-drift. Set active_client_palette per engagement.",
+  "_client_palettes_note": "Empty by design. Brand colours are read from the client template's own theme part (clrScheme and custClrLst), so no per-engagement switch is needed and none can be left set to the wrong client. Add an entry here only to override the typeface allowlist (fonts) for an engagement, and set active_client_palette to its key; colours go under a 'colors' key.",
   "_expand_note": "Per engagement. A single capitalised token at the start of a paragraph (a chart label, a sentence opener) is never flagged. On the shipped federal deck the consultant kept HHS, DoD, VA, DHA and CMS as written and spelled out only DOE and, in one quote attribution, DHA; a default list of federal agencies produced 10 ignored warnings, so the default is short.",
   "italics_threshold": 4,
   "grey_text_threshold": 4,

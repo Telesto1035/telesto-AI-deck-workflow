@@ -97,3 +97,153 @@ def test_rules_carry_the_moved_thresholds(rules):
     assert rules["overlap_tolerance_pt"] == 4
     assert rules["chart_label_tolerance"] == 0.5
     assert "manual" in rules["profiles"]
+
+
+# --- patch 2026-09-14: the brief profile ---------------------------------------------------------
+
+
+def _build_brief(path: Path, heading: str = "Build Brief: engagement setup") -> Path:
+    """One dense slide: 320-odd words of body and a 9pt header strip. The approved Build Brief format."""
+    prs = Presentation()
+    prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+
+    head = slide.shapes.add_textbox(Inches(0.4), Inches(0.2), Inches(12.5), Inches(0.4))
+    head.name = "header strip"
+    r = head.text_frame.paragraphs[0].add_run()
+    r.text = "Engagement  |  Owner  |  Draft date  |  Version"
+    r.font.size = Pt(9)
+
+    body = slide.shapes.add_textbox(Inches(0.4), Inches(0.8), Inches(12.5), Inches(6.0))
+    body.name = "brief body"
+    tf = body.text_frame
+    tf.text = heading
+    tf.paragraphs[0].runs[0].font.size = Pt(14)
+    for i in range(20):
+        p = tf.add_paragraph()
+        run = p.add_run()
+        run.text = "Line %d of the brief states the scope, the owner and the data the page plan rests on." % i
+        run.font.size = Pt(11)
+    prs.core_properties.author = ""
+    prs.save(str(path))
+    return path
+
+
+def test_brief_profile_is_inferred_from_one_slide_and_the_heading(tmp_path, rules):
+    deck, _findings = qc_check.run_checks(_build_brief(tmp_path / "brief.pptx"), rules)
+    assert deck.profile == "brief"
+
+
+def test_brief_is_exempt_from_page_density_and_the_header_strip(tmp_path, rules):
+    deck, findings = qc_check.run_checks(_build_brief(tmp_path / "brief.pptx"), rules)
+    ids = {f.id for f in findings}
+    assert "word-count" not in ids, [f for f in findings if f.id == "word-count"]
+    assert "font-size-floor" not in ids, [f for f in findings if f.id == "font-size-floor"]
+    # hygiene still blocks on a python-pptx build (author, fingerprint); the density rules are what the profile lifts
+    assert not [f for f in findings if f.severity == "block" and f.id in ("word-count", "font-size-floor")], findings
+
+
+def test_the_same_page_without_the_brief_heading_is_gated_as_usual(tmp_path, rules):
+    """The exemption rides on the profile, not on the shape name: no brief heading, no exemption."""
+    deck, findings = qc_check.run_checks(_build_brief(tmp_path / "page.pptx", heading="Scope and owners"), rules)
+    assert deck.profile is None
+    assert "font-size-floor" in {f.id for f in findings}
+
+
+def test_brief_still_gates_hygiene(tmp_path, rules):
+    """Author, placeholders and metadata are not what the profile switches off.
+
+    Properties block at hand-back rather than mid-session, so this asserts both halves."""
+    p = _build_brief(tmp_path / "brief.pptx")
+    from pptx import Presentation as _P
+    prs = _P(str(p))
+    prs.core_properties.author = "Doyoung Lim"
+    tb = prs.slides[0].shapes.add_textbox(Inches(0.4), Inches(6.9), Inches(6), Inches(0.3))
+    tb.text_frame.text = "[PLACEHOLDER: fee to confirm]"
+    tb.text_frame.paragraphs[0].runs[0].font.size = Pt(11)
+    prs.save(str(p))
+    _deck, findings = qc_check.run_checks(p, rules, handback=True)
+    ids = {f.id for f in findings if f.severity == "block"}
+    assert "author-empty" in ids and "placeholders" in ids, findings
+    _d2, mid = qc_check.run_checks(p, rules)
+    assert "author-empty" not in {f.id for f in mid if f.severity == "block"}
+    assert "author-empty" in {f.id for f in mid if f.severity == "warn"}
+    assert "placeholders" in {f.id for f in mid if f.severity == "block"}, "content faults still block"
+
+
+def test_brief_profile_can_be_asked_for_by_name(tmp_path, rules):
+    deck, findings = qc_check.run_checks(_build_brief(tmp_path / "b.pptx", heading="Scope and owners"), rules, profile="brief")
+    assert deck.profile == "brief"
+    assert "word-count" not in {f.id for f in findings}
+
+
+# ---- custom (non-theme) brand colours ------------------------------------------------
+
+A_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
+RT_THEME = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme"
+BRAND_HEX = "5D013A"
+
+
+def _deck_on_brand_fill(path: Path, declare_custom: bool) -> Path:
+    """A one-slide deck with a shape filled in a brand colour; optionally the theme
+    declares that colour in a custClrLst, the way a client template does."""
+    from lxml import etree
+    from pptx.dml.color import RGBColor
+    from pptx.enum.shapes import MSO_SHAPE
+
+    prs = Presentation()
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    sh = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1), Inches(1), Inches(2), Inches(1))
+    sh.fill.solid()
+    sh.fill.fore_color.rgb = RGBColor.from_string(BRAND_HEX)
+    sh.line.fill.background()
+    if declare_custom:
+        part = prs.slide_masters[0].part.part_related_by(RT_THEME)
+        root = etree.fromstring(part.blob)
+        lst = etree.SubElement(root, "{%s}custClrLst" % A_NS)
+        cc = etree.SubElement(lst, "{%s}custClr" % A_NS)
+        cc.set("name", "Brand")
+        etree.SubElement(cc, "{%s}srgbClr" % A_NS).set("val", BRAND_HEX)
+        part._blob = etree.tostring(root, xml_declaration=True, encoding="UTF-8", standalone=True)
+    prs.save(str(path))
+    return path
+
+
+def test_brand_colour_outside_the_theme_is_style_drift(tmp_path, rules):
+    """Control: a colour the template declares nowhere is drift, as before."""
+    path = _deck_on_brand_fill(tmp_path / "undeclared.pptx", declare_custom=False)
+    _deck, findings = qc_check.run_checks(path, rules)
+    drift = [f for f in findings if f.id == "style-drift" and f.slide == 1]
+    assert drift and BRAND_HEX in drift[0].detail, findings
+
+
+def test_custom_colour_declared_by_the_template_is_not_style_drift(tmp_path, rules):
+    """A client template may declare its palette in custClrLst rather than clrScheme --
+    Huron's own instruction slide says to use custom colours only. The gate reads both,
+    so a deck built correctly on client paper raises no colour warning."""
+    path = _deck_on_brand_fill(tmp_path / "declared.pptx", declare_custom=True)
+    deck, findings = qc_check.run_checks(path, rules)
+    assert BRAND_HEX in deck.theme_colors(deck.slides[0].slide_layout.slide_master)
+    drift = [f for f in findings if f.id == "style-drift" and f.slide == 1]
+    assert not drift, drift
+
+
+def test_em_dash_flags_prose_but_not_a_verbatim_quote(tmp_path, rules):
+    """language-rules.md line 54: no em dashes in original prose; quoted material keeps its punctuation."""
+    prs = Presentation(str(CLEAN))
+    slide = prs.slides[0]
+    for top, text in (
+        (Inches(3), "Buyers shifted spend \u2014 and budgets followed"),
+        (Inches(4), "\u201cWe moved the budget \u2014 all of it \u2014 to the new vendor.\u201d"),
+    ):
+        tb = slide.shapes.add_textbox(Inches(1), top, Inches(7), Inches(0.5))
+        tb.text_frame.text = text
+        for r in tb.text_frame.paragraphs[0].runs:
+            r.font.size = Pt(12)
+    out = tmp_path / "emdash.pptx"
+    prs.save(str(out))
+    _deck, findings = qc_check.run_checks(out, rules)
+    hits = [f for f in findings if f.id == "em-dash"]
+    assert len(hits) == 1, [f.text for f in hits]
+    assert hits[0].text.startswith("Buyers shifted spend")
+    assert hits[0].severity == "warn"
