@@ -108,26 +108,34 @@ Run by the evaluator. When the right change depends on data you do not have, mar
 - **Quotes as evidence.** Trimmed or reworded against the same quote elsewhere; a paraphrase in a Quotes column; a quote that does not support the band beside it; attribution spelled two ways.
 - **Outcome clarity.** Can a reader state the takeaway and the decision after the titles alone? Is there a closing decision or next-step page where the profile requires one?
 - **Value at stake.** Present, in dollars, with assumptions and source where required; labelled illustrative where projected.
-- **Voice.** Apply draft-deck `references/voice-review.md` (AI pattern classes) and `references/house-register.md` (firm rules, including the word list). Never alter a number during a voice fix.
+- **Language.** Apply draft-deck `references/voice-review.md` (AI pattern classes) and the enforceable conventions in `references/house-register.md`. Grammar, machine phrasing and convention breaches only; house voice is not assessed. Never alter a number during a language fix.
 - **Portability test.** A title that could move unchanged to another client's deck is not yet a finding; propose the specific version where the exhibit supports one.
 
 ## Scoring and report
 
-Five dimensions, 1 to 5. The score is the summary; the lists are the product. Value at stake is N/A where the profile says so. Register is never N/A: score it and give a verdict line even when nothing is wrong.
+Four dimensions, 1 to 5. The score is the summary; the lists are the product. Value at stake is N/A where the profile says so.
 
-| Score | Clarity of outcome | Logical flow | Value at stake | Technical accuracy | Register |
-|---|---|---|---|---|---|
-| 5 | One takeaway; every title asserts; a closing decision page | Title chain reads as one argument; summary and body map one to one | Stated, sourced, assumptions shown | Every figure traced; totals reconcile; footnotes complete | Reads as a consultant wrote it; no page fails the CEO-email test |
-| 4 | Takeaway clear; one or two label titles | One soft transition or one page out of order | Stated and sourced; assumptions partly shown | One unsourced figure or one footnote gap | One or two sentences a consultant would rewrite |
-| 3 | Takeaway inferred from several pages; no decision page | One missing page or one contradiction | Stated without source or assumptions | Two to four unsourced figures or one reconciliation failure | A handful of machine-flavoured lines, including in titles |
-| 2 | Several label titles; the reader cannot say what to decide | Two or more contradictions or missing pages | Implied, never quantified | Multiple reconciliation failures; placeholders | Machine phrasing runs through the title chain or exec summary |
-| 1 | No discernible takeaway | Pages do not connect | Absent where required | Figures cannot be traced | The deck reads as generated text throughout |
+| Score | Clarity of outcome | Logical flow | Value at stake | Technical accuracy |
+|---|---|---|---|---|
+| 5 | One takeaway; every title asserts; a closing decision page | Title chain reads as one argument; summary and body map one to one | Stated, sourced, assumptions shown | Every figure traced; totals reconcile; footnotes complete |
+| 4 | Takeaway clear; one or two label titles | One soft transition or one page out of order | Stated and sourced; assumptions partly shown | One unsourced figure or one footnote gap |
+| 3 | Takeaway inferred from several pages; no decision page | One missing page or one contradiction | Stated without source or assumptions | Two to four unsourced figures or one reconciliation failure |
+| 2 | Several label titles; the reader cannot say what to decide | Two or more contradictions or missing pages | Implied, never quantified | Multiple reconciliation failures; placeholders |
+| 1 | No discernible takeaway | Pages do not connect | Absent where required | Figures cannot be traced |
 
 Technical accuracy below 3 goes in the report header regardless of the overall.
 
-**Register.** Read `draft-deck/references/language-rules.md` and `house-register.md` before scoring this dimension, and the client file under `draft-deck/references/clients/` when the deck is on client paper. Do not score it from memory: register is the one dimension whose standard lives outside the deck, so an unread rule becomes an invented one, and a client file can invert the firm-wide instinct (a line that softens a claim may be the defect rather than the fix). The test the files state is the whole of it: would a consultant write this sentence in an email to the CEO? The phrases they name are examples inside the rule, not a word list standing in for it. The most common failure is an abstraction given a verb a person should own: work that shapes, jobs that are kept, judgment that is sold, a deck that earns a right.
+**Language, and why it carries no score.** There was a fifth dimension, Register, scored 1 to 5 against how a Telesto consultant writes. It is retired as of 2026-09-15. Voice differs too much between competent writers to be scored, and a standard that needs an owner adjudicating it every week cannot survive being shared. The checks that survive are the ones any professional reader applies the same way.
 
-Report up to five worst offenders as SUGGEST items; this is not an exhaustive sweep. **Each one names the file and quotes the rule verbatim**, then the deck line, then the rewrite. An item that cannot be sourced to a line in those files is not a register finding: offer it as a plain SUGGEST or drop it, and never attribute it to a house rule it cannot quote.
+What is still checked, as items and never as a score:
+- **Machine phrasing**, against `draft-deck/references/voice-review.md`. Research-backed pattern classes, not house taste. FIX where the line is simply wrong, SUGGEST where the rewrite is a judgment.
+- **Grammar and mechanics**: agreement, parallel structure in a list or series, tense, a garbled line. FIX.
+- **The enforceable conventions** in `draft-deck/references/house-register.md`, plus `language-rules.md`, plus the client file under `draft-deck/references/clients/` when the deck is on client paper. Read them; do not apply them from memory.
+- **Logic across titles**, which the title chain and claim-sizing checks above already own.
+
+The floor is general professional consulting writing: an MBB or Big Four deliverable, a memo to an F500 executive. Inside that floor the deck is left alone. **The Preferences section of `house-register.md` is not a source of findings** — a line that merely departs from a house habit is not a defect, and a command verb in a recommendation is not one.
+
+Report up to five worst offenders as items; this is not an exhaustive sweep. **Each one names the file and quotes the rule verbatim**, then the deck line, then the rewrite. An item that cannot be sourced this way is not a language finding: offer it as a plain SUGGEST on its own merits or drop it, and never attribute it to a house rule it cannot quote.
 
 Report, in order: header (deck type, inferred or from the brief; page count and version; whether and in what form source data was attached; the one thing to act on first); scorecard with a one-line reason each; hygiene (what the gate stripped, every speaker note quoted); FIX list; SUGGEST list in slide order, each naming the page by number and title, with QUESTION items stated as questions; brief check when a brief is attached; diff when a prior version is attached; and the "not checked" line every time. Short enough to act on.
 

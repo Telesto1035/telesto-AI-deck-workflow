@@ -4,6 +4,8 @@ Principles for titles, claims, provenance, and craft. Stable; changed only by th
 
 House style for titles, takeaways, and slide text. Applies on both papers (thinking + craft always apply; only branding changes by paper). Examples are drawn from shipped decks.
 
+The standard is general professional consulting writing: an MBB or Big Four deliverable, a memo to an F500 executive. Every rule below is meant to be one a reader outside the firm could apply the same way. None of it is scored; deck-qc retired the register dimension on 2026-09-15 because voice varies between competent consultants and a taste verdict cannot be calibrated or shared. These rules produce items that quote the line they rest on, or they produce nothing.
+
 ## Action titles
 
 The title IS the takeaway. A reader skimming only titles gets the full argument.

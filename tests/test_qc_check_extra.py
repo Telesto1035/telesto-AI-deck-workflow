@@ -277,42 +277,97 @@ def test_apply_profile_leaves_the_base_rules_alone(rules):
     assert rules["words_warn"] == before["words_warn"] is not None
 
 
-# --- patch 2026-09-15: register is scored from the files, not from memory ------------------------
-# First live run of the register dimension cited two house rules that do not exist and inverted the
-# one that does. Nothing in either instruction told the evaluator to open the rule files, and the
-# wording ("not by a word list", "examples, not the whole rule") read as licence not to.
+# --- patch 2026-09-15: the language check is sourced from the files, and voice is not scored -----
+# Two failures, one week apart. First the register dimension cited two house rules that do not
+# exist and inverted the one that does, because nothing told the evaluator to open the files.
+# Then the deeper one: scoring how a firm sounds needs an owner arbitrating taste every week, and
+# it cannot be applied by anyone the skills are shared with. The dimension is retired. What is
+# checked now is what any professional reader applies the same way: grammar, machine phrasing,
+# the conventions a stranger could enforce, and logic across titles.
 
 AGENT = REPO / ".claude" / "agents" / "deck-evaluator.md"
 DECK_QC_SKILL = REPO / ".claude" / "skills" / "deck-qc" / "SKILL.md"
+HOUSE_REGISTER = REPO / ".claude" / "skills" / "draft-deck" / "references" / "house-register.md"
 RULE_FILES = ("language-rules.md", "house-register.md")
+INSTRUCTIONS = [AGENT, DECK_QC_SKILL]
 
 
-def _register_section(text: str) -> str:
-    """The part of a file that governs the register dimension."""
+def _language_section(text: str) -> str:
+    """The part of a file that governs the language check."""
     low = text.lower()
-    i = low.find("## scoring register")  # the heading, not the cross-reference to it
-    if i < 0:
-        i = low.find("**register.**")
-    assert i >= 0, "no register section to check"
+    for marker in ("## the language check", "**language, and why it carries no score.**"):
+        i = low.find(marker)
+        if i >= 0:
+            break
+    assert i >= 0, "no language section to check"
     j = low.find("\n## ", i + 1)
     return text[i: j if j > 0 else None]
 
 
-@pytest.mark.parametrize("path", [AGENT, DECK_QC_SKILL], ids=["evaluator", "deck-qc"])
-def test_register_instruction_names_the_rule_files(path):
-    """Register is the one dimension with no evidence in the deck, so an unread rule becomes an
+@pytest.mark.parametrize("path", INSTRUCTIONS, ids=["evaluator", "deck-qc"])
+def test_language_instruction_names_the_rule_files(path):
+    """The language check is the one with no evidence in the deck, so an unread rule becomes an
     invented one. Both instructions must send the reader to the files by name."""
-    section = _register_section(path.read_text(encoding="utf-8"))
+    section = _language_section(path.read_text(encoding="utf-8"))
     missing = [f for f in RULE_FILES if f not in section]
-    assert not missing, "%s register section does not name %s" % (path.name, missing)
-    assert "clients/" in section, "%s register section does not name the client file" % path.name
+    assert not missing, "%s language section does not name %s" % (path.name, missing)
+    assert "clients/" in section, "%s language section does not name the client file" % path.name
 
 
-@pytest.mark.parametrize("path", [AGENT, DECK_QC_SKILL], ids=["evaluator", "deck-qc"])
-def test_register_findings_must_quote_their_rule(path):
+@pytest.mark.parametrize("path", INSTRUCTIONS, ids=["evaluator", "deck-qc"])
+def test_language_findings_must_quote_their_rule(path):
     """A finding that cannot quote its rule is what fabrication looks like in the report."""
-    section = _register_section(path.read_text(encoding="utf-8")).lower()
+    section = _language_section(path.read_text(encoding="utf-8")).lower()
     assert "quote" in section, "%s does not require the rule to be quoted" % path.name
-    assert "not a register finding" in section, (
+    assert "not a language finding" in section, (
         "%s does not say what to do with an item that cannot be sourced" % path.name
+    )
+
+
+@pytest.mark.parametrize("path", INSTRUCTIONS, ids=["evaluator", "deck-qc"])
+def test_no_voice_dimension_is_scored(path):
+    """Voice differs between competent consultants. Scoring it needs a permanent arbiter and
+    cannot be enforced once the skills are shared, so the dimension is gone, not renamed."""
+    text = path.read_text(encoding="utf-8")
+    low = text.lower()
+    assert "five dimensions" not in low, "%s still scores five dimensions" % path.name
+    assert "four dimensions" in low, "%s does not state the four scored dimensions" % path.name
+    header_row = [ln for ln in text.splitlines() if ln.startswith("| Score |")]
+    for row in header_row:
+        assert "Register" not in row, "%s scorecard still carries a Register column" % path.name
+
+
+@pytest.mark.parametrize("path", INSTRUCTIONS, ids=["evaluator", "deck-qc"])
+def test_preferences_are_not_a_source_of_findings(path):
+    """The taste rules survive as house habit. A check that cites them re-creates the problem the
+    retirement was meant to remove, so both instructions must rule them out by name."""
+    section = _language_section(path.read_text(encoding="utf-8")).lower()
+    assert "preferences" in section, (
+        "%s language section does not mention the Preferences section" % path.name
+    )
+
+
+def test_house_register_separates_enforceable_from_preference():
+    """The file is the source both instructions read. It has to carry the split itself, or the
+    instruction not to cite preferences has nothing to point at."""
+    text = HOUSE_REGISTER.read_text(encoding="utf-8")
+    low = text.lower()
+    assert "## enforceable conventions" in low, "house-register has no enforceable section"
+    assert "## preferences, not enforced" in low, "house-register has no preferences section"
+    prefs = text[low.find("## preferences, not enforced"):]
+    prefs = prefs[: prefs.find("\n## ") if "\n## " in prefs else None]
+    assert "no check may cite" in prefs.lower(), (
+        "the Preferences section does not say that no check may cite it"
+    )
+
+
+def test_house_register_states_the_outside_reader_standard():
+    """The whole point of the change: the bar is professional consulting writing, which a stranger
+    can apply, not an imitation of one firm's voice, which needs a maintainer."""
+    low = HOUSE_REGISTER.read_text(encoding="utf-8").lower()
+    assert "nothing in this file is scored" in low, (
+        "house-register does not say that it carries no score"
+    )
+    assert "outside the firm" in low, (
+        "house-register does not state the outside-reader test a convention must pass"
     )

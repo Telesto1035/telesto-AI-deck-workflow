@@ -6,7 +6,7 @@
 
 2. **Build.** "Draft the deck" or "build the findings report" triggers `draft-deck`. It confirms the deck type and the audience by pop-up, then shows the page plan as one title per line, then builds from a template or prior shipped deck. It never builds a file without one.
 3. **Gate.** In Claude Code the Stop hook runs `qc_check.py` on every PPTX the session wrote and will not let the turn end while blocking findings remain: author field set, speaker notes, generator fingerprints, text below 10pt outside footnotes, italics, placeholders, footnote markers without footnotes, totals that do not sum, chart labels that disagree with cached data. Three blocked stops and it hands off with the findings attached. In Cowork the `deck-qc` skill asks for the same checks by hand.
-4. **Evaluate.** "Use the deck-evaluator subagent on OUT.pptx." It applies deck-qc Layer 2 in a fresh context: skeleton against the deck type, title chain, exec summary to body, conclusion follows exhibit, claim sizing, voice, portability. It scores four dimensions 1 to 5 and returns suggestions. It never edits the file. Anything that needs data or client context comes back marked QUESTION.
+4. **Evaluate.** "Use the deck-evaluator subagent on OUT.pptx." It applies deck-qc Layer 2 in a fresh context: skeleton against the deck type, title chain, exec summary to body, conclusion follows exhibit, claim sizing, language, portability. It scores four dimensions 1 to 5 and returns suggestions. Voice is not scored: the standard is professional consulting writing, and what is checked is grammar, machine phrasing and the conventions a reader outside the firm could apply. It never edits the file. Anything that needs data or client context comes back marked QUESTION.
 5. **Review.** The partner comments in PowerPoint, as usual. "Resolve these comments" triggers `draft-deck` Revise, which reads the comments from the file (`pptx_comments.py`), executes mechanical ones, proposes options for judgment ones, and returns a before-and-after log built from `deck_diff.py --comments`. A deck can join here without having gone through steps 1 to 4: a human-built draft with the CEO's comments on it is a valid starting point.
 6. **Ship, then learn.** After shipping, `deck-qc/scripts/deck_diff.py DRAFT.pptx SHIPPED.pptx` lists every edit by class (number, structure, storyline, style). `draft-deck` Learn turns repeated edits into proposed skill patterns; nothing enters a skill without approval.
 
@@ -37,7 +37,7 @@ Bump `VERSION` when a change should reach the team; the manifest reads it.
 
 ## Rules that learn without growing
 
-Writing rules learned from shipped decks live in `draft-deck/references/house-register.md`, capped at 25 and entered only after a pattern recurs in two decks or the CEO rules. Client formatting and voice live in `draft-deck/references/clients/<client>.md`, which never holds engagement content. Learn proposes at most three changes per pass; nothing enters without approval.
+Writing conventions learned from shipped decks live in `draft-deck/references/house-register.md`, capped at 25 and entered only after a pattern recurs in two decks or the CEO rules. The file splits them: enforceable conventions, which a check may cite, and Preferences, which are house habit and no check may cite. Client formatting and voice live in `draft-deck/references/clients/<client>.md`, which never holds engagement content. Learn proposes at most three changes per pass; nothing enters without approval.
 
 ## Never remember the next step
 

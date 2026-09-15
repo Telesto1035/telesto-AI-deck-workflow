@@ -11,7 +11,7 @@ Content and layout outrank styling. Never spend effort on lines, icons, or decor
 
 ## The invariant
 
-The chain exists so that a deck, human- or AI-written, reaches the partner mistake-free, up to the firm's conventions, and informed by the client's responsibility. This skill owns the writing and the client context; deck-qc owns the checks. A human applies the finishing touches, so the skill carries principles and a capped register, not a rule for every edit.
+The chain exists so that a deck, human- or AI-written, reaches the partner mistake-free, up to the firm's conventions, and informed by the client's responsibility. This skill owns the writing and the client context; deck-qc owns the checks. A human applies the finishing touches, so the skill carries principles and a capped register, not a rule for every edit. The standard it enforces is general professional consulting writing, not an imitation of any one person's voice: voice varies between competent consultants and is checked nowhere in the chain.
 
 
 Every Telesto deck produces a call to action or a discussion, supported by statistics, quotes or data visualization, and it works at two reading speeds. Read only the titles on a phone and the message lands in 20 seconds. Read every chart and footnote for 30 minutes and nothing is ambiguous, unexplained or unsourced. Both tests apply to every type and every page. Density is not a style choice; it is set by the deck type and by each page's job.
@@ -158,7 +158,7 @@ When adding a page or an element to an existing deck, copy the style of the near
 The core above holds the rules every mode needs. The rest is in `references/`, read by mode, so a Revise round does not carry Build material:
 
 - `language-rules.md`: principles for titles, claims, provenance and craft. Read on every Revise, Rewrite and Learn.
-- `house-register.md`: firm-wide writing rules learned from shipped decks, capped at 25, each with one example and its evidence. Read on every Revise, Rewrite and Learn. Governance (entry, conflict, retirement) is at the top of the file.
+- `house-register.md`: firm-wide writing conventions learned from shipped decks, capped at 25, each with one example and its evidence. Read on every Revise, Rewrite and Learn. Governance (entry, conflict, retirement) is at the top of the file. Its enforceable conventions are ones a reader outside the firm could apply; its Preferences section is house habit that a drafter may follow and no check may cite. Voice is not scored anywhere in the chain.
 - `clients/<client>.md`: the client's layouts, palette, table and chart formatting, voice, claims precedent, and single-deck observations not yet promoted. Read when the paper is that client's; if no file exists for the client, say so and draft from the attached deck alone.
 - `comment-shorthand.md`: reviewer phrases that go to a pop-up with readings. Read on every Revise.
 - `transcripts.md`: the one-pass read, topic segmentation and the ask register, and what is never extracted from a recording. Not mode-gated: read the first time a meeting transcript appears, at Build or at Revise.
