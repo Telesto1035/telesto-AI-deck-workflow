@@ -3,7 +3,7 @@
 
 Usage:
     python qc_check.py DECK.pptx [--rules qc_rules.json] [--json out.json] [--fix-safe] [--handback]
-                        [--profile findings|proposal|kickoff|minipack|presentation|update|workshop|manual]
+                        [--profile findings|proposal|kickoff|minipack|presentation|update|workshop|manual|brief]
 
 Exit 0: no blocking findings. Exit 1: blocking findings present. Exit 2: file could not be opened.
 
@@ -17,6 +17,7 @@ import argparse
 import io
 import json
 import math
+import os
 import re
 import sys
 import time
@@ -258,6 +259,12 @@ class Deck:
         out = set()
         if theme is None:
             return out
+        # A client template may declare its brand palette as custom colours rather
+        # than theme colours; the gate should trust what the template itself declares.
+        for cc in theme.findall(".//" + q("a:custClr")):
+            srgb = cc.find(q("a:srgbClr"))
+            if srgb is not None and srgb.get("val"):
+                out.add(srgb.get("val").upper())
         scheme = theme.find(".//" + q("a:clrScheme"))
         if scheme is None:
             return out
@@ -577,9 +584,14 @@ def check_font_size_floor(d: Deck):
     """One finding per slide: the shapes below the floor, the smallest size, a sample line."""
     floor = float(d.rules.get("size_floor_pt", 10))
     fn_floor = float(d.rules.get("footnote_floor_pt", 8))
+    # a profile may exempt named shapes (a brief's header strip, its label row): dense by design and approved
+    exempt = [str(s).lower() for s in (d.rules.get("size_floor_exempt") or [])]
     for sno, shapes in d.shapes_by_slide.items():
         offenders = []  # (shape, min_size, sample, home, run_count)
         for si in shapes:
+            name = (getattr(si.shape, "name", "") or "").lower()
+            if exempt and any(e in name for e in exempt):
+                continue
             runs = list(d.runs_of(si))
             if getattr(si.shape, "has_table", False) and si.shape.has_table:
                 for _r, _c, txBody, _t in d.table_cells(si):
@@ -919,7 +931,7 @@ def check_comments(d: Deck):
             d.add(
                 id="comments-open", severity="warn", slide=None, shape=None, shape_id=None,
                 text=" | ".join(t[:80] for t in open_items[:5]),
-                detail="%d unresolved comment%s in %s; resolve or remove, ask the author" % (
+                detail="%d unresolved comment%s in %s; resolve, remove, or name which are held scope comments" % (
                     len(open_items), "s" if len(open_items) != 1 else "", name
                 ),
                 fix="none",
@@ -1132,9 +1144,12 @@ QUOTED_RE = re.compile(r"[\u201c\"]([^\u201d\"]{12,})[\u201d\"]")
 
 def check_word_count(d: Deck):
     """Title + body + chart labels per page against the rules' thresholds; footnotes counted apart; appendix exempt."""
-    warn = int(d.rules.get("words_warn", 200))
-    block = int(d.rules.get("words_block", 275))
-    fn_warn = int(d.rules.get("footnote_words_warn", 100))
+    # null in a profile means the page-density rule does not apply to that deck type (a one-slide brief)
+    warn = d.rules.get("words_warn", 200)
+    block = d.rules.get("words_block", 275)
+    fn_warn = d.rules.get("footnote_words_warn", 100)
+    if warn is None and fn_warn is None:
+        return
     for sno, shapes in d.shapes_by_slide.items():
         if d.is_appendix(sno):
             continue
@@ -1161,19 +1176,20 @@ def check_word_count(d: Deck):
             continue
         if quoted >= body / 2:
             continue  # a quotes page carries verbatim text by design
-        if body > warn:
+        if warn is not None and body > int(warn):
             d.add(
-                id="word-count", severity="block" if body > block else "warn", slide=sno, shape=None, shape_id=None,
+                id="word-count", severity="block" if block is not None and body > int(block) else "warn",
+                slide=sno, shape=None, shape_id=None,
                 text="%d words" % body,
-                detail="%d words of title, body and chart labels (warn above %d, block above %d); footnotes %d counted apart" % (
-                    body, warn, block, fn
+                detail="%d words of title, body and chart labels (warn above %d, block above %s); footnotes %d counted apart" % (
+                    body, int(warn), int(block) if block is not None else "off", fn
                 ),
                 fix="reword",
             )
-        if fn > fn_warn:
+        if fn_warn is not None and fn > int(fn_warn):
             d.add(
                 id="footnote-words", severity="warn", slide=sno, shape=None, shape_id=None,
-                text="%d words" % fn, detail="footnotes run %d words (warn above %d); trim question wording or move detail to the appendix" % (fn, fn_warn),
+                text="%d words" % fn, detail="footnotes run %d words (warn above %d); trim question wording or move detail to the appendix" % (fn, int(fn_warn)),
                 fix="reword",
             )
 
@@ -1800,6 +1816,33 @@ def check_voice_words(d: Deck):
                 )
 
 
+CURLY_QUOTED_RE = re.compile("“[^”]*”")
+
+
+def _outside_quotes(text: str) -> str:
+    """Text with curly-quoted spans blanked out, so verbatim material keeps its own punctuation."""
+    return CURLY_QUOTED_RE.sub(lambda m: " " * len(m.group(0)), text)
+
+
+def check_em_dash(d: Deck):
+    """Em dashes in original prose (language-rules.md). Verbatim quoted material and footnote/source
+    shapes carrying question wording keep their own punctuation; notes are not slide text."""
+    for sno in d.shapes_by_slide:
+        for si, txt in d.slide_texts(sno):
+            if d.is_footnote_home(si):
+                continue
+            prose = _outside_quotes(txt)
+            n = prose.count("—")
+            if n:
+                d.add(
+                    id="em-dash", severity="warn", slide=sno, shape=si.name, shape_id=si.shape_id,
+                    text=txt.strip()[:120],
+                    detail="%d em dash%s in original prose; use commas, periods, or restructure" % (
+                        n, "es" if n != 1 else ""),
+                    fix="reword",
+                )
+
+
 def _has_page_number(d: Deck, slide) -> bool:
     for sh in slide.shapes:
         if sh.is_placeholder and sh.placeholder_format.type == PP_PLACEHOLDER.SLIDE_NUMBER:
@@ -2012,13 +2055,47 @@ ALL_CHECKS = [
     check_style_drift,
     check_draft_stamp,
     check_voice_words,
+    check_em_dash,
 ]
+
+
+PROFILE_META_KEYS = {"length"}
+
+
+def apply_profile(rules: dict, profile: Optional[str]) -> dict:
+    """Overlay a profile's threshold overrides on the rules for this run. A profile may carry any rules key
+    beside `length`; null switches that check off for the deck type (the brief's page-density rules)."""
+    prof = (rules.get("profiles") or {}).get(profile) or {}
+    over = {k: v for k, v in prof.items() if k not in PROFILE_META_KEYS and not k.startswith("_")}
+    if not over:
+        return rules
+    merged = dict(rules)
+    merged.update(over)
+    return merged
+
+
+def infer_profile(deck: Deck) -> Optional[str]:
+    """The one inference the gate makes: a single slide headed "Build Brief" is the brief profile. Every other
+    deck type is stated by the consultant, because guessing one would change what blocks."""
+    if len(deck.slides) != 1:
+        return None
+    for si in deck.shapes_by_slide.get(1, []):
+        if not deck.is_text_shape(si):
+            continue
+        for para in (deck.shape_text(si) or "").splitlines():
+            if para.strip().lower().startswith("build brief"):
+                return "brief"
+    return None
 
 
 def run_checks(path: Path, rules: dict, profile: Optional[str] = None,
                length: Optional[tuple] = None, handback: bool = False) -> tuple[Deck, list[Finding]]:
     deck = Deck(path, rules)
     deck.handback = handback
+    if profile is None:
+        profile = infer_profile(deck)
+    deck.profile = profile
+    deck.rules = apply_profile(rules, profile)
     for fn in ALL_CHECKS:
         fn(deck)
     check_profile_length(deck, profile, length)
@@ -2205,9 +2282,21 @@ def fix_safe(deck: Deck, findings: list[Finding], out_path: Path, log) -> Path:
 # --------------------------------------------------------------------------------------
 
 
+def rules_path(path: Optional[Path]) -> Path:
+    """--rules wins, then QC_RULES, then the repo default. The environment variable exists so the Stop gate
+    reads the same per-engagement copy the consultant passes by hand: a gate that runs on the default rules
+    while the consultant runs on the engagement's copy gives two answers on one deck, and the enforced one
+    is the weaker (it has no `client_names`)."""
+    if path:
+        return Path(path)
+    env = os.environ.get("QC_RULES")
+    if env and Path(env).exists():
+        return Path(env)
+    return DEFAULT_RULES_PATH
+
+
 def load_rules(path: Optional[Path]) -> dict:
-    p = Path(path) if path else DEFAULT_RULES_PATH
-    with open(p, encoding="utf-8") as fh:
+    with open(rules_path(path), encoding="utf-8") as fh:
         return json.load(fh)
 
 
@@ -2239,7 +2328,7 @@ def main(argv=None) -> int:
     ap.add_argument("--rules", default=None)
     ap.add_argument("--json", dest="json_out", default=None)
     ap.add_argument("--fix-safe", action="store_true")
-    ap.add_argument("--profile", choices=["findings", "proposal", "kickoff", "minipack", "presentation", "update", "workshop", "manual"])
+    ap.add_argument("--profile", choices=["findings", "proposal", "kickoff", "minipack", "presentation", "update", "workshop", "manual", "brief"])
     ap.add_argument("--length", default=None, help="typical page range for a variant, e.g. 6-12 for a findings deck whose detail sits in a product; info only")
     ap.add_argument("--no-length", action="store_true", help="skip the length line: the consultant has confirmed the page plan")
     ap.add_argument("--handback", action="store_true",
@@ -2271,7 +2360,11 @@ def main(argv=None) -> int:
     elapsed = time.time() - t0
 
     counts = {s: sum(1 for f in findings if f.severity == s) for s in ("block", "warn", "info")}
-    print("qc_check  %s  (%d slides, %.2fs%s)" % (path.name, len(deck.slides), elapsed, ", profile=%s" % args.profile if args.profile else ""))
+    prof = getattr(deck, "profile", None)
+    prof_note = ("" if not prof else ", profile=%s%s" % (prof, "" if args.profile else " (inferred)"))
+    rp = rules_path(args.rules)
+    rules_note = "" if rp == DEFAULT_RULES_PATH else ", rules=%s" % rp.name
+    print("qc_check  %s  (%d slides, %.2fs%s%s)" % (path.name, len(deck.slides), elapsed, prof_note, rules_note))
     print(format_table(findings))
     print()
     print("block %d   warn %d   info %d   ->  %s" % (
@@ -2292,7 +2385,7 @@ def main(argv=None) -> int:
         payload = {
             "deck": str(path),
             "slides": len(deck.slides),
-            "profile": args.profile,
+            "profile": getattr(deck, "profile", None),
             "elapsed_s": round(elapsed, 3),
             "counts": counts,
             "pass": counts["block"] == 0,

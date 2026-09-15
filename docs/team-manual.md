@@ -70,7 +70,7 @@ Python 3.11+ with the repo venv (`pip install -r requirements.txt`). For the ren
 
 ## Per-engagement setup
 
-Copy `qc_rules.json` locally, fill `client_names` with the stakeholders who must not appear on a slide and set `active_client_palette`, and pass it with `--rules`. Never commit the copy. Client decks live in `tests/fixtures/client/`, which git ignores.
+Copy `qc_rules.json` locally, fill `client_names` with the stakeholders who must not appear on a slide, and pass it with `--rules`. Set `QC_RULES` to that copy in `.claude/settings.json` `env` as well, so the Stop gate reads the same file: without it the gate runs on the repo default and its `client_names` list is empty, and one deck gets two answers. Brand colours need no setting: the gate reads them from the client template's own theme part, including a `custClrLst` palette. Set `active_client_palette` only to override the typeface allowlist for an engagement. Never commit the copy. Client decks live in `tests/fixtures/client/`, which git ignores.
 
 ## Where things live
 

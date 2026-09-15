@@ -222,7 +222,12 @@ def gate(paths: list[Path], session_id: str, out) -> int:
     sys.path.insert(0, str(HERE))
     import qc_check  # noqa: E402
 
+    # Same resolution the consultant's own run uses: QC_RULES, else the repo default. Set QC_RULES in
+    # .claude/settings.json env for an engagement and both gates read one rule set.
     rules = qc_check.load_rules(None)
+    rp = qc_check.rules_path(None)
+    if rp != qc_check.DEFAULT_RULES_PATH:
+        out("qc gate: rules from %s" % rp)
     blocked: dict[Path, list] = {}
     for p in paths:
         try:
@@ -267,8 +272,9 @@ def gate(paths: list[Path], session_id: str, out) -> int:
                 rendered[str(p)] = stamp
                 out("qc gate: rendered %s, no text overflow; PNGs in %s" % (p.name, p.parent / ("render_" + p.stem)))
             elif "PPTBUSY" in r.stdout:
-                out("qc gate: render check skipped for %s, PowerPoint is open; close it and the "
-                    "next write will render" % p.name)
+                out("qc gate: render check skipped for %s, PowerPoint has unsaved changes open or "
+                    "the deck itself is open in it; save or close that presentation and the next "
+                    "write will render" % p.name)
     for p in paths:
         if p in blocked:
             gated.pop(str(p), None)  # always re-gate a file that is still blocking

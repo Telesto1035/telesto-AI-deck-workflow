@@ -312,12 +312,29 @@ def test_profile_lengths_match_deck_types():
     assert not mismatches, "qc_rules.json disagrees with deck-types.md: %s" % mismatches
 
 
+def test_qc_rules_env_is_read_by_both_gates(tmp_path, monkeypatch):
+    """The Stop gate calls load_rules(None); the consultant passes --rules. QC_RULES is what makes those
+    the same file, so an engagement's client_names reach the gate that is actually enforced."""
+    local = tmp_path / "qc_rules.local.json"
+    local.write_text(json.dumps({"client_names": ["Jordan Reyes"]}), encoding="utf-8")
+    monkeypatch.setenv("QC_RULES", str(local))
+    assert qc_check.rules_path(None) == local
+    assert qc_check.load_rules(None)["client_names"] == ["Jordan Reyes"]
+    # --rules still wins over the environment
+    assert qc_check.rules_path(qc_check.DEFAULT_RULES_PATH) == qc_check.DEFAULT_RULES_PATH
+    # a stale path in the environment falls back rather than crashing the gate
+    monkeypatch.setenv("QC_RULES", str(tmp_path / "gone.json"))
+    assert qc_check.rules_path(None) == qc_check.DEFAULT_RULES_PATH
+
+
 def test_skill_files_carry_no_engagement_figures():
     """GOVERNANCE.md: no percentage or dollar figure from a client deck lives in a skill file. Examples use
     placeholders or round generic numbers without a % or $ sign."""
     import re
     hits = []
     for f in (REPO / ".claude").rglob("*.md"):
+        if "worktrees" in f.parts:
+            continue  # another agent's checkout, not a skill file; same prune as qc_gate_hook
         for line in f.read_text(encoding="utf-8").splitlines():
             if re.search(r"\b\d{1,3}%|\$\d", line):
                 hits.append((f.name, line.strip()[:100]))
