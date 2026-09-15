@@ -19,10 +19,10 @@ stakeholder-context (agent) → draft-deck (router, then generator) → **qc_che
   settings.json                 Stop hook runs the gate on every PPTX written in the session
   agents/deck-evaluator.md      Layer 2 evaluator, fresh context, never edits the file
   skills/
-    draft-deck/                 SKILL.md v2.2 + references/
-    deck-qc/                    SKILL.md v4 + scripts/qc_check.py, qc_rules.json, qc_gate_hook.py
-    stakeholder-context/        SKILL.md v1 (rebuilt from docs/workflow-and-skills.md; review before publishing)
-docs/                           handoff, QC design, workflow notes, chain chart
+    draft-deck/                 SKILL.md + references/
+    deck-qc/                    SKILL.md + scripts/qc_check.py, qc_rules.json, qc_gate_hook.py
+    stakeholder-context/        SKILL.md
+docs/                           handoff, QC design, workflow decisions, chain chart
 scripts/publish_skills.py       diff repo skills against the account (Cowork) copies
 tests/
   fixtures/                     clean fixtures; make_broken.py writes broken variants to fixtures/broken/

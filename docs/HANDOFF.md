@@ -22,7 +22,7 @@ fixtures/
   Telesto_Package_Types.pptx   one-page explainer
 ```
 
-Two skill versions were proposed in Cowork but not yet saved when this bundle was cut: `draft-deck` v2.2 (stakeholder-context input, brief optional, Revise reads legacy and modern PPTX comments, Learn mode) and `stakeholder-context` v1 (new). If they have been saved since, export them from the account and replace the copies here; if not, treat this bundle's `docs/workflow-and-skills.md` as the description of what they add and rebuild them in the repo.
+The bundle handoff is complete: every skill it described is built and saved in this repo, and the repo is the source of truth. Account (Cowork) copies are published from here with `scripts/publish_skills.py`.
 
 Shipped client decks (public sector, ULSE/TRIP proposal, Re-rebrand, EDR) are not in this bundle. Add them to `fixtures/` locally; they are the real test set.
 
@@ -44,8 +44,7 @@ telesto-deck-skills/
         SKILL.md
         scripts/qc_check.py    NEW, section 3
         scripts/qc_rules.json  NEW, thresholds and word lists
-      onepagebrief-builder/
-      stakeholder-context/     from the v1 proposal, or rebuild per docs/workflow-and-skills.md
+      stakeholder-context/     SKILL.md
     agents/
       deck-evaluator.md        NEW, section 5
   scripts/
