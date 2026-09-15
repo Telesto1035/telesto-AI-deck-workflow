@@ -275,3 +275,44 @@ def test_apply_profile_leaves_the_base_rules_alone(rules):
     assert merged["words_warn"] is None
     assert rules == before
     assert rules["words_warn"] == before["words_warn"] is not None
+
+
+# --- patch 2026-09-15: register is scored from the files, not from memory ------------------------
+# First live run of the register dimension cited two house rules that do not exist and inverted the
+# one that does. Nothing in either instruction told the evaluator to open the rule files, and the
+# wording ("not by a word list", "examples, not the whole rule") read as licence not to.
+
+AGENT = REPO / ".claude" / "agents" / "deck-evaluator.md"
+DECK_QC_SKILL = REPO / ".claude" / "skills" / "deck-qc" / "SKILL.md"
+RULE_FILES = ("language-rules.md", "house-register.md")
+
+
+def _register_section(text: str) -> str:
+    """The part of a file that governs the register dimension."""
+    low = text.lower()
+    i = low.find("## scoring register")  # the heading, not the cross-reference to it
+    if i < 0:
+        i = low.find("**register.**")
+    assert i >= 0, "no register section to check"
+    j = low.find("\n## ", i + 1)
+    return text[i: j if j > 0 else None]
+
+
+@pytest.mark.parametrize("path", [AGENT, DECK_QC_SKILL], ids=["evaluator", "deck-qc"])
+def test_register_instruction_names_the_rule_files(path):
+    """Register is the one dimension with no evidence in the deck, so an unread rule becomes an
+    invented one. Both instructions must send the reader to the files by name."""
+    section = _register_section(path.read_text(encoding="utf-8"))
+    missing = [f for f in RULE_FILES if f not in section]
+    assert not missing, "%s register section does not name %s" % (path.name, missing)
+    assert "clients/" in section, "%s register section does not name the client file" % path.name
+
+
+@pytest.mark.parametrize("path", [AGENT, DECK_QC_SKILL], ids=["evaluator", "deck-qc"])
+def test_register_findings_must_quote_their_rule(path):
+    """A finding that cannot quote its rule is what fabrication looks like in the report."""
+    section = _register_section(path.read_text(encoding="utf-8")).lower()
+    assert "quote" in section, "%s does not require the rule to be quoted" % path.name
+    assert "not a register finding" in section, (
+        "%s does not say what to do with an item that cannot be sourced" % path.name
+    )
