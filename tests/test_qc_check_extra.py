@@ -247,3 +247,29 @@ def test_em_dash_flags_prose_but_not_a_verbatim_quote(tmp_path, rules):
     assert len(hits) == 1, [f.text for f in hits]
     assert hits[0].text.startswith("Buyers shifted spend")
     assert hits[0].severity == "warn"
+
+
+# --- patch 2026-09-15: a profile's rules reach every check ---------------------------------------
+
+
+def test_profile_overrides_reach_rules_consumed_at_construction(rules):
+    """run_checks overlays the profile after the Deck is built, so anything derived in __init__ would keep
+    the base value and the profile would be silently half-applied. footnote_name_regex was the one such key."""
+    deck = qc_check.Deck(CLEAN, rules)
+    assert deck.footnote_name_re.search("Footnote 1")
+    deck.rules = qc_check.apply_profile(
+        dict(rules, profiles=dict(rules.get("profiles") or {}, quellen={"footnote_name_regex": "quelle"})),
+        "quellen",
+    )
+    assert deck.footnote_name_re.search("Quelle 1")
+    assert not deck.footnote_name_re.search("Footnote 1")
+
+
+def test_apply_profile_leaves_the_base_rules_alone(rules):
+    """The overlay is per run. A profile that edited the shared dict would leak into the next deck the
+    gate checks in the same process, which is every deck after the first at a Stop."""
+    before = dict(rules)
+    merged = qc_check.apply_profile(rules, "brief")
+    assert merged["words_warn"] is None
+    assert rules == before
+    assert rules["words_warn"] == before["words_warn"] is not None

@@ -201,7 +201,6 @@ class Deck:
         self._runs_cache: dict[int, list] = {}
         self._text_cache: dict[int, str] = {}
         self._cells_cache: dict[int, list] = {}
-        self.footnote_name_re = re.compile(rules.get("footnote_name_regex", "foot|source|note"), re.I)
         self.slides = list(self.prs.slides)
         self.shapes_by_slide: dict[int, list[ShapeInfo]] = {}
         for i, slide in enumerate(self.slides, 1):
@@ -209,6 +208,17 @@ class Deck:
         self._theme_cache: dict = {}
         self._default_style = self._presentation_default_style()
         self.appendix_start = self._find_appendix_start()  # 1-based slide number of the first appendix page, or None
+
+    @property
+    def footnote_name_re(self):
+        """Derived from self.rules on use, not at construction: run_checks overlays the profile's rules after
+        the Deck is built, and anything compiled in __init__ would silently keep the base value. Cached per
+        pattern so a profile switch re-derives it."""
+        pat = self.rules.get("footnote_name_regex", "foot|source|note")
+        if getattr(self, "_fn_re_src", None) != pat:
+            self._fn_re_src = pat
+            self._fn_re = re.compile(pat, re.I)
+        return self._fn_re
 
     def _find_appendix_start(self):
         for i, slide in enumerate(self.slides, 1):
