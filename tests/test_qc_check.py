@@ -215,7 +215,9 @@ def test_fix_safe_in_place_keeps_the_deck(broken_dir, name_rules, tmp_path):
     qc_check.fix_safe(deck, findings, deck_path, lambda s: None)
     Presentation(str(deck_path))
     _d2, after = qc_check.run_checks(deck_path, name_rules)
-    assert not ({"author-empty", "speaker-notes"} & ids(after))
+    assert "speaker-notes" not in ids(after)
+    assert "author-empty" in ids(after), "document properties are a hand-back condition, not fix_safe's"
+    # the temp file is moved over the deck, never left beside it
     assert sorted(p.name for p in tmp_path.iterdir()) == ["in_place.pptx"]
 
 
