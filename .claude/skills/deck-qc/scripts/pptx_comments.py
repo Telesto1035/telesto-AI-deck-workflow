@@ -23,8 +23,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
+import tempfile
 import zipfile
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -187,16 +189,28 @@ def resolve(path: Path, out_path: Path, which: set[int] | None, comments: list[C
             skipped += 1
             continue
         by_part.setdefault(c.part, set()).add(c.cid)
-    with zipfile.ZipFile(path) as zin, zipfile.ZipFile(out_path, "w", zipfile.ZIP_DEFLATED) as zout:
-        for item in zin.infolist():
-            data = zin.read(item.filename)
-            if item.filename in by_part:
-                root = etree.fromstring(data)
-                for cm in root.iter(q("p188:cm")):
-                    if cm.get("id") in by_part[item.filename]:
-                        cm.set("status", "resolved")
-                data = etree.tostring(root, xml_declaration=True, encoding="UTF-8", standalone=True)
-            zout.writestr(item, data)
+    # Write to a temp file beside the destination and move it over once the input zip is closed:
+    # --out may be the input deck itself, and truncating it while still reading destroys it.
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(dir=str(out_path.parent), prefix=out_path.name + ".", suffix=".tmp")
+    os.close(fd)
+    tmp = Path(tmp_name)
+    try:
+        with zipfile.ZipFile(path) as zin, zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as zout:
+            for item in zin.infolist():
+                data = zin.read(item.filename)
+                if item.filename in by_part:
+                    root = etree.fromstring(data)
+                    for cm in root.iter(q("p188:cm")):
+                        if cm.get("id") in by_part[item.filename]:
+                            cm.set("status", "resolved")
+                    data = etree.tostring(root, xml_declaration=True, encoding="UTF-8", standalone=True)
+                zout.writestr(item, data)
+        os.replace(tmp, out_path)
+    except BaseException:
+        tmp.unlink(missing_ok=True)
+        raise
     done = sum(len(v) for v in by_part.values())
     log("%d comment%s marked resolved -> %s" % (done, "" if done == 1 else "s", out_path))
     if skipped:

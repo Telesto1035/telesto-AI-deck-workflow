@@ -20,6 +20,7 @@ import math
 import os
 import re
 import sys
+import tempfile
 import time
 import zipfile
 from dataclasses import asdict, dataclass
@@ -2267,9 +2268,21 @@ def fix_safe(deck: Deck, findings: list[Finding], out_path: Path, log) -> Path:
         for name in order:
             if name in parts:
                 z.writestr(name, parts[name])
-    out_path.write_bytes(buf.getvalue())
-    # validate: the saved file must open
-    Presentation(str(out_path))
+    # Land the bytes in a temp file and validate before moving over out_path: out_path is often the
+    # input deck, and a half-written or unopenable file there would replace a good deck with a bad one.
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(dir=str(out_path.parent), prefix=out_path.name + ".", suffix=".tmp")
+    tmp = Path(tmp_name)
+    try:
+        with os.fdopen(fd, "wb") as fh:
+            fh.write(buf.getvalue())
+        # validate: the saved file must open
+        Presentation(str(tmp))
+        os.replace(tmp, out_path)
+    except BaseException:
+        tmp.unlink(missing_ok=True)
+        raise
     for line in applied:
         log("  " + line)
     if not applied:

@@ -7,6 +7,7 @@ import zipfile
 from pathlib import Path
 
 import pytest
+from pptx import Presentation
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
@@ -66,3 +67,20 @@ def test_resolve_marks_modern_and_leaves_legacy(commented, tmp_path, capsys):
 
 def test_resolve_unknown_number_fails(commented, tmp_path):
     assert pptx_comments.main([str(commented), "--resolve", "9", "--out", str(tmp_path / "x.pptx")]) == 1
+
+
+def test_resolve_in_place_keeps_the_deck(commented, tmp_path, capsys):
+    """--out pointing at the input deck must not truncate it while it is still being read."""
+    deck = tmp_path / "in_place.pptx"
+    deck.write_bytes(commented.read_bytes())
+    size_before = deck.stat().st_size
+    assert pptx_comments.main([str(deck), "--resolve", "all", "--out", str(deck)]) == 0
+    capsys.readouterr()
+    assert deck.stat().st_size > size_before / 2  # not truncated to a stub
+    with zipfile.ZipFile(deck) as z:  # still a readable package
+        assert z.testzip() is None
+        assert "ppt/presentation.xml" in z.namelist()
+    Presentation(str(deck))  # and still a valid PPTX
+    assert [c.status for c in pptx_comments.read_comments(deck)] == ["resolved", "resolved", "active"]
+    # no temp files left behind
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["in_place.pptx"]

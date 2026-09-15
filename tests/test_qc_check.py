@@ -207,6 +207,18 @@ def test_fix_safe_clears_settled_faults_and_nothing_else(broken_dir, name_rules,
     assert ids(again, "block") == ids(findings, "block")
 
 
+def test_fix_safe_in_place_keeps_the_deck(broken_dir, name_rules, tmp_path):
+    """out_path may be the input deck itself; the rewrite must leave a valid PPTX behind."""
+    deck_path = tmp_path / "in_place.pptx"
+    deck_path.write_bytes((broken_dir / "Telesto_Standard_v2_P3-P5.broken.pptx").read_bytes())
+    deck, findings = qc_check.run_checks(deck_path, name_rules)
+    qc_check.fix_safe(deck, findings, deck_path, lambda s: None)
+    Presentation(str(deck_path))
+    _d2, after = qc_check.run_checks(deck_path, name_rules)
+    assert not ({"author-empty", "speaker-notes"} & ids(after))
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["in_place.pptx"]
+
+
 # ---------------------------------------------------------------------------------------------
 # CLI, exit codes, JSON, runtime, profile
 # ---------------------------------------------------------------------------------------------
