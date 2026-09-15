@@ -1827,12 +1827,15 @@ def check_voice_words(d: Deck):
                 )
 
 
-CURLY_QUOTED_RE = re.compile("“[^”]*”")
+# Both quote forms: house style sets quotes curly, but a quote pasted from a transcript or typed in a
+# plain-text editor arrives straight, and it is no less verbatim for it. QUOTED_RE elsewhere already
+# accepts either.
+QUOTED_SPAN_RE = re.compile("“[^”]*”|\"[^\"]*\"")
 
 
 def _outside_quotes(text: str) -> str:
-    """Text with curly-quoted spans blanked out, so verbatim material keeps its own punctuation."""
-    return CURLY_QUOTED_RE.sub(lambda m: " " * len(m.group(0)), text)
+    """Text with quoted spans blanked out, so verbatim material keeps its own punctuation."""
+    return QUOTED_SPAN_RE.sub(lambda m: " " * len(m.group(0)), text)
 
 
 def check_em_dash(d: Deck):

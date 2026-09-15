@@ -235,6 +235,8 @@ def test_em_dash_flags_prose_but_not_a_verbatim_quote(tmp_path, rules):
     for top, text in (
         (Inches(3), "Buyers shifted spend \u2014 and budgets followed"),
         (Inches(4), "\u201cWe moved the budget \u2014 all of it \u2014 to the new vendor.\u201d"),
+        # straight quotes are no less verbatim: a quote pasted from a transcript arrives this way
+        (Inches(5), '"We moved the budget \u2014 all of it \u2014 to the new vendor." (CFO, R4)'),
     ):
         tb = slide.shapes.add_textbox(Inches(1), top, Inches(7), Inches(0.5))
         tb.text_frame.text = text

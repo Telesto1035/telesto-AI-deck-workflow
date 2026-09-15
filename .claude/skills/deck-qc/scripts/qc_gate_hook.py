@@ -20,9 +20,12 @@ Behaviour:
   * Run qc_check on each. If any `block` finding exists, print the findings and exit 2 so the turn cannot end.
   * Keep a counter per session in a state file. After 3 blocked stops, exit 0 and print
     "gate cap reached, handing off with findings attached" so the loop terminates.
-  * Render step (Windows with PowerPoint): runs once per deck version, keyed on path and mtime in the state file,
-    so a long deck is not re-exported on every Stop. Set QC_GATE_NO_RENDER=1 to skip it (tests, machines without
-    PowerPoint). The hook's own timeout in .claude/settings.json must exceed RENDER_TIMEOUT.
+  * Render step: OFF by default and opt-in, because .claude/settings.json sets QC_GATE_NO_RENDER=1. The skill's
+    stage 2 owns the render, run by hand on the pages an iteration changed; exporting a whole deck through
+    PowerPoint at every Stop costs minutes and repeats what the consultant just did. Clear the env var and the
+    block below runs on Windows, once per deck version, keyed on path and mtime in the state file. Raise the
+    hook's timeout in settings.json above RENDER_TIMEOUT before doing that: 400 was sized for it, the current
+    120 is sized for the gate alone, with room for a session that wrote several decks.
   * Never crash the stop: any internal error prints a note and exits 0.
 
 Re-execs itself under the repo venv when python-pptx is not importable from the interpreter that started it.
