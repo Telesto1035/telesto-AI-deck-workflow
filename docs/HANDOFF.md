@@ -11,7 +11,7 @@ skills/
   deck-qc/                     SKILL.md v4 (saved)
   onepagebrief-builder/        SKILL.md v1.1 (saved)
 docs/
-  workflow-and-skills.md       the chain, versions, decisions
+  workflow-and-skills.md       why the chain is shaped this way (decisions, dated)
   qc-scorecard-design.md       QC design rev 3 (the basis for qc_check.py)
   research-ai-content-workflows.md
   telesto_deck_chain.html/.png the workflow chart (Anthropic pattern vocabulary, Telesto dark paper)
