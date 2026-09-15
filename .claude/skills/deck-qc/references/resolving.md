@@ -9,6 +9,7 @@ The report is for reading. The resolution is a set of choices, collected with th
 - **Settled.** A mechanical error with exactly one correct answer, a number the attached source decides, or anything in the hygiene pass. Apply it. Do not ask. List what you applied afterward.
 - **Decided by the consultant's own message.** Anything they already ruled on in this conversation. Apply it as stated.
 - **Not a defect.** Anything under "What is not a defect". Drop it silently.
+- **Held.** A reviewer comment that needs evidence nobody has yet: a benchmark, a comparison with another study, a web search, more fielding. Neither a fix nor a question. Leave the slide untouched, leave the comment unresolved in the file, and name it in the hand-back with a one-line scoping note (what would be gathered, from where, roughly how much). draft-deck classes these `scope`; a deck handed back with them is not an unfinished deck.
 - **Judgment.** Everything else. This goes to AskUserQuestion.
 
 ## Titles, recommendations and exec-summary lines are always SUGGEST
@@ -32,6 +33,7 @@ Group across slides only when the same fault appears in several places and the f
 - Offer a real "do less" option in every question: leave as drafted, or flag only.
 - Set `multiSelect: true` where the items are independent.
 - The tool supplies the free-text "Other" path; do not add an option for it, and honor whatever the consultant writes in.
+- A label rename never gets a suggested default either. The question names every other page and appendix exhibit carrying that label and asks change-all or this-one, and where the short form merges two categories the source keeps apart the option says so and names the other category.
 - A QUESTION-class item never gets a suggested default. Two disagreeing numbers with no source is a question asked straight, with the candidate values and their pages. You do not pick.
 
 Apply everything in one pass once the answers come back, then validate, re-render the touched pages, re-run the number ledger and report the delta. Ask a second round only for a new problem the first pass created.

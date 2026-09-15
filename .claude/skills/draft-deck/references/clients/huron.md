@@ -29,7 +29,7 @@ Read only when the paper is Huron's (the attached deck uses its template, theme 
 - Bands may point to a named Huron product where one exists; the draft names the service and leaves the product call to the consultant.
 - Cross-survey evidence is welcome when labelled: quotes from a sister survey under a head that names it, with question and n in the footnote.
 - Section summary titles read as the section's question ("What the findings mean for Huron's AI report and marketing campaign"); no "Part 1 / Part 2" label on the slide.
-- Claims precedent: match the assertion level of the shipped EDR and Public Sector decks; an escalation beyond it is flagged, not made.
+- Claims precedent: match the assertion level of the shipped EDR and Public Sector decks. An escalation beyond that level is flagged, not made — and so is a draft that sits below it. On implication and next-steps pages, name the agent, the direction and who carries the consequence. A sentence that states a change without saying who causes it, which way it moves, or what it costs the client reads as too neutral here and comes back.
 
 ## Observed, not yet promoted
 Single-deck observations waiting for a second deck or a ruling before entering the house register.

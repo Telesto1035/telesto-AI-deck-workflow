@@ -113,17 +113,19 @@ Run by the evaluator. When the right change depends on data you do not have, mar
 
 ## Scoring and report
 
-Four dimensions, 1 to 5. The score is the summary; the lists are the product. Value at stake is N/A where the profile says so.
+Five dimensions, 1 to 5. The score is the summary; the lists are the product. Value at stake is N/A where the profile says so. Register is never N/A: score it and give a verdict line even when nothing is wrong.
 
-| Score | Clarity of outcome | Logical flow | Value at stake | Technical accuracy |
-|---|---|---|---|---|
-| 5 | One takeaway; every title asserts; a closing decision page | Title chain reads as one argument; summary and body map one to one | Stated, sourced, assumptions shown | Every figure traced; totals reconcile; footnotes complete |
-| 4 | Takeaway clear; one or two label titles | One soft transition or one page out of order | Stated and sourced; assumptions partly shown | One unsourced figure or one footnote gap |
-| 3 | Takeaway inferred from several pages; no decision page | One missing page or one contradiction | Stated without source or assumptions | Two to four unsourced figures or one reconciliation failure |
-| 2 | Several label titles; the reader cannot say what to decide | Two or more contradictions or missing pages | Implied, never quantified | Multiple reconciliation failures; placeholders |
-| 1 | No discernible takeaway | Pages do not connect | Absent where required | Figures cannot be traced |
+| Score | Clarity of outcome | Logical flow | Value at stake | Technical accuracy | Register |
+|---|---|---|---|---|---|
+| 5 | One takeaway; every title asserts; a closing decision page | Title chain reads as one argument; summary and body map one to one | Stated, sourced, assumptions shown | Every figure traced; totals reconcile; footnotes complete | Reads as a consultant wrote it; no page fails the CEO-email test |
+| 4 | Takeaway clear; one or two label titles | One soft transition or one page out of order | Stated and sourced; assumptions partly shown | One unsourced figure or one footnote gap | One or two sentences a consultant would rewrite |
+| 3 | Takeaway inferred from several pages; no decision page | One missing page or one contradiction | Stated without source or assumptions | Two to four unsourced figures or one reconciliation failure | A handful of machine-flavoured lines, including in titles |
+| 2 | Several label titles; the reader cannot say what to decide | Two or more contradictions or missing pages | Implied, never quantified | Multiple reconciliation failures; placeholders | Machine phrasing runs through the title chain or exec summary |
+| 1 | No discernible takeaway | Pages do not connect | Absent where required | Figures cannot be traced | The deck reads as generated text throughout |
 
 Technical accuracy below 3 goes in the report header regardless of the overall.
+
+**Register.** The test is `draft-deck/references/language-rules.md`: would a consultant write this sentence in an email to the CEO? The named phrases there are examples, not the whole rule. The most common failure is an abstraction given a verb a person should own: work that shapes, jobs that are kept, judgment that is sold, a deck that earns a right. Report up to five worst offenders as SUGGEST items, each quoting the current line and proposing the rewrite; this is not an exhaustive sweep.
 
 Report, in order: header (deck type, inferred or from the brief; page count and version; whether and in what form source data was attached; the one thing to act on first); scorecard with a one-line reason each; hygiene (what the gate stripped, every speaker note quoted); FIX list; SUGGEST list in slide order, each naming the page by number and title, with QUESTION items stated as questions; brief check when a brief is attached; diff when a prior version is attached; and the "not checked" line every time. Short enough to act on.
 
