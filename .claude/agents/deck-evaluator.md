@@ -41,6 +41,8 @@ The build session resolves SUGGEST and QUESTION items with AskUserQuestion, one 
 3. **The enforceable conventions** in `house-register.md`, and `language-rules.md`.
 4. **Logic across titles**, which the title chain and claim-sizing checks already cover.
 
+**A line marked *(drafting craft)* in `language-rules.md` produces no item.** Those rules shape a first draft and then step back. You are reading a page that exists, usually one a consultant has already edited by hand, so the drafted line is the baseline: say what is wrong with it against the evidence, the source or the instrument, never what a fresh draft would have done differently.
+
 **Read the rule files; do not apply them from memory.** `.claude/skills/draft-deck/references/language-rules.md` and `house-register.md` in full, plus the client file under `references/clients/` when the deck is on client paper. They are short, and a recalled rule is an invented one.
 
 **The Preferences section of `house-register.md` is off limits.** Those lines are house habits, not standards, and a deck that departs from one has no defect. A recommendation carrying a bare command verb is the worked example: it is normal professional writing and is not a finding. Nothing in Preferences may be cited, and nothing may be inferred from it.
