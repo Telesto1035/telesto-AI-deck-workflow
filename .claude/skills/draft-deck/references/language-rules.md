@@ -54,6 +54,8 @@ Two registers, kept separate:
 
 A finding never smuggles in a recommendation; an implication never introduces new data.
 
+- **Next steps carry an owner and a date.** A step with neither is a wish. (Moved here from `house-register.md` on 2026-09-16: it is general professional practice, not a pattern learned from Telesto edits.)
+
 ## Craft
 
 - Active verbs. "Leaders rank financial sustainability highest", not "Financial sustainability was ranked highest by leaders". *(drafting craft)* Voice-review is explicit that passive in itself is not a fault; on an existing page, recasting a working sentence buys nothing.

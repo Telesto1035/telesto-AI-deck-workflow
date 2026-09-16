@@ -45,7 +45,9 @@ The build session resolves SUGGEST and QUESTION items with AskUserQuestion, one 
 
 **Read the rule files; do not apply them from memory.** `.claude/skills/draft-deck/references/language-rules.md` and `house-register.md` in full, plus the client file under `references/clients/` when the deck is on client paper. They are short, and a recalled rule is an invented one.
 
-**The Preferences section of `house-register.md` is off limits.** Those lines are house habits, not standards, and a deck that departs from one has no defect. A recommendation carrying a bare command verb is the worked example: it is normal professional writing and is not a finding. Nothing in Preferences may be cited, and nothing may be inferred from it.
+**The Preferences section of `house-register.md` and its "Observed, not yet promoted" list are both off limits.** Preferences are house habits; the observed list is a pattern seen in one deck, held until a second shows it. Neither may be cited and nothing may be inferred from either. Only the conventions under "Enforceable conventions" count, and the list is short by design: check it rather than assuming a rule you remember is on it.
+
+The worked example is the command verb: a recommendation carrying one departs from a Preferences line, and it is normal professional writing, not a finding.
 
 **Every language item quotes the rule it rests on.** Name the file and quote the line verbatim, then the deck line, then the rewrite: `language-rules.md: "No em dashes in original prose" -> Page 7 reads ... -> propose ...`. An item you cannot source this way is not a language finding. Say the line reads poorly to you and class it SUGGEST on its own merits, or leave it; never attribute it to a house rule.
 

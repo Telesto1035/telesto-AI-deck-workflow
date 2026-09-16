@@ -12,34 +12,35 @@ A convention earns a place here only if a reader outside the firm could apply it
 
 ## Governance
 - **Cap: 25 enforceable conventions.** A new one above the cap retires one.
-- **Entry:** a pattern enters as enforceable after it recurs in two shipped decks, or on a CEO ruling, *and* it passes the outside-reader test above. A pattern that recurs but is a matter of taste enters Preferences instead. A single-deck observation waits in the client file under "Observed, not yet promoted".
-- **Conflict:** the newer CEO ruling wins. The rule it replaces moves to Retired with the date and what replaced it. Two observed rules that conflict are both held until a ruling.
+- **Entry: recurrence only.** A pattern enters as enforceable after the same edit is made by a human pen across two or more shipped decks, *and* it passes the outside-reader test above. The question the register answers is narrow: what language does a human consistently edit out or rephrase? A pattern that recurs but is a matter of taste enters Preferences instead.
+- **Instances inside one deck do not corroborate.** One pass over one document is one observation however many times it repeats, and "7 instances" or "every page" is one consultant's preference counted seven times. Record instances if they are useful, but the deck count is what clears the bar.
+- **A ruling is not an entry path.** It is one voice on one day, and the register is built collaboratively from what the work shows. A ruling can retire a rule, pause one, or settle which of two readings to try next; it cannot promote a pattern the decks have not shown twice.
+- **Conflict:** two patterns that conflict are both held until the decks resolve which one recurs. The rule that loses moves to Retired with the date and what replaced it.
+- **Single-deck observations wait**, firm-wide ones under "Observed, not yet promoted" below, client-specific ones in the client file under the same heading.
 - **Refresh:** reviewed when Learn runs and at least twice a year; a rule no consultant edit has touched in a year is a candidate for retirement or for the principles file.
-- **Format:** rule in bold, one example, then `[evidence: N decks | CEO ruling | owner ruling, YYYY-MM-DD]`. No narrative.
+- **Format:** rule in bold, one example, then `[evidence: N decks, YYYY-MM-DD]` where N counts decks. No narrative.
 
-## Enforceable conventions (12)
+## Enforceable conventions (3)
 
-A check may cite these. Each is decidable by reading the page against the rule, with no knowledge of the firm.
+A check may cite these. Each is decidable by reading the page against the rule, with no knowledge of the firm, and each rests on the same edit recurring across two shipped decks.
 
 ### Titles
 1. **A title states the finding, not the method, the label or the survey structure.** "Secondary analysis of competitor articles reveals whitespace for [topic]" became "On competitor websites, [topic] is scarcely covered by any of the six firms". [evidence: 2 decks, 2026-09]
 2. **Interpretation leaves the title and goes to the band.** A title that ends ": the opening is [X], not the case for [Y]" loses the clause; the band carries the thought. [evidence: 2 decks, 2026-09]
-3. **No label-colon opener, no abstract-noun subject, no compressed verb-noun, no prescription in a title.** "Adjacency quadrant: 35 markets" became "We ranked 35 service markets by size and closeness to the client's core"; "Entrenchment is buyer-specific" became "[Firm A], [Firm B] and [Firm C] hold established positions". [evidence: 1 deck, 5 titles; owner ruling, 2026-09-12]
-4. **Fewer names in a title: the two that matter, and where they matter.** Four firms became "[Firm A] and [Firm B] hold the largest positions at [Buyer 1] and [Buyer 2]". [evidence: 1 deck, 2026-09-12]
 
 ### Claims and evidence
-5. **Size the claim to the number; a ratio survives only when exact; a named firm as subject takes a softer verb.** "twice the prime-bid path" became "larger than the prime-bid path"; "has the least of it deployed" became "does not see it deployed actively". [evidence: 2 decks, 2026-09]
-6. **Method caveats leave client-facing pages.** Sub-share conventions, uncoded-interview notes, scope notes go to methodology or the appendix. [evidence: 1 deck, 5 pages, 2026-09-12]
+3. **Size the claim to the number; a ratio survives only when exact; a named firm as subject takes a softer verb.** "twice the prime-bid path" became "larger than the prime-bid path"; "has the least of it deployed" became "does not see it deployed actively". [evidence: 2 decks, 2026-09]
 
-### Structure of a page
-7. **One implication band per page, never one under each stat.** Seven "For the client:" lines became one band headed "What this means for the client:". [evidence: CEO ruling, 2026-09-13]
-8. **A band drops meta lines about the deck itself.** "The wider report is where that association gets built" was cut. [evidence: 1 deck, 2 passes, 2026-09-12]
-9. **Next steps carry an owner and a date.** [evidence: 1 deck, 2 passes, 2026-09-13]
+## Observed, not yet promoted (firm-wide)
 
-### Numbers, sources, hygiene
-10. **Figures from 10 upward, words below; fiscal-year ranges as "FY24-25".** "Seventeen of the thirty-five markets" became "17 out of 35 markets". **Deck-wide, so never a FIX:** it applies the same change to every page, which makes it the consultant's call. Offer it as one grouped SUGGEST. [evidence: 1 deck, 7 instances, 2026-09-12]
-11. **One source line per deck, stating what the source is, with no internal counts and no repository or dashboard names.** "310 coded quotes" and "Dashboard v27" were removed. **Deck-wide, so never a FIX:** it applies the same change to every page, which makes it the consultant's call. Offer it as one grouped SUGGEST. [evidence: 1 deck, every page, 2026-09-12]
-12. **Symbols and quotes read without a key.** A legend symbol is explained in words; a quote gets a bracketed referent for a bare pronoun and an attribution with the organization spelled out. [evidence: 1 deck, 2026-09-12]
+Patterns seen in one deck, or resting on a ruling rather than on recurrence. They are held here until the same edit appears in a second shipped deck. **No check may cite them, and they produce no finding**: they are notes for the next Learn run, not rules. Demoted 2026-09-16 when the entry bar became recurrence only.
+
+- No label-colon opener, no abstract-noun subject, no compressed verb-noun, no prescription in a title. "Adjacency quadrant: 35 markets" became "We ranked 35 service markets by size and closeness to the client's core". (1 deck, 5 titles, 2026-09-12; the label-prefix half is stated independently in `language-rules.md`.)
+- Fewer names in a title: the two that matter, and where they matter. (1 deck, 2026-09-12)
+- One implication band per page, rather than one under each stat. (Ruling, 2026-09-13, with no deck recurrence behind it. It reversed a rule built from a single comment request the day before; both are now out of force.)
+- A band drops meta lines about the deck itself. "The wider report is where that association gets built" was cut. (1 deck, 2 passes, 2026-09-12)
+- Figures from 10 upward, words below; fiscal-year ranges as "FY24-25". (1 deck, 7 instances, 2026-09-12)
+- One source line per deck, with no internal counts and no repository or dashboard names. (1 deck, every page, 2026-09-12)
 
 ## Preferences, not enforced
 
@@ -59,6 +60,10 @@ House habits a drafter may follow and **no check may cite, score or class as a d
 
 - "One 'For the client:' implication line under each stat" (built by comment request, 2026-09-12) retired by rule 7 on the CEO's reversal, 2026-09-13.
 - "Exec-summary grid at 9.5pt for five rows" and "9pt chart category labels on client paper are left as they are" retired by the 10pt floor, owner ruling 2026-09-12.
+- Rule 6, "Method caveats leave client-facing pages", removed 2026-09-16: the method is still needed on the page, and pushing caveats to the appendix hid what a reader needs to size the claim.
+- Rule 12, "Symbols and quotes read without a key", removed 2026-09-16. Quotes keep their attribution through the Provenance line in `language-rules.md`.
+- Rule 9, "Next steps carry an owner and a date", moved to `language-rules.md` on 2026-09-16: it is general professional practice, not a pattern learned from Telesto edits, so it needs no evidence tag.
+- Nine of the twelve enforceable conventions left the list on 2026-09-16, when entry became recurrence only and rulings stopped promoting patterns. Seven of the twelve had rested on a single deck, three of them counting instances inside that deck as if they were corroboration.
 - Rule 13, the owner's on-sight word list, moved to Preferences on 2026-09-16. "Removes on sight" reads as an instruction to sweep the deck without judgment, and the rule was owner-scoped while sitting where checks are told they may cite. Enforceable count 13 -> 12.
 - The curly-quote clause of rule 12, retired 2026-09-16 with no replacement. It conflicted with the Tier 2 line in `voice-review.md` that treated curly quotes as a machine tell, and deck-qc's `quote-marks` check, which swept the deck and rewrote punctuation, was removed the same day. Straight or curly is left to the author.
 - The register dimension's 1 to 5 score, retired 2026-09-15: voice varies too much between people to be scored, and the rules that survive scoring are the ones a reader outside the firm can apply. Grammar, AI phrasing and cross-title logic remain as unscored checks; voice mimicry is no longer attempted.
