@@ -97,7 +97,6 @@ Exit 0 = pass (no blocking findings). Exit 1 = blocking findings present. Exit 2
 | totals-sum | a row or column of numbers followed by a total that differs by more than 1 point (percent) or 1 unit; parse numbers from shape-built tables by y-alignment and from native tables | block | runs, `a:tbl` |
 | chart-cache-label | chart cached value differs from a data label or title figure on the same slide | block | `ppt/charts/chartN.xml` `c:numCache`, runs |
 | label-in-bar | data labels positioned inside bar segments (`c:dLblPos` = `ctr`, `inBase`, `inEnd`) | warn | chart XML |
-| semicolon-runs | table cell text with 2+ semicolons | warn | cells |
 | abbreviation-list | tokens in `qc_rules.json["expand"]` (e.g. `State` for Department of State, `Acad Med`, `academic medical centers` → AMC) | warn | runs |
 | stakeholder-name | any name in `qc_rules.json["client_names"]` (populated per engagement) on a slide | block | runs |
 | style-drift | title font size or face differs across slides; footer or slide number missing on some content slides; fill colours outside the theme palette plus the allowlist in rules | warn | title placeholders, `a:srgbClr` |
@@ -105,7 +104,7 @@ Exit 0 = pass (no blocking findings). Exit 1 = blocking findings present. Exit 2
 
 **Hanging words** are not in the script. They need the render. The skill does that step; the script stays fast and deterministic.
 
-**`--fix-safe`** applies only findings with `auto_fixable=true` and exactly one correct answer: clear author and metadata, strip notes (after printing them), delete `custom.xml` and its relationship, remove generator strings, italic → roman, replace semicolon runs with paragraph breaks. It never changes a number, a size, or wording, and it writes `DECK.qc.pptx` beside the input rather than overwriting. Validate the saved file opens (re-load with python-pptx) before exiting.
+**`--fix-safe`** is hygiene only. It applies two findings, both blocks, both with exactly one correct answer: strip speaker notes (after printing every note in full) and remove generator fingerprint strings from metadata parts. It touches no slide text, no formatting, no number and no size, and it never writes document properties — the author field, `TotalTime` and `custom.xml` survive, because Document Inspector owns that scrub and `--handback` verifies it was run. It writes `DECK.qc.pptx` beside the input rather than overwriting, and validates the saved file opens (re-load with python-pptx) before exiting.
 
 **Renderer note**: overflow and hanging words are confirmed visually by the skill (soffice → PDF → pdftoppm). A wrapped footer or clipped label can be a LibreOffice artifact; compare against the unmodified original before flagging (deck-qc v4 rule).
 

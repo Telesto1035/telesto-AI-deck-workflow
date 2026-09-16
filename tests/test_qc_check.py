@@ -113,7 +113,7 @@ def test_broken_fixture_finds_every_planted_fault(src, broken_dir, rules, name_r
 
     # each slide-level planted fault sits on slide 1, where make_broken put it
     for fid in ("font-size-floor", "italics", "placeholders", "totals-sum", "chart-cache-label",
-                "footnote-sequence", "stakeholder-name", "label-in-bar", "semicolon-runs",
+                "footnote-sequence", "stakeholder-name", "label-in-bar",
                 "abbreviation-list", "empty-textbox", "off-canvas"):
         assert any(f.slide == 1 for f in by_id(findings, fid)), fid
 
@@ -193,7 +193,7 @@ def test_fix_safe_clears_settled_faults_and_nothing_else(broken_dir, name_rules,
     assert any("Build sequence" in line for line in log), "notes must be printed before they are stripped"
 
     _d2, after = qc_check.run_checks(out, name_rules)
-    gone = {"speaker-notes", "semicolon-runs", "quote-marks"}
+    gone = {"speaker-notes"}
     assert not (gone & ids(after)), sorted(gone & ids(after))
     # Document properties survive: PowerPoint's Document Inspector owns that scrub, and nothing
     # in the chain rewrites a deck's properties behind the consultant.
@@ -205,6 +205,38 @@ def test_fix_safe_clears_settled_faults_and_nothing_else(broken_dir, name_rules,
     # the input is untouched
     _d3, again = qc_check.run_checks(broken, name_rules)
     assert ids(again, "block") == ids(findings, "block")
+
+
+def test_retired_checks_stay_retired(broken_dir, name_rules, tmp_path):
+    """semicolon-runs and quote-marks were removed on 2026-09-16. The fixture still carries both
+    faults on purpose: a semicolon cell ("alpha; beta; gamma") and straight quotes. Nothing may
+    report them, and --fix-safe may not rewrite them. Auto-splitting a cell into bullets rebuilt
+    each paragraph from the first run, which flattened the mixed formatting decks ship with."""
+    broken = broken_dir / "Telesto_Standard_v2_P3-P5.broken.pptx"
+    deck, findings = qc_check.run_checks(broken, name_rules)
+    retired = {"semicolon-runs", "quote-marks"}
+    assert not (retired & ids(findings)), sorted(retired & ids(findings))
+
+    def slide_text(path):
+        out = []
+        for slide in Presentation(str(path)).slides:
+            for shape in slide.shapes:
+                if shape.has_text_frame:
+                    out.append(shape.text_frame.text)
+                if getattr(shape, "has_table", False) and shape.has_table:
+                    out += [c.text for row in shape.table.rows for c in row.cells]
+        return "\n".join(out)
+
+    before = slide_text(broken)
+    assert "alpha; beta; gamma" in before, "fixture lost its semicolon cell"
+    assert '"' in before, "fixture lost its straight quotes"
+
+    out = tmp_path / "fixed.qc.pptx"
+    qc_check.fix_safe(deck, findings, out, lambda _s: None)
+    after = slide_text(out)
+    assert "alpha; beta; gamma" in after, "fix_safe split a semicolon run"
+    assert before.count('"') == after.count('"'), "fix_safe rewrote quote marks"
+    assert "“" not in after and "”" not in after, "fix_safe curled a quote"
 
 
 def test_fix_safe_in_place_keeps_the_deck(broken_dir, name_rules, tmp_path):

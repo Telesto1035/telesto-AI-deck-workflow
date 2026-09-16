@@ -8,7 +8,7 @@ Draft first, then review against the named patterns below. A single up-front ins
 
 Report what you changed. Never invent or alter a fact while de-slopping; a voice edit that moves a number is worse than the slop it replaced. Do not score the draft for "how AI it sounds", and never target an AI-detector result: detectors have real error rates, and the objective is that an experienced partner reads the page as competent human work.
 
-### Tier 1 — fix on a single sighting
+### Tier 1 — flag on a single sighting
 
 - **Negative parallelism.** "It's not X, it's Y", "not just X but Y", "Y rather than X", and the split forms ("This does not mean X. It means Y." / "The question isn't X. The question is Y."). Keep the contrast only when the negated half is a belief the reader actually holds.
 - **Participle riders.** A trailing `-ing` clause that attaches hollow significance to a plain fact: "…, highlighting the need for continued investment", "…, underscoring the shift", "…, reflecting a broader trend". Also *emphasizing, showcasing, ensuring, fostering, contributing to*. Instruction-tuned models produce these at 2 to 5 times human rates (Reinhart et al., PNAS 2025). Cut the clause, or make it a sentence with a subject.
@@ -23,13 +23,15 @@ Report what you changed. Never invent or alter a fact while de-slopping; a voice
 - **False agency.** "the decision emerges", "the culture shifts", "the data tells us". Name who did it.
 - **Chatbot residue.** "Great question", "Certainly", "I hope this helps", "Would you like me to".
 
-### Tier 2 — fix only when they cluster on a page
+### Tier 2 — flag only when they cluster on a page
 
-Em dashes; three-item lists; stacked hedges ("could potentially", "might arguably"); three or more consecutive sentences opening the same way; curly quotes and unicode arrows; long sentences chained by "and" with no internal punctuation. Any one of these alone is ordinary writing.
+Em dashes; three-item lists; stacked hedges ("could potentially", "might arguably"); three or more consecutive sentences opening the same way; unicode arrows; long sentences chained by "and" with no internal punctuation. Any one of these alone is ordinary writing.
 
 ### Word list, dated
 
 Recheck annually. The vocabulary drifts by model generation, and a word that was a tell in 2024 may not be one now. Never extend a flagged word to its synonyms; that only flattens the prose.
+
+**These lists are evidence of a pattern, never a find-and-replace.** Every word below is ordinary English in some sentence. A word match is the start of a look, not a finding: the finding is the pattern the word appears in, and an item that can only point at the word is not one. Substituting a word in body text is a SUGGEST the consultant sees, never a FIX applied for them.
 
 - **Business-register tells:** leverage (verb), utilize, facilitate, empower, streamline, harness, navigate (challenges), unpack, lean into, double down, robust, comprehensive, crucial, pivotal, key (adjective), landscape (abstract), realm, testament, underscore (verb), delve, showcase, seamless, ecosystem, transformative, game-changer, paradigm shift, ever-evolving, multifaceted, at its core, in today's [X], it's worth noting, when it comes to, going forward.
 - **Consulting hollow-speak:** force multiplier, boil the ocean, synergies, move the needle, low-hanging fruit, north star, at pace.

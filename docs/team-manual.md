@@ -54,7 +54,7 @@ Every stage (build or revision, gate and render, evaluator, SUGGEST pop-ups) end
 .venv/Scripts/python -m pytest tests/                                                  # before committing a SKILL.md change
 ```
 
-`--fix-safe` clears author and metadata, strips speaker notes after printing them, removes generator strings, curls straight quote marks and splits semicolon runs in table cells. It never changes a number, a size, a typeface or wording; italics are left for the author to decide.
+`--fix-safe` does two things: it strips speaker notes after printing them, and it removes generator fingerprint strings. That is all. It never edits slide text, formatting, a number, a size or a typeface, and it leaves document properties alone for Document Inspector. Anything that rewrites what you wrote goes through the fix pass, where you see it first.
 
 ## Rules of the house the gate enforces
 

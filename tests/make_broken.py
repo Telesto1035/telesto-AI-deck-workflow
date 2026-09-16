@@ -8,7 +8,7 @@ Usage:
 Planted faults (all on slide 1 unless noted), each mapped to the qc_check.py finding it must trigger:
     body run at 9pt .................... font-size-floor  (shape "QC body 9pt")
     footnote list at 7pt ............... font-size-floor  (shape "QC footnotes", bottom band)
-    italic quote in straight quotes .... italics, quote-marks
+    italic quote in straight quotes .... italics
     author "Reviewer One" ............... author-empty (x2: creator and lastModifiedBy)
     TotalTime 214 ...................... metadata-scrub
     custom.xml with SharePoint fields .. metadata-scrub
@@ -17,7 +17,6 @@ Planted faults (all on slide 1 unless noted), each mapped to the qc_check.py fin
     table row 40+30+28 vs Total 100 .... totals-sum, native-table-small (3x5 native table)
     chart cache 34 with label "36%" .... chart-cache-label
     data labels centred in bars ........ label-in-bar
-    semicolon run in a table cell ...... semicolon-runs
     markers 1 2 4 vs footnotes 1 2 3 ... footnote-sequence
     "State" for Department of State .... abbreviation-list
     "Jane Q. Stakeholder" .............. stakeholder-name (when rules carry the name)
@@ -70,9 +69,7 @@ PLANTED_WARN_IDS = {
     "shape-overlap",
     "native-table-small",
     "italics",
-    "quote-marks",
     "label-in-bar",
-    "semicolon-runs",
     "abbreviation-list",
     "empty-textbox",
     "off-canvas",
@@ -168,7 +165,8 @@ def plant_slide_faults(prs: Presentation) -> None:
     # 8. off-canvas shape
     _textbox(slide, W + Inches(0.5), y, Inches(2), Inches(0.4), "Off the right edge", size=12, name="QC off-canvas")
 
-    # 9. native table: components 40 + 30 + 28 against a stated total of 100, plus a semicolon run
+    # 9. native table: components 40 + 30 + 28 against a stated total of 100. The semicolon cell is
+    # left in on purpose: nothing may flag it, and test_qc_check guards that.
     rows, cols = 3, 5
     gf = slide.shapes.add_table(rows, cols, x2, y + Inches(1.6), Inches(4.5), Inches(1.0))
     gf.name = "QC table"

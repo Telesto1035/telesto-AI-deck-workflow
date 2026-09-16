@@ -998,49 +998,6 @@ def check_leftover_notes_and_labels(d: Deck):
                         break
 
 
-STRAIGHT_QUOTE_RE = re.compile(r'(?<!\d)"|(?<=\w)\'(?=\w)')
-
-
-def curly_quotes(text: str) -> str:
-    """Straight double quotes to curly by position; apostrophes between letters to a right single quote."""
-    out = []
-    for i, ch in enumerate(text):
-        if ch == '"' and not (i > 0 and text[i - 1].isdigit()):
-            prev = text[i - 1] if i > 0 else " "
-            out.append("“" if prev.isspace() or prev in "([{" else "”")
-        elif ch == "'" and 0 < i < len(text) - 1 and text[i - 1].isalnum() and text[i + 1].isalnum():
-            out.append("’")
-        else:
-            out.append(ch)
-    return "".join(out)
-
-
-def check_quote_marks(d: Deck):
-    """Straight quote marks; shipped decks use curly ones. Inch marks after a digit are left alone."""
-    for sno, shapes in d.shapes_by_slide.items():
-        for si in shapes:
-            hits = []
-            texts = []
-            if d.is_text_shape(si):
-                paras: dict[int, str] = {}
-                for r in d.runs_of(si):
-                    paras.setdefault(r.para_index, r.para_text)
-                texts = list(paras.values())
-            elif getattr(si.shape, "has_table", False) and si.shape.has_table:
-                texts = [t for _r, _c, _tx, t in d.table_cells(si)]
-            for t in texts:
-                if STRAIGHT_QUOTE_RE.search(t or ""):
-                    hits.append(t.strip())
-            if hits:
-                d.add(
-                    id="quote-marks", severity="warn", slide=sno, shape=si.name, shape_id=si.shape_id,
-                    text=hits[0][:120], detail="%d paragraph%s with straight quote marks; house style is curly" % (
-                        len(hits), "s" if len(hits) != 1 else ""
-                    ),
-                    fix="reword", auto_fixable=True,
-                )
-
-
 def check_textbox_conventions(d: Deck):
     """House construction: text boxes have zero insets and top anchoring. Reported per slide as information,
     because a shipped client deck may carry the template's defaults and the rule targets what the draft builds."""
@@ -1737,30 +1694,6 @@ def check_charts(d: Deck):
                 )
 
 
-def check_semicolon_runs(d: Deck):
-    for sno, shapes in d.shapes_by_slide.items():
-        for si in shapes:
-            if not (getattr(si.shape, "has_table", False) and si.shape.has_table):
-                continue
-            hits = []
-            for r, c, txBody, _text in d.table_cells(si):
-                if txBody is None:
-                    continue
-                for p in txBody.findall(q("a:p")):
-                    ptxt = "".join(t.text or "" for t in p.iter(q("a:t")))
-                    if ptxt.count(";") >= 2:
-                        hits.append((r, c, ptxt.strip()))
-            if hits:
-                d.add(
-                    id="semicolon-runs", severity="warn", slide=sno, shape=si.name, shape_id=si.shape_id,
-                    text=hits[0][2][:120],
-                    detail="%d cell paragraph%s with 2+ semicolons (rows %s); split into bullets" % (
-                        len(hits), "s" if len(hits) != 1 else "", ", ".join(str(h[0] + 1) for h in hits)
-                    ),
-                    fix="reword", auto_fixable=True,
-                )
-
-
 def check_abbreviations(d: Deck):
     expand = d.rules.get("expand", {}) or {}
     if not expand:
@@ -2051,7 +1984,6 @@ ALL_CHECKS = [
     check_comments,
     check_placeholders,
     check_leftover_notes_and_labels,
-    check_quote_marks,
     check_textbox_conventions,
     check_native_table_small,
     check_shape_overlap,
@@ -2063,7 +1995,6 @@ ALL_CHECKS = [
     check_footnote_sequence,
     check_totals,
     check_charts,
-    check_semicolon_runs,
     check_abbreviations,
     check_stakeholder_names,
     check_style_drift,
@@ -2133,7 +2064,10 @@ def _set_text(parent, tag: str, text: str):
 
 
 def fix_safe(deck: Deck, findings: list[Finding], out_path: Path, log) -> Path:
-    """Apply findings with exactly one correct answer. Never changes a number, a size or wording."""
+    """Hygiene only: strip speaker notes (after printing them) and remove generator fingerprints.
+    Both are blocks with exactly one correct answer. Nothing here edits slide text, formatting,
+    a number or a size: a fix that rewrites what the consultant wrote belongs in the fix pass,
+    where a human sees it first."""
     parts = dict(deck.parts)
     applied = []
 
@@ -2202,76 +2136,6 @@ def fix_safe(deck: Deck, findings: list[Finding], out_path: Path, log) -> Path:
             if new != text:
                 parts[name] = new.encode("utf-8")
                 applied.append("removed generator fingerprint from %s" % name)
-
-    # straight quote marks -> curly, text nodes in slide parts only
-    if "quote-marks" in ids:
-        count = 0
-        for name in list(parts):
-            if not (name.startswith("ppt/slides/slide") and name.endswith(".xml")):
-                continue
-            elm = load(name)
-            changed = False
-            for p in elm.iter(q("a:p")):
-                ts = [t for t in p.iter(q("a:t")) if t.text]
-                joined = "".join(t.text for t in ts)
-                if not STRAIGHT_QUOTE_RE.search(joined):
-                    continue
-                fixed = curly_quotes(joined)
-                if fixed == joined:
-                    continue
-                pos = 0
-                for t in ts:
-                    n = len(t.text)
-                    t.text = fixed[pos:pos + n]
-                    pos += n
-                changed = True
-                count += 1
-            if changed:
-                store(name, elm)
-        if count:
-            applied.append("curled quote marks in %d paragraph%s" % (count, "s" if count != 1 else ""))
-
-    # semicolon runs in native table cells -> one paragraph per item
-    if "semicolon-runs" in ids:
-        count = 0
-        for name in list(parts):
-            if not (name.startswith("ppt/slides/slide") and name.endswith(".xml")):
-                continue
-            elm = load(name)
-            changed = False
-            for tc in elm.iter(q("a:tc")):
-                txBody = tc.find(q("a:txBody"))
-                if txBody is None:
-                    continue
-                for p in list(txBody.findall(q("a:p"))):
-                    ptxt = "".join(t.text or "" for t in p.iter(q("a:t")))
-                    if ptxt.count(";") < 2:
-                        continue
-                    items = [s.strip() for s in ptxt.split(";") if s.strip()]
-                    first_r = p.find(q("a:r"))
-                    rPr = first_r.find(q("a:rPr")) if first_r is not None else None
-                    pPr = p.find(q("a:pPr"))
-                    endPr = p.find(q("a:endParaRPr"))
-                    idx = list(txBody).index(p)
-                    txBody.remove(p)
-                    for k, item in enumerate(items):
-                        np_ = etree.Element(q("a:p"))
-                        if pPr is not None:
-                            np_.append(etree.fromstring(etree.tostring(pPr)))
-                        r = etree.SubElement(np_, q("a:r"))
-                        if rPr is not None:
-                            r.append(etree.fromstring(etree.tostring(rPr)))
-                        t = etree.SubElement(r, q("a:t"))
-                        t.text = item
-                        if endPr is not None:
-                            np_.append(etree.fromstring(etree.tostring(endPr)))
-                        txBody.insert(idx + k, np_)
-                    changed = True
-                    count += 1
-            if changed:
-                store(name, elm)
-        if count:
-            applied.append("split %d semicolon run%s into paragraphs" % (count, "s" if count != 1 else ""))
 
     # write, [Content_Types].xml first
     order = ["[Content_Types].xml"] + [n for n in deck.parts if n in parts and n != "[Content_Types].xml"]

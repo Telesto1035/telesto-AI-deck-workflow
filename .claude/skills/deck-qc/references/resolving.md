@@ -24,7 +24,7 @@ Reviewer shorthand ("more strategic", "so what", "fix", "this doesn't work") is 
 
 ## The bulk route, only for a sweeping mechanical change
 
-Group across slides only when the same fault appears in several places and the fix is identical in kind: harmonizing one source line across six pages, replacing straight quote marks, spelling out an agency everywhere, removing the same title prefix from five pages, resizing sibling exhibits to one geometry. Say how many slides the option touches and list them. Anything that changes the meaning of one page's argument is not a bulk item.
+Group across slides only when the same fault appears in several places and the fix is identical in kind: harmonizing one source line across six pages, restoring the footer on the pages missing it, spelling out an agency everywhere, removing the same title prefix from five pages, resizing sibling exhibits to one geometry. Say how many slides the option touches and list them. Anything that changes the meaning of one page's argument is not a bulk item.
 
 ## Option rules
 
