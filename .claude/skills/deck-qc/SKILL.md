@@ -54,6 +54,7 @@ Token discipline throughout: never read a whole crosstab PDF or transcript into 
 - **The PPTX**, required.
 - **The source data**, strongly preferred. Ask once for the raw survey or data file (xlsx or csv, respondent-level or the crosstab workbook) before PDF crosstabs; a PDF needs an extraction step and can drop a row or a low-base marker. Accept the PDF if that is all there is, and say in the report header which form was used. Without any source, every number check is internal consistency only; say so. Never ask twice for the same deck.
 - **A written brief** and **the audience brief**, optional. They supply deck type, audience, the takeaway and the storyline lines.
+- **The client brief**, optional: the team's standing file on a core client (strengths and weaknesses, departments and services, account stakeholders, stated objectives), found in the engagement folder. Layer 2 reads it to judge whether recommendations are specific to this client or generic. Context only: it never supplies a figure for a number check.
 - **A prior version**, optional: with it you diff what changed, which flags closed, what regressed.
 - **A prior shipped deck for the client**, optional: claims precedent.
 

@@ -15,6 +15,7 @@ You produce the audience brief that `draft-deck` accepts as an optional input. I
 - **The meeting purpose**, one line: what the room decides or discusses.
 - **The brief or the prompt** for the deck, optional. With it you map questions to the storyline lines and evidence already planned.
 - **The evidence inventory**, optional: the files draft-deck will build from (survey export, crosstabs, transcripts, model). With it the question-to-data map names exhibits; without it, it names gaps.
+- **The client brief**, optional: the team's standing file on a core client, in the engagement folder. Its account-stakeholder section seeds the remit research, and its stated objectives supply the goals each primary's questions should point at. It is context, not a source for the remit table; the remit still cites public material.
 
 Ask once for a missing roster.
 
