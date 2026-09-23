@@ -18,8 +18,8 @@ The deck a room of MDs, team leads and directors reads for an hour. No ambiguity
 - **Register:** findings declarative and data-anchored; implications labelled and separate; bands in the should-register.
 
 ## Proposal / BD
-Speaks the buyer's language: why now, what problem, what dollars, what the buyer decides. Urgency is a quantified cost of waiting, never an imperative.
-- **Usually present:** cover with the takeaway as title and "Prepared for"; the stakes or where we left off (stat rail, value at stake labelled illustrative with assumptions); the problem and why now; options in tiers with the recommended tier marked and an outcome line each; path and first 30 days; team and terms where asked. Numbered eyebrows carry the spine (01 THE STAKES, 02 THE OPTIONS, and so on).
+Speaks the buyer's language: why now, what problem, what dollars, what the buyer decides.
+- **Usually present:** cover with the takeaway as title and "Prepared for"; the stakes or where we left off (stat rail; what the client stands to gain, in dollars only where the consultant supplies a figure, and then labelled illustrative with assumptions); the problem and why now; options in tiers with the recommended tier marked and an outcome line each; path and first 30 days; team and terms where asked. Numbered eyebrows carry the spine (01 THE STAKES, 02 THE OPTIONS, and so on).
 - **Page grammar:** visual throughout: stat callouts, option cards, chevrons, timeline, closing band. A chart only where one number needs proof.
 - **Length:** 4 to 7 pages.
 - **Register:** outcome-led; credit the client's own direction and let their criteria select the answer. Fees, durations and value-at-stake inputs come from the consultant or become `[PLACEHOLDER: builder input needed]`.

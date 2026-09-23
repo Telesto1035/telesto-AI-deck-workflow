@@ -22,11 +22,11 @@ A convention earns a place here only if a reader outside the firm could apply it
 
 ## Enforceable conventions (3)
 
-A check may cite these. Each is decidable by reading the page against the rule, with no knowledge of the firm, and each rests on the same edit recurring across two shipped decks.
+A check may cite these. Each is decidable by reading the page against the rule, with no knowledge of the firm, and each rests on the same edit recurring across two shipped decks. A convention marked *(drafting craft)* shapes a draft and produces no review item, as in `language-rules.md`.
 
 ### Titles
-1. **A title states the finding, not the method, the label or the survey structure.** "Secondary analysis of competitor articles reveals whitespace for [topic]" became "On competitor websites, [topic] is scarcely covered by any of the six firms". [evidence: 2 decks, 2026-09]
-2. **Interpretation leaves the title and goes to the band.** A title that ends ": the opening is [X], not the case for [Y]" loses the clause; the band carries the thought. [evidence: 2 decks, 2026-09]
+1. **A title states the finding, not the method, the label or the survey structure.** "Secondary analysis of competitor articles reveals whitespace for [topic]" became "On competitor websites, [topic] is scarcely covered by any of the six firms". [evidence: 2 decks, 2026-09] *(drafting craft)* At review a title is checked only against its page; its form is the consultant's call. [owner ruling, 2026-09-23: the CEO-approved proposals title structural pages such as the options page by what the page holds]
+2. **Interpretation leaves the title and goes to the band.** A title that ends ": the opening is [X], not the case for [Y]" loses the clause; the band carries the thought. [evidence: 2 decks, 2026-09] *(drafting craft)* [owner ruling, 2026-09-23]
 
 ### Claims and evidence
 3. **Size the claim to the number; a ratio survives only when exact; a named firm as subject takes a softer verb.** "twice the prime-bid path" became "larger than the prime-bid path"; "has the least of it deployed" became "does not see it deployed actively". [evidence: 2 decks, 2026-09]

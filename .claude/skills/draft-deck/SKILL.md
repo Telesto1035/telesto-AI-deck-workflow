@@ -24,7 +24,7 @@ Every slide has three things at its core, and they are what this skill spends it
 2. **The exhibit.** The one chart, table or quote set that shows the data behind the claim, native and editable, sourced and denominated.
 3. **The recommendation.** What this changes or informs: the band that closes the page, in the recommendation register.
 
-Everything else this skill knows about a finished page still applies (the edit patterns, the construction conventions, the paper), and callouts or highlights that carry data belong in the AI phase too: a highlighted bar, a delta called out beside a chart, a bolded number in a band. What waits for a human is the styling preference layer: decorative color, icons, badges, spacing polish. The order of effort matters because the consultant should be thinking like a partner about what the page says in the larger story, not like an executor placing elements; placing elements is the cheap part.
+Everything else this skill knows about a finished page still applies (the edit patterns, the build rules, the paper), and callouts or highlights that carry data belong in the AI phase too: a highlighted bar, a delta called out beside a chart, a bolded number in a band. What waits for a human is the styling preference layer: decorative color, icons, badges, spacing polish. The order of effort matters because the consultant should be thinking like a partner about what the page says in the larger story, not like an executor placing elements; placing elements is the cheap part.
 
 **Confirm the storyline in text before building anything.** For a first draft, and whenever a comment or a new input changes the storyline (which pages exist, in what order, with which exhibit), write the page plan as text first: one line per page with the title, the exhibit it carries and the recommendation it closes on. Wait for the consultant's confirmation, then build. This holds even when a written brief is attached: the brief settles the takeaway and the storyline lines, and the page plan is still shown before the file exists. It saves time and tokens on both sides.
 
@@ -96,7 +96,7 @@ The shipped deck plus the last AI draft it came from. Diff title by title and pa
 Principles: `references/language-rules.md`; learned rules: `references/house-register.md`; client formatting and voice: `references/clients/<client>.md`. The non-negotiables:
 
 1. **Action titles are full-sentence takeaways**, verb-led, specific, roughly 8–20 words. A reader who reads only the titles gets the whole argument (the "T" test).
-2. **No superlatives or vague intensifiers.** No "significant", "massive", "clear winner", "game-changing". If it matters, quantify it.
+2. **No superlatives or vague intensifiers.** No "massive", "clear winner", "game-changing". If it matters, quantify it.
 3. **Never over-read a single data point.** One number supports "indicates" or "points to", not "proves" or "confirms". A subgroup finding stays a subgroup finding. Small-n cuts are labeled "directional only".
 4. **Never invent data.** No number, quote, or source appears unless the user supplied it or it is in the provided material. A missing number becomes `[PLACEHOLDER: source needed]`, never an estimate presented as fact. On proposals this extends to fees, durations, and value-at-stake inputs: `[PLACEHOLDER: builder input needed]`.
 5. **Every stat carries its provenance**: question number or source, denominator ("% of respondents selecting attribute · n=200"), and footnote. Quotes carry attribution (role, segment). Proposal value-at-stake math is labeled "Illustrative" with assumptions and their source stated.
@@ -108,29 +108,17 @@ Principles: `references/language-rules.md`; learned rules: `references/house-reg
 
 ## Recommendation register
 
-Recommendations are read by Fortune 500 executives who decide for themselves. Prescription and urgency read as junior.
+Recommendations are read by Fortune 500 executives who decide for themselves. Prescription beyond the evidence reads as junior; urgency is used where the consultant calls for it.
 
-- **No urgency framing.** No "start now", "act immediately", "the window is closing", "time is running out", "planning starts now". On a proposal, urgency is a quantified cost of waiting on its own line, not an adverb.
-- **No bare command that removes the client's judgment.** Frame as what the evidence supports and what the client will need to decide: "The client will need a displacement or teaming strategy for the two agencies where incumbents hold the work"; "For discussion: decide by [date] whether displacement or a deal closes the remaining gap".
-- A directive verb is fine when it is specific and unhurried ("Decide the 5 to 10 pursuits this quarter"). The fault is urgency and prescription, not the imperative mood.
+- A command verb is normal professional writing ("Decide the 5 to 10 pursuits this quarter"), and so is the should-form. Which one reads better is the consultant's call (`house-register.md`, Preferences).
 - **Every recommendation names the action, and where the material allows it the owner, the cost and the date.** A recommendation carrying none of the four is a slogan.
 - **No stakes inflation.** "This represents a pivotal opportunity to transform…" is the AI signature on a recommendation slide. Say what changes and by how much.
 
 ## Typography floor, every paper
 
 - **Nothing below 10pt except a footnote.** Body text, chart labels, axis labels, table cells, stat-rail captions, eyebrows, recommendation bands, source lines: all 10pt or larger. The footnote home is the only place a smaller size is allowed, and only when the footnote would otherwise not fit. If text needs to be smaller than 10pt to fit, the page carries too much: cut, split the page, or footnote it.
-- **Italics and gray detail text are exceptions, not a style.** The test for every page: the title, the body text or the footnote carries everything a reader needs in a five-second scan. Small italic or gray text added to squeeze in more detail is the AI habit that defeats that scan, so the draft uses none of it; the gate lists a handful of italic or gray runs per deck and blocks above four. Quotes are set roman inside quotation marks with their attribution in the same size. Emphasis comes from bold or from the sentence itself. Chart subtitles, source lines and captions are roman. An attachment that uses italics does not license them.
+- **Gray detail text is an exception, not a style.** The test for every page: the title, the body text or the footnote carries everything a reader needs in a five-second scan. Small gray text added to squeeze in more detail is the AI habit that defeats that scan; the gate lists gray runs outside the palette for the author and never blocks on them.
 - **Few sizes per page.** Title, one body size, one footnote size is the norm. One font size within any table.
-
-## Depth: spend it by role
-
-A flat page is the most common failure of a dark deck, and the fix is not shadow everywhere. Border, fill, radius and shadow each announce "separate object", so assign them by role and lift only what should sit forward:
-
-- **Spine elements** (a chevron strip, a process row, the one card carrying the recommendation) take a gradient fill plus a soft drop shadow. The gradient runs lighter at the top to darker at the bottom, roughly +26 and −14 on each RGB channel of the base color. Shadow: about 11pt blur, 5pt distance, 60 percent black, straight down.
-- **Content cards** take a subtle gradient only, around 383838 down to 2D2D2D on the 282828 ground, with no border and no shadow. They read as surfaces on the page rather than objects above it.
-- **Borders stay reserved for status.** A teal outline means selected, active, recommended, or a gate. A gray hairline on every card dilutes that signal, so do not add one.
-
-One shadow stamped on every block flattens the hierarchy again, which is the problem it was meant to solve.
 
 ## Attribute labels are verbatim
 
@@ -148,7 +136,7 @@ Where the verbatim label does not fit the space, the fix is layout, not wording:
 
 ## Word budget
 
-A body page carries at most 200 words of title, body and chart labels before the gate warns and 275 before it blocks; footnotes are counted apart (warn above 100) and appendix pages are exempt, as are pages that are mostly verbatim quotes. A wordy page draws a partner comment before anything else on it is read. Exec summaries may run long but sit under the same cap: keep percentages to a minimum there and explain the finding in words; a summary line with four figures in it is a table, not a sentence. Detail pages carry the numbers.
+A body page carries at most 200 words of title, body and chart labels before the gate warns (it never blocks on length); footnotes are counted apart (warn above 100) and appendix pages are exempt, as are pages that are mostly verbatim quotes. A wordy page draws a partner comment before anything else on it is read. Exec summaries may run long but sit under the same cap: keep percentages to a minimum there and explain the finding in words; a summary line with four figures in it is a table, not a sentence. Detail pages carry the numbers.
 
 ## Match the deck, not your constants
 
@@ -165,7 +153,7 @@ The core above holds the rules every mode needs. The rest is in `references/`, r
 - `comment-shorthand.md`: reviewer phrases that go to a pop-up with readings. Read on every Revise.
 - `transcripts.md`: the one-pass read, topic segmentation and the ask register, and what is never extracted from a recording. Not mode-gated: read the first time a meeting transcript appears, at Build or at Revise.
 - `voice-review.md`: the de-AI pass. Read at handoff of a Build or a full rewrite.
-- `build-rules.md`: native and editable build rules, construction conventions, density, versioning, rating columns, Telesto dark paper. Read at Build and when a Revise adds a page or element.
+- `build-rules.md`: native and editable build rules, density, versioning, rating columns, Telesto dark paper. Read at Build and when a Revise adds a page or element.
 - `deck-types.md`: the eight deck types as the elements each usually carries, plus recurring page patterns. Read at Build, or when a Revise changes the storyline.
 
 ## Data handling
@@ -191,8 +179,7 @@ Every Build ends with two things alongside the file:
 - Build a file without an example deck or template to inherit from.
 - Escalate a claim beyond the client's precedent without flagging it.
 - Add decorative elements, icons, or styling flourishes as a substitute for content.
-- Scatter small or gray context text outside the four text homes, set any text below 10pt outside a footnote, or use italics as a style.
-- Stamp one shadow, one border and one radius on every block.
+- Scatter small or gray context text outside the four text homes, or set any text below 10pt outside a footnote.
 - Build narrator-dependent speaking slides (an image plus a phrase). Presentation decks are in scope; every page still passes the standalone test.
 - Guess at an ambiguous senior comment; the shorthand in `references/comment-shorthand.md` always goes to a pop-up with readings.
 - Answer a comment that calls for net-new research from its own knowledge, or fill the gap with a placeholder on the slide. It is held and scoped.
@@ -200,7 +187,7 @@ Every Build ends with two things alongside the file:
 - Write to a file the consultant attached as a source, or place an output in a folder they did not name, without asking. Attachment is permission to read.
 - Put anything from a meeting recording on a slide, cite a number someone said aloud, or apply an ask from a segment of the meeting that was about another project.
 - Make legal or regulatory judgments the dataset does not support.
-- Name the client stakeholder on a slide, whether from the brief or from an audience brief.
+- Name a client stakeholder on a slide, whether from the brief or from an audience brief, except as a directed question or a next-step owner (`GOVERNANCE.md`).
 - Chase an AI-detector score.
 
 ## After saving

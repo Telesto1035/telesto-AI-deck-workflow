@@ -45,7 +45,7 @@ Exit codes for `qc_check.py`: 0 pass, 1 blocking findings, 2 file could not be o
 1. Get access to the private GitHub repo and clone it.
 2. From the repo root create the venv and install: `python -m venv .venv` then `.venv/Scripts/pip install -r requirements.txt` (`.venv/bin/pip` on Mac).
 3. Open the folder in Claude Code. The Stop hook, the `deck-evaluator` subagent and the skills load from `.claude/` automatically; approve the project hook when prompted.
-4. Client decks stay local under `tests/fixtures/client/` (gitignored). Real client names go in a local copy of `qc_rules.json` passed with `--rules`, never committed.
+4. Client decks stay local under `tests/fixtures/client/` (gitignored). Stakeholder names for the `client_names` check go in a local copy of `qc_rules.json` passed with `--rules`. Client names themselves are fine in skill files.
 
 Cowork users get the skills only, published from this repo; the hook and the subagent run in Claude Code.
 

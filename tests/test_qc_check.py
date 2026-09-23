@@ -28,16 +28,13 @@ FIXTURES = HERE / "fixtures"
 CLEAN = sorted(FIXTURES.glob("*.pptx"))
 assert CLEAN, "no fixtures found in tests/fixtures"
 
-# Blocking findings the clean fixtures carry as delivered. Only two of the four are clean under
-# section 3 rules: the Deliverable Brief is a 9pt PptxGenJS one-pager with an italic caption and
-# a populated author field; the template carries one italic quote on slide 24.
+# Blocking findings the clean fixtures carry as delivered: the Deliverable Brief is a 9pt PptxGenJS
+# one-pager with a populated author field. Italics and word count no longer block (2026-09-23).
 KNOWN_CLEAN_BLOCKS = {
-    # word-count: the template's slide 2 is a 600-word AI-instructions page and the Brief is a dense one-pager by design;
-    # both are internal documents, not client body pages, so the block is expected there.
     "Telesto_Standard_v2_P3-P5": set(),
     "Telesto_Package_Types": set(),
-    "telesto_v2_template": {"word-count"},
-    "Telesto_Deliverable_Brief_Example": {"author-empty", "metadata-scrub", "font-size-floor", "word-count"},
+    "telesto_v2_template": set(),
+    "Telesto_Deliverable_Brief_Example": {"author-empty", "metadata-scrub", "font-size-floor"},
 }
 
 
@@ -112,7 +109,7 @@ def test_broken_fixture_finds_every_planted_fault(src, broken_dir, rules, name_r
     assert new_warns <= expected_warns, "unplanted warn(s): %s" % sorted(new_warns - expected_warns)
 
     # each slide-level planted fault sits on slide 1, where make_broken put it
-    for fid in ("font-size-floor", "italics", "placeholders", "totals-sum", "chart-cache-label",
+    for fid in ("font-size-floor", "placeholders", "totals-sum", "chart-cache-label",
                 "footnote-sequence", "stakeholder-name", "label-in-bar",
                 "abbreviation-list", "empty-textbox", "off-canvas"):
         assert any(f.slide == 1 for f in by_id(findings, fid)), fid
@@ -208,13 +205,13 @@ def test_fix_safe_clears_settled_faults_and_nothing_else(broken_dir, name_rules,
 
 
 def test_retired_checks_stay_retired(broken_dir, name_rules, tmp_path):
-    """semicolon-runs and quote-marks were removed on 2026-09-16. The fixture still carries both
+    """semicolon-runs and quote-marks were removed on 2026-09-16, italics, textbox-conventions and native-table-small on 2026-09-23. The fixture still carries both
     faults on purpose: a semicolon cell ("alpha; beta; gamma") and straight quotes. Nothing may
     report them, and --fix-safe may not rewrite them. Auto-splitting a cell into bullets rebuilt
     each paragraph from the first run, which flattened the mixed formatting decks ship with."""
     broken = broken_dir / "Telesto_Standard_v2_P3-P5.broken.pptx"
     deck, findings = qc_check.run_checks(broken, name_rules)
-    retired = {"semicolon-runs", "quote-marks"}
+    retired = {"semicolon-runs", "quote-marks", "italics", "textbox-conventions", "native-table-small"}
     assert not (retired & ids(findings)), sorted(retired & ids(findings))
 
     def slide_text(path):

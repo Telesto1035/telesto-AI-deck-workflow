@@ -654,42 +654,6 @@ def _text_colour_is_grey(val: str) -> bool:
     return 0x60 <= lum <= 0xB8 and max(r, g, b) - min(r, g, b) <= 18
 
 
-def check_italics(d: Deck):
-    """Italics are an exception, not a style. A few per deck are listed as warn; above the threshold the deck
-    is blocked, because recurring italic detail text is the AI habit that works against a five-second scan."""
-    threshold = int(d.rules.get("italics_threshold", 4))
-    found = []  # (slide, si, runs)
-    for sno, shapes in d.shapes_by_slide.items():
-        for si in shapes:
-            runs = [r for r in d.runs_of(si) if r.italic and visible(r.text)]
-            if getattr(si.shape, "has_table", False) and si.shape.has_table:
-                for _r, _c, txBody, _t in d.table_cells(si):
-                    runs.extend(
-                        r for r in d.runs_of_txbody(txBody, si.shape, d.slides[sno - 1], in_cell=True)
-                        if r.italic and visible(r.text)
-                    )
-            if runs:
-                found.append((sno, si, runs))
-    if not found:
-        return
-    total = sum(len(runs) for _s, _si, runs in found)
-    severity = "block" if total > threshold else "warn"
-    for sno, si, runs in found:
-        d.add(
-            id="italics",
-            severity=severity,
-            slide=sno,
-            shape=si.name,
-            shape_id=si.shape_id,
-            text=runs[0].para_text.strip()[:120],
-            detail="%d italic run%s here, %d in the deck (a rare exception is allowed up to %d; above that the deck is blocked)" % (
-                len(runs), "s" if len(runs) != 1 else "", total, threshold
-            ),
-            fix="reword",
-            auto_fixable=False,
-        )
-
-
 def check_grey_text(d: Deck):
     """Grey text outside a footnote home. Muted detail text is the other AI habit that defeats the scan;
     a few runs are listed, above the threshold the deck is blocked."""
@@ -719,7 +683,7 @@ def check_grey_text(d: Deck):
     if not found:
         return
     total = sum(len(h) for _s, _si, h in found)
-    # grey is reported for the skill's judgment; it never blocks on its own, italics does
+    # grey is reported for the skill's judgment; it never blocks
     severity = "warn" if total > threshold else "info"
     for sno, si, hits in found:
         d.add(
@@ -996,65 +960,6 @@ def check_leftover_notes_and_labels(d: Deck):
                             fix="reword",
                         )
                         break
-
-
-def check_textbox_conventions(d: Deck):
-    """House construction: text boxes have zero insets and top anchoring. Reported per slide as information,
-    because a shipped client deck may carry the template's defaults and the rule targets what the draft builds."""
-    for sno, shapes in d.shapes_by_slide.items():
-        insets = 0
-        anchors = 0
-        boxes = 0
-        for si in shapes:
-            if not d.is_text_shape(si) or not d.is_textbox(si) or not visible(d.shape_text(si)):
-                continue
-            boxes += 1
-            bodyPr = si.shape._element.find(q("p:txBody") + "/" + q("a:bodyPr"))
-            if bodyPr is None:
-                insets += 1
-                anchors += 1
-                continue
-            if any(int(bodyPr.get(k, "91440" if k in ("lIns", "rIns") else "45720")) != 0 for k in ("lIns", "rIns", "tIns", "bIns")):
-                insets += 1
-            if bodyPr.get("anchor", "t") != "t":
-                anchors += 1
-        if insets or anchors:
-            d.add(
-                id="textbox-conventions", severity="info", slide=sno, shape=None, shape_id=None,
-                text="", detail="%d of %d text boxes with non-zero insets, %d not top-anchored; house style is zero-margin, top-aligned" % (
-                    insets, boxes, anchors
-                ),
-                fix="resize",
-            )
-
-
-def check_native_table_small(d: Deck):
-    """A small native table where the house builds lines and text boxes. Heatmaps (most cells filled) are exempt."""
-    max_rows = int(d.rules.get("small_table_max_rows", 6))
-    max_cols = int(d.rules.get("small_table_max_cols", 5))
-    for sno, shapes in d.shapes_by_slide.items():
-        for si in shapes:
-            if not (getattr(si.shape, "has_table", False) and si.shape.has_table):
-                continue
-            tbl = si.shape._element.find(".//" + q("a:tbl"))
-            if tbl is None:
-                continue
-            rows = tbl.findall(q("a:tr"))
-            nrows = len(rows)
-            ncols = max((len(tr.findall(q("a:tc"))) for tr in rows), default=0)
-            if nrows == 0 or nrows > max_rows or ncols > max_cols:
-                continue
-            cells = [tc for tr in rows for tc in tr.findall(q("a:tc"))]
-            filled = sum(1 for tc in cells if tc.find(q("a:tcPr") + "/" + q("a:solidFill")) is not None)
-            if cells and filled / len(cells) >= 0.5:
-                continue  # heatmap: fills carry the data
-            d.add(
-                id="native-table-small", severity="warn", slide=sno, shape=si.name, shape_id=si.shape_id,
-                text="", detail="native table of %d rows x %d columns; house style builds this size from text boxes and horizontal divider lines" % (
-                    nrows, ncols
-                ),
-                fix="none",
-            )
 
 
 def check_shape_overlap(d: Deck):
@@ -1975,7 +1880,6 @@ def check_profile_length(d: Deck, profile: Optional[str], length: Optional[tuple
 
 ALL_CHECKS = [
     check_font_size_floor,
-    check_italics,
     check_grey_text,
     check_table_one_size,
     check_metadata,
@@ -1984,8 +1888,6 @@ ALL_CHECKS = [
     check_comments,
     check_placeholders,
     check_leftover_notes_and_labels,
-    check_textbox_conventions,
-    check_native_table_small,
     check_shape_overlap,
     check_word_count,
     check_empty_textbox,

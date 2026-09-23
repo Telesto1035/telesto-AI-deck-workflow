@@ -1,10 +1,9 @@
-# Build rules and construction conventions
+# Build rules
 
 Read at the Build stage and whenever a Revise adds a page or a new element. Universal to every paper; client formatting is in `clients/<client>.md`.
 
 ## Contents
 - Build rules (native, editable, nothing hardcoded)
-- Construction conventions
 - Concept pages
 - Telesto dark paper
 - Slide density, footnotes, versioning, rating columns
@@ -18,34 +17,22 @@ Read at the Build stage and whenever a Revise adds a page or a new element. Univ
 4. **No hardcoded styling.** Colors and fonts come from the deck theme (scheme colors), not pasted hex values, wherever the format allows. A human opening the file must be able to edit any element the ordinary way.
 5. **Keep the deck's evidence furniture**: DRAFT stamp on working pages, copyright footer, page numbers, question-number footnotes, denominator lines.
 6. **One idea per page.** If a storyline line needs two ideas, it needs two pages.
-7. **Four homes for text** (`build-rules.md`, Tables and text boxes; client specifics in `clients/<client>.md`): action title, chart/table title, content text box, footnote. No small or gray text outside a footnote; few font treatments per page; one font size within any table. The typography floor above applies: 10pt minimum outside footnotes, italics and gray text only as rare exceptions. This rule overrides habits found in the attachment.
+7. **Four homes for text** (`build-rules.md`, Tables and text boxes; client specifics in `clients/<client>.md`): action title, chart/table title, content text box, footnote. No small or gray text outside a footnote; few font treatments per page; one font size within any table. The typography floor above applies: 10pt minimum outside footnotes, gray text only as a rare exception. This rule overrides habits found in the attachment.
 8. **Tables hold data, not prose pairs.** Deliverables→outcomes and similar paired lists are built as individual text boxes with drawn rules and numbered ovals. Multi-item cells become bullets, never semicolon runs. Where a column is headed Quotes, the cells hold verbatim quotes.
-9. **Preserve bold-lead runs when replacing text.** A find-and-replace spanning both runs collapses the paragraph into the bold run. Edit only the runs the match touches.
-10. **File integrity.** python-pptx API for slide content. Raw XML is permitted in exactly two places: the chart-cache patch, and `a:effectLst` (shadows) or `a:gradFill` (gradients) on shapes you created yourself. Never let two slides share an embedded OLE object: when duplicating a slide carrying hidden think-cell data, strip the object from the duplicate. Validate against the original file before handing off.
-11. **Leave the author / core-properties author field empty** on every generated file.
-12. Work with the pptx skill's mechanics for unpacking, duplicating (`add_slide.py`), editing slide XML, and validating. Content QA: no leftover placeholder text from the source slides, no orphaned visuals after text replacement.
-13. Apply `clients/<client>.md` for client-paper specifics (titles, tables, charts, callouts, footnotes). A freshly attached shipped deck beats it, except where the four-homes rule or the typography floor says otherwise.
-14. **Look at the render before handing off.** Convert to PDF with the pptx skill's soffice wrapper, rasterize with pdftoppm, and view every page. Overlaps, overflow, stranded titles and hanging single words on a last line are invisible in the XML and obvious in the image. Fix (widen the box, or reword a few words), re-render, then send.
-
-
-## Construction conventions (house, every paper)
-
-CEO rulings. They override habits found in an attachment.
-
-- **Text boxes are zero-margin and top-anchored.** Every text box you create has all four insets at 0 and its text anchored to the top, so edges align to the grid and a one-line and a three-line box start at the same height. python-pptx: `tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0` and `tf.vertical_anchor = MSO_ANCHOR.TOP`. The gate lists departures as information.
-- **Section subtitles are a bold line with a rule beneath.** A section or panel inside a page is announced by a bold subtitle at 14 or 16pt and a thin horizontal line directly below it, not by a filled band or a box. One subtitle size per page.
-- **Tables are lines and text boxes, not the native table feature.** The consulting table of roughly four columns and three to five rows is built from one text box per cell, aligned on a grid, with thin horizontal divider lines between rows and a bold header row; no vertical rules, no cell fills. Multi-item cells are bullets. The native PowerPoint table is reserved for large tables (more rows or columns than fit that construction) and for heatmaps, where cell fills carry the data. The gate warns on a small native table.
-- **Bar charts keep the Y axis line.** The category axis is drawn as a thin ink line with no tick marks and no native labels; the label column to its left carries the attributes. Data labels sit outside the bar end.
-- **Chart subtitles fit on one line under the section rule.** The metric-and-denominator line ("% of buyers · Q2 and Q23 · n=200") must not spill below the rule. When it does, either give the box two lines and make sure the second line holds more than one word, or rephrase to fit one line. Never leave a single orphan word on a second line anywhere.
-- **Conclusion and discussion pages read left against right.** "What the findings add up to" on the left, "For discussion" (or "Implications", "Next") on the right, each under its own bold subtitle and rule, not stacked.
-- **Charts are native and editable, and match the think-cell look.** think-cell was the house tool and remains available but is not required. A native chart must keep its data editable (never a picture) and match the established format: category labels as a column of left-aligned text boxes sharing one left edge, data labels outside the bars, one series color with a muted color for non-focus series, no gridlines, no legend where one series is shown, source and denominator line beneath. Where a chart's data lives in an existing think-cell object, patch its cache; do not rebuild it.
+9. **Bar charts keep the Y axis line.** The category axis is a thin line at the bars' origin with no tick marks and no numeric scale; data labels sit outside the bar end.
+10. **Preserve bold-lead runs when replacing text.** A find-and-replace spanning both runs collapses the paragraph into the bold run. Edit only the runs the match touches.
+11. **File integrity.** python-pptx API for slide content. Raw XML is permitted in exactly two places: the chart-cache patch, and `a:effectLst` (shadows) or `a:gradFill` (gradients) on shapes you created yourself. Never let two slides share an embedded OLE object: when duplicating a slide carrying hidden think-cell data, strip the object from the duplicate. Validate against the original file before handing off.
+12. **Leave the author / core-properties author field empty** on every generated file.
+13. Work with the pptx skill's mechanics for unpacking, duplicating (`add_slide.py`), editing slide XML, and validating. Content QA: no leftover placeholder text from the source slides, no orphaned visuals after text replacement.
+14. Apply `clients/<client>.md` for client-paper specifics (titles, tables, charts, callouts, footnotes). A freshly attached shipped deck beats it, except where the four-homes rule or the typography floor says otherwise.
+15. **Look at the render before handing off.** Convert to PDF with the pptx skill's soffice wrapper, rasterize with pdftoppm, and view every page. Overlaps, overflow, stranded titles and hanging single words on a last line are invisible in the XML and obvious in the image. Fix (widen the box, or reword a few words), re-render, then send.
 
 
 ## Concept pages get real visual grammar
 
 A page explaining a continuum, a process, a set of gates or a sequence is drawn in the grammar of that idea: chevrons for a progression, arrows between nodes, an explicit gate mark where approval happens, a loop-back arrow where work returns to be fixed, a timeline where dates matter. A row of cards standing in for a diagram is the thing to avoid. Let the shape carry the meaning: where a step is advisory rather than blocking, draw it as a loop, not a gate.
 
-Icons earn their place where a set of items is scanned rather than read, such as scored dimensions or archetype tiles, and in front of each statement on an implication or recommendation page in place of accent bars. Render them from one icon family to teal PNGs at 256px and place them at about 0.34 in. Never scatter icons as decoration.
+Icons earn their place where a set of items is scanned rather than read, such as scored dimensions or archetype tiles, and in front of each statement on an implication or recommendation page in place of accent bars. Never scatter icons as decoration.
 
 
 ## Telesto dark paper (2.0)
@@ -60,11 +47,10 @@ The 2.0 house paper is dark and built for screen. It is the default for Telesto-
 
 **Eyebrow.** A numbered eyebrow above the title is the storyline spine: `01 THE STAKES`, `02 THE RESPONSE`, or `01`, `02` on finding pages. The manual's variant is a multi-segment tracker with the active segment lit in teal and the rest muted; client decks use the single numbered eyebrow.
 
-**Analytical pages on dark paper.** Bars single-hue teal, with muted gray for non-focus series and a lighter teal for the highlighted item. Data labels white, outside the segment. Heatmaps in teal tints from ground to full teal, values white. Tables built from shapes, bucket labels in teal-tinted feature boxes to the left of the rows, one font size within a table. Source line and n under every exhibit, full size, white or muted; never small gray.
+**Analytical pages on dark paper.** Bars single-hue teal, with muted gray for non-focus series and a lighter teal for the highlighted item. Data labels white, outside the segment. Heatmaps in teal tints from ground to full teal, values white. Tables built from shapes (a native table is fine for a large table or a heatmap), bucket labels in teal-tinted feature boxes to the left of the rows, one font size within a table. Source line and n under every exhibit, full size, white or muted; never small gray.
 
 ## Slide density
 
-- Executive summary: at most 5 rows, 3 columns (findings / implications / recommendations). Six rows or a fourth column taxes the eye; move the overflow to a discussion page or appendix.
 - 2-3 exhibits maximum per slide; one idea per page. Anything more goes to appendix.
 - Each exec-summary point double-clicks into 1 body slide (rarely 2) that expands the point with data.
 - Certain pages can be text-heavy (methodology, discussion), but never a wall of text for executive audiences.

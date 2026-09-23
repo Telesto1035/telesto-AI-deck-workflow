@@ -35,7 +35,7 @@ python scripts/qc_check.py DECK.pptx --fix-safe     # settled fixes only, writes
 python scripts/pptx_comments.py DECK.pptx --open-only  # who asked for what, on which slide
 ```
 
-Exit 1 means blocking findings; fix them and run again until it exits 0. The gate is deterministic and owns hygiene and mechanics: speaker notes, generator fingerprints, text under 10pt outside footnotes, italics above the threshold, placeholders, footnote markers without footnotes, totals that do not sum, chart labels against cached data, reviewer notes, empty register labels, element consistency. What it blocks is not re-argued here; thresholds live in `scripts/qc_rules.json`. Read the summary and the BLOCK lines; WARN and INFO lines are for the fix pass. The `element-consistency` warning names a color that an element class carries on only one or two pages while the rest of the deck uses another; two or three line colors in a deck are normal, a fourth on one page is the flag. Fix by copying the style from a sibling page. Pages after a divider titled Appendix, Crosstabs or Backup are data pages: no style check and no fix applies to them, only hygiene.
+Exit 1 means blocking findings; fix them and run again until it exits 0. The gate is deterministic and owns hygiene and mechanics: speaker notes, generator fingerprints, text under 10pt outside footnotes, placeholders, footnote markers without footnotes, totals that do not sum, chart labels against cached data, reviewer notes, empty register labels, element consistency. What it blocks is not re-argued here; thresholds live in `scripts/qc_rules.json`. Read the summary and the BLOCK lines; WARN and INFO lines are for the fix pass. The `element-consistency` warning names a color that an element class carries on only one or two pages while the rest of the deck uses another; two or three line colors in a deck are normal, a fourth on one page is the flag. Fix by copying the style from a sibling page. Pages after a divider titled Appendix, Crosstabs or Backup are data pages: no style check and no fix applies to them, only hygiene.
 
 **Document properties are a hand-back condition, not a draft defect.** The author field, title, TotalTime and custom properties warn during a session and block only under `--handback`, because PowerPoint restamps them on every save and blocking on them interrupts the consultant's own editing over something that is not yet wrong. The gate never writes them: **PowerPoint's Document Inspector owns that scrub** (File > Info > Check for Issues > Inspect Document), run by a human at stage 5, and the gate's job is to verify it was run. Generator fingerprints are the exception and keep blocking, because Inspector leaves those in place.
 
@@ -67,7 +67,9 @@ Shape and length per type are defined once, in draft-deck `references/deck-types
 | Type | The check requires | Not applicable |
 |---|---|---|
 | Findings / survey report | exec summary linked to body pages both ways; methodology with n and margin of error; source and n under every exhibit; question wording in footnotes | priced options |
-| Proposal / BD | takeaway on the cover; value at stake in dollars labelled illustrative with assumptions; priced options with outcome lines; recommended option marked; a path with dates | methodology; footnote density; chart count |
+| Proposal / BD | takeaway on the cover; what the client stands to gain, stated (in dollars only where the deck gives a figure, and then labelled illustrative with assumptions); priced options with outcome lines; a path with dates | methodology; footnote density; chart count; exec summary; a marked or badged recommended option; owners on the path; operating detail (staffing, cadence, who does what, what the fee covers week by week) |
+
+**The proposal standard is the two CEO-approved proposals of Aug 2026** named in draft-deck `references/deck-types.md`. A proposal is written before the work is fully scoped, and some of the scope is settled with the client, so it is judged as a pitch and never with the logic of a findings report. Any check that would fault a pattern both exemplars share is wrong about proposals and produces no item. What stays in scope on a proposal: internal contradictions (scope, duration, dates, fee, who decides), figures without a source, a claim or promised outcome with no evidence behind it (QUESTION), undefined terms, and grammar.
 | Minipack | takeaway page; exec summary mirrored by detail pages; source and n under every exhibit; next steps with owners | conclusion page |
 | Kickoff | scope, dated timeline, roles with owners | value at stake; exhibits |
 | Presentation | as the parent type; a closing decision page | footnote density on the page |
@@ -85,6 +87,8 @@ House convention, not error. Do not spend the consultant's attention on these.
 - Two or three line colors across a deck; gray chart subtitles and dark gray footnotes on client paper where the client file allows them.
 - A shortened attribute label whose footnote carries the verbatim source wording and its question number.
 - A comment left open because it is held (draft-deck class `scope`: it needs evidence nobody has yet), where the hand-back names it and says what scoping it would take.
+- The form of a title: a label or structural title ("Three ways to …, scaled by depth"), a title with no verb, a title carrying statistics, a title that is long, or one that could move to another client's deck. A title is an item only when it contradicts its page or does not match it (see **Titles** under Layer 2).
+- On a proposal: no dollar figure where the gain is stated another way; no badge on the recommended option; a path with dates but no owners; next steps left for the client to decide; missing operating detail.
 
 ## Layer 1: mechanical checks, offered as FIX
 
@@ -103,25 +107,25 @@ Each finding names the page, quotes the text, states the fix. Group repeated ins
 Run by the evaluator. When the right change depends on data you do not have, mark it QUESTION and do not guess.
 
 - **Title chain.** Read as one text before any body. Does the argument hold end to end? Is a page missing? Do two titles say different things about one fact?
-- **Exec summary to body.** Every summary point has a body page and every body page traces back; the figures agree.
-- **Conclusion follows exhibit.** Does the band follow from the exhibit? Does the title claim more than the exhibit shows, or has it drifted into describing the data?
+- **Titles.** A title is flagged only when it contradicts its page, or does not match it: it names a different subject, a different option, a different number, or a claim the page does not show. How a title is written is the consultant's call and produces no item: the label rules in the rule files, verb and length rules, statistics in a title, and portability are drafting guidance. When a title is flagged, the proposed line matches the page and keeps the consultant's form.
+- **Exec summary to body.** Where the profile has an exec summary: every summary point has a body page and every body page traces back; the figures agree.
+- **Conclusion follows exhibit.** Does the band follow from the exhibit? Does the title claim more than the exhibit shows?
 - **Claim sizing.** "Proves" on one data point; a subgroup promoted to the whole; a totalizing word on single-survey data; a firm-level conclusion from a handful of mentions; a claim beyond precedent when a prior deck is attached.
 - **Quotes as evidence.** Trimmed or reworded against the same quote elsewhere; a paraphrase in a Quotes column; a quote that does not support the band beside it; attribution spelled two ways.
 - **Outcome clarity.** Can a reader state the takeaway and the decision after the titles alone? Is there a closing decision or next-step page where the profile requires one?
-- **Value at stake.** Present, in dollars, with assumptions and source where required; labelled illustrative where projected.
+- **Value at stake.** What the client stands to gain is stated. Where the deck gives a dollar figure, it carries its assumptions and source, is labelled illustrative where projected, and reconciles with the other numbers on the page. A gain stated without dollars is not a defect.
 - **Language.** Apply draft-deck `references/voice-review.md` (AI pattern classes) and the enforceable conventions in `references/house-register.md`. Grammar, machine phrasing and convention breaches only; house voice is not assessed. Never alter a number during a language fix.
-- **Portability test.** A title that could move unchanged to another client's deck is not yet a finding; propose the specific version where the exhibit supports one.
 
 ## Scoring and report
 
-Four dimensions, 1 to 5. The score is the summary; the lists are the product. Value at stake is N/A where the profile says so.
+Four dimensions, 1 to 5. The score is the summary; the lists are the product. Value at stake is N/A where the profile says so. On a proposal, a gain stated in other terms than dollars (exposure, risk, a decision made possible) is "stated" and scores 4 or 5 on the same terms as a dollar figure; the anchors for "without source" apply only to figures the deck gives.
 
 | Score | Clarity of outcome | Logical flow | Value at stake | Technical accuracy |
 |---|---|---|---|---|
-| 5 | One takeaway; every title asserts; a closing decision page | Title chain reads as one argument; summary and body map one to one | Stated, sourced, assumptions shown | Every figure traced; totals reconcile; footnotes complete |
-| 4 | Takeaway clear; one or two label titles | One soft transition or one page out of order | Stated and sourced; assumptions partly shown | One unsourced figure or one footnote gap |
-| 3 | Takeaway inferred from several pages; no decision page | One missing page or one contradiction | Stated without source or assumptions | Two to four unsourced figures or one reconciliation failure |
-| 2 | Several label titles; the reader cannot say what to decide | Two or more contradictions or missing pages | Implied, never quantified | Multiple reconciliation failures; placeholders |
+| 5 | One takeaway; the reader can say what to decide; a closing decision page where the profile needs one | Title chain reads as one argument; summary and body map one to one | Stated; any figure sourced with assumptions shown | Every figure traced; totals reconcile; footnotes complete |
+| 4 | Takeaway clear; the decision needs one body page to state | One soft transition or one page out of order | Stated; a figure's assumptions partly shown | One unsourced figure or one footnote gap |
+| 3 | Takeaway inferred from several pages; no decision page where required | One missing page or one contradiction | Stated, but a figure has no source or assumptions | Two to four unsourced figures or one reconciliation failure |
+| 2 | One or more titles contradict their pages; the reader cannot say what to decide | Two or more contradictions or missing pages | Gestured at; the reader cannot say what the client gains | Multiple reconciliation failures; placeholders |
 | 1 | No discernible takeaway | Pages do not connect | Absent where required | Figures cannot be traced |
 
 Technical accuracy below 3 goes in the report header regardless of the overall.
@@ -131,7 +135,7 @@ Technical accuracy below 3 goes in the report header regardless of the overall.
 What is still checked, as items and never as a score:
 - **Machine phrasing**, against `draft-deck/references/voice-review.md`. Research-backed pattern classes, not house taste. FIX where the line is simply wrong, SUGGEST where the rewrite is a judgment. **A language rule is a FIX only when it names a defect, never when it names a word**: a flagged word or phrase, and any rule that would apply the same change across pages, is SUGGEST however mechanical it sounds. The deck may be hours from a partner.
 - **Grammar and mechanics**: agreement, parallel structure in a list or series, tense, a garbled line. FIX.
-- **The enforceable conventions** in `draft-deck/references/house-register.md`, plus `language-rules.md`, plus the client file under `draft-deck/references/clients/` when the deck is on client paper. Read them; do not apply them from memory. **A line marked *(drafting craft)* produces no item**: those rules shape a first draft and step back, and you are checking a page that already exists. The drafted line is the baseline; say what is wrong with it against the evidence, not what a fresh draft would have done.
+- **The enforceable conventions** in `draft-deck/references/house-register.md`, plus `language-rules.md`, plus the client file under `draft-deck/references/clients/` when the deck is on client paper. Read them; do not apply them from memory. **A line marked *(drafting craft)* produces no item**: those rules shape a first draft and step back, and you are checking a page that already exists. The drafted line is the baseline; say what is wrong with it against the evidence, not what a fresh draft would have done. **No rule about how a title is written produces an item** (label, prefix, verb, length, statistics, portability), whichever file it sits in; a title is checked only against its page. On a proposal, the owner-and-date rule for next steps asks for dates only, and `deck-types.md` is drafting guidance, not a source of findings.
 - **Logic across titles**, which the title chain and claim-sizing checks above already own.
 
 The floor is general professional consulting writing: an MBB or Big Four deliverable, a memo to an F500 executive. Inside that floor the deck is left alone. **Neither the Preferences section of `house-register.md` nor its "Observed, not yet promoted" list is a source of findings** — the first is house habit, the second is a pattern seen once and waiting for a second deck. Only the conventions under "Enforceable conventions" may be cited. A rule elsewhere in the file is not a weaker rule; it is not a rule — a line that merely departs from a house habit is not a defect, and a command verb in a recommendation is not one.

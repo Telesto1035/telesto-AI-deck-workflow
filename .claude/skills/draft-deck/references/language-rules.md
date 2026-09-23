@@ -24,7 +24,7 @@ The title IS the takeaway. A reader skimming only titles gets the full argument.
 - Good: "Buyers select based on peer referrals, higher-ed experience, and personalized proposals, rather than cost."
 - Good: "When forced to prioritize, leaders rank financial sustainability and AI as top challenges, while deprioritizing public trust and student preparedness."
 - Bad: "Selection factors" (label, not takeaway). Bad: "[Client] dominates the market" (over-claim).
-- No label prefix on a title. "Where to play:", "Who to target |" and "What to say |" were removed from every title on a shipped findings deck; the storyline position is carried by the eyebrow or the section divider, and the title is the assertion alone. The older series-prefix pattern (`Mainstream | …`) is retired.
+- No label prefix on a title. "Where to play:", "Who to target |" and "What to say |" were removed from every title on a shipped findings deck; the storyline position is carried by the eyebrow or the section divider, and the title is the assertion alone. The older series-prefix pattern (`Mainstream | …`) is retired. *(drafting craft)* At review a title is checked only against its page (deck-qc, Titles), so a prefix on a finished title is the consultant's call.
 - Two-part titles (title + subtitle continuation, "…despite top challenges' lack of resource and leadership attention") are allowed sparingly for tension between two facts. *(drafting craft)* “Sparingly” is a budget across a draft, and it cannot be judged from a page in front of you.
 
 ## Sizing claims to evidence
@@ -54,7 +54,7 @@ Two registers, kept separate:
 
 A finding never smuggles in a recommendation; an implication never introduces new data.
 
-- **Next steps carry an owner and a date.** A step with neither is a wish. (Moved here from `house-register.md` on 2026-09-16: it is general professional practice, not a pattern learned from Telesto edits.)
+- **Next steps carry an owner and a date.** A step with neither is a wish. (Moved here from `house-register.md` on 2026-09-16: it is general professional practice, not a pattern learned from Telesto edits.) On a proposal the path needs dates only: it is drafted before the work is scoped, and owners and the order of steps are settled with the client.
 
 ## Craft
 

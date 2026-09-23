@@ -8,13 +8,13 @@ Usage:
 Planted faults (all on slide 1 unless noted), each mapped to the qc_check.py finding it must trigger:
     body run at 9pt .................... font-size-floor  (shape "QC body 9pt")
     footnote list at 7pt ............... font-size-floor  (shape "QC footnotes", bottom band)
-    italic quote in straight quotes .... italics
+    italic quote in straight quotes .... nothing (italics check removed 2026-09-23)
     author "Reviewer One" ............... author-empty (x2: creator and lastModifiedBy)
     TotalTime 214 ...................... metadata-scrub
     custom.xml with SharePoint fields .. metadata-scrub
     speaker note "Build sequence: ..." . speaker-notes
     [PLACEHOLDER: source needed] ....... placeholders
-    table row 40+30+28 vs Total 100 .... totals-sum, native-table-small (3x5 native table)
+    table row 40+30+28 vs Total 100 .... totals-sum (3x5 native table)
     chart cache 34 with label "36%" .... chart-cache-label
     data labels centred in bars ........ label-in-bar
     markers 1 2 4 vs footnotes 1 2 3 ... footnote-sequence
@@ -24,7 +24,7 @@ Planted faults (all on slide 1 unless noted), each mapped to the qc_check.py fin
     "DL 11-Sep-26: ..." note ............ reviewer-note
     "Takeaway:" with nothing after ..... empty-label
     two colliding text boxes ........... shape-overlap
-    300 words of body text ............. word-count
+    300 words of body text ............. word-count (warn only)
     shape past the right edge .......... off-canvas
     hidden last slide .................. hidden-slides
     DRAFT on slide 1 only .............. draft-stamp (multi-slide decks only)
@@ -53,7 +53,6 @@ STAKEHOLDER = "Jane Q. Stakeholder"
 
 # The faults as (finding id, severity) pairs, so the test can assert the exact block set.
 PLANTED_BLOCK_IDS = {
-    "word-count",
     "font-size-floor",
     "author-empty",
     "metadata-scrub",
@@ -67,8 +66,7 @@ PLANTED_BLOCK_IDS = {
 }
 PLANTED_WARN_IDS = {
     "shape-overlap",
-    "native-table-small",
-    "italics",
+    "word-count",
     "label-in-bar",
     "abbreviation-list",
     "empty-textbox",
