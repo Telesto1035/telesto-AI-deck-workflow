@@ -49,7 +49,7 @@ In this bundle or already on disk:
 - `vs2.pptx` — the dark Telesto v2 template. 49 layouts. Every page inherits from the layout named `Blank (Contrast - Corner Image Ready)`, which carries the dark ground, the logo, the copyright line and the page number.
 - `Telesto_Standard_v2_P3-P5.pptx` — three pages already built in the target grammar. Use as the visual reference and the source of reusable archetypes. Note the numbering is from the old storyline: its P3 (continuum) maps to the new P3, its P4 (pipeline) is superseded by the workflow chart, its P5 (tools and skills table) is OPEN, see section 7.
 - `mk.py` — the python-pptx builder used for those pages. Carries the helpers: `new(title, active)` which adds a slide from the DARK layout, strips non-title placeholders, sets the title TOP-anchored at 22pt and draws the eyebrow tracker; `box()`, `text()`, and the raw-XML `shadow()` and `gradient()` helpers. Start from this rather than rewriting the scaffolding.
-- `telesto_deck_chain.html` / `.png` — the workflow chart, already in the dark Telesto style and approved. It is P6. Port the SVG to native PowerPoint shapes rather than pasting the image, so the page stays editable.
+- `docs/telesto_deck_chain.html` / `.png` (repo root) — the workflow chart, already in the dark Telesto style and approved. It is P6. Port the SVG to native PowerPoint shapes rather than pasting the image, so the page stays editable.
 - Project docs: `claude/vanguard-standard-v2-storyline.md` (the 9/10 storyline, superseded in structure but still the source for design grammar and the CEO meeting takeaways), `claude/workflow-and-skills.md`, `claude/qc-scorecard-design.md`, `claude/deck-types.md`, `claude/handoff-claude-code.md`.
 
 ## 5. Page spec, 21 pages
@@ -70,9 +70,9 @@ Titles below state intent, not final wording. Write each as a full-sentence acti
 | # | Eyebrow | Page | Visual | Notes |
 |---|---|---|---|---|
 | 5 | 01 SERVICES | Divider | Section mark | |
-| 6 | 01 SERVICES | The workflow, end to end | The agentic workflow chart, ported to native shapes | Source: `telesto_deck_chain.html`. Keep the pattern brackets and the legend |
+| 6 | 01 SERVICES | The workflow, end to end | The agentic workflow chart, ported to native shapes | Source: `docs/telesto_deck_chain.html`. Keep the pattern brackets and the legend |
 | 7 | 01 SERVICES | What you supply | Input cards down the left, what each decides on the right | Prompt, data files, example deck (mandatory), stakeholder context when a roster exists, Build Brief only when the package includes a product or engineer time |
-| 8 | 01 SERVICES | What the gate checks so you do not | Checklist panel drawn from `qc_rules.json` | Fonts 10pt floor, italics, word budget, totals, footnotes, placeholders, notes, metadata, overflow, overlap. State that appendix and crosstab pages sit outside the style checks |
+| 8 | 01 SERVICES | What the gate checks so you do not | Checklist panel drawn from `qc_rules.json` | Fonts 10pt floor, word budget, totals, footnotes, placeholders, notes, metadata, overflow, overlap. State that appendix and crosstab pages sit outside the style checks |
 | 9 | 01 SERVICES | What a scored deck looks like | Sample QC report, placeholder frame | PLACEHOLDER. User supplies the real EDR AI output. Build the frame to hold a report of roughly one page |
 | 10 | 01 SERVICES | How comments come back | The Revise loop: comment in the PPTX, mechanical done, judgment gets 2-3 options, ambiguous asked, a data-label rename asked with the footnote decision, a request for research nobody has done held and scoped | Reviewer comments in the file rather than describing fixes in prompts. Both comment stores are read |
 | 11 | 01 SERVICES | What each engagement leaves behind | The Learn loop: shipped deck against last draft, proposed rule changes, human approves each | This is the IP bullet. Evidence available: three Learn passes on the EDR AI minipack between 9/12 and 9/13, each adding rules to `language-rules.md`. Show it as a before and after, not a description |

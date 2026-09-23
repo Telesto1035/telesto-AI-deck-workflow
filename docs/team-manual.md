@@ -4,9 +4,10 @@
 
 ## The chain
 
+1. **Audience.** Attach the meeting roster and `stakeholder-context` writes the audience brief: the one or two primaries, the questions each needs answered, and which data answers them. draft-deck offers it by pop-up when no brief is attached.
 2. **Build.** "Draft the deck" or "build the findings report" triggers `draft-deck`. It confirms the deck type and the audience by pop-up, then shows the page plan as one title per line, then builds from a template or prior shipped deck. It never builds a file without one.
-3. **Gate.** In Claude Code the Stop hook runs `qc_check.py` on every PPTX the session wrote and will not let the turn end while blocking findings remain: author field set, speaker notes, generator fingerprints, text below 10pt outside footnotes, placeholders, footnote markers without footnotes, totals that do not sum, chart labels that disagree with cached data. Three blocked stops and it hands off with the findings attached. In Cowork the `deck-qc` skill asks for the same checks by hand.
-4. **Evaluate.** "Use the deck-evaluator subagent on OUT.pptx." It applies deck-qc Layer 2 in a fresh context: skeleton against the deck type, title chain, exec summary to body, conclusion follows exhibit, claim sizing, language, portability. It scores four dimensions 1 to 5 and returns suggestions. Voice is not scored: the standard is professional consulting writing, and what is checked is grammar, machine phrasing and the conventions a reader outside the firm could apply. It never edits the file. Anything that needs data or client context comes back marked QUESTION.
+3. **Gate.** In Claude Code the Stop hook runs `qc_check.py` on every PPTX the session wrote and will not let the turn end while blocking findings remain: speaker notes, generator fingerprints, text below 10pt outside footnotes, placeholders, footnote markers without footnotes, totals that do not sum, chart labels that disagree with cached data. Three blocked stops and it hands off with the findings attached. Document properties (author, edit time) warn during a session and block only at hand-back, after you run PowerPoint's Document Inspector (`qc_check.py --handback`). In Cowork the `deck-qc` skill asks for the same checks by hand.
+4. **Evaluate.** "Use the deck-evaluator subagent on OUT.pptx." It applies deck-qc Layer 2 in a fresh context: skeleton against the deck type, title chain, exec summary to body, conclusion follows exhibit, claim sizing, language. A title is checked only against its own page, never for its form. It scores four dimensions 1 to 5 and returns suggestions. Voice is not scored: the standard is professional consulting writing, and what is checked is grammar, machine phrasing and the conventions a reader outside the firm could apply. It never edits the file. Anything that needs data or client context comes back marked QUESTION.
 5. **Review.** The partner comments in PowerPoint, as usual. "Resolve these comments" triggers `draft-deck` Revise, which reads the comments from the file (`pptx_comments.py`), executes mechanical ones, proposes options for judgment ones, and returns a before-and-after log built from `deck_diff.py --comments`. A deck can join here without having gone through steps 1 to 4: a human-built draft with the CEO's comments on it is a valid starting point.
 6. **Ship, then learn.** After shipping, `deck-qc/scripts/deck_diff.py DRAFT.pptx SHIPPED.pptx` lists every edit by class (number, structure, storyline, style). `draft-deck` Learn turns repeated edits into proposed skill patterns; nothing enters a skill without approval.
 
@@ -37,7 +38,7 @@ Bump `VERSION` when a change should reach the team; the manifest reads it.
 
 ## Rules that learn without growing
 
-Writing conventions learned from shipped decks live in `draft-deck/references/house-register.md`, capped at 25 and entered only after a pattern recurs in two decks or the CEO rules. The file splits them: enforceable conventions, which a check may cite, and Preferences, which are house habit and no check may cite. Client formatting and voice live in `draft-deck/references/clients/<client>.md`, which never holds engagement content. Learn proposes at most three changes per pass; nothing enters without approval.
+Writing conventions learned from shipped decks live in `draft-deck/references/house-register.md`, capped at 25 and entered only after the same edit recurs in two shipped decks; a single ruling does not enter a rule. The file splits them: enforceable conventions, which a check may cite, and Preferences, which are house habit and no check may cite. Client formatting and voice live in `draft-deck/references/clients/<client>.md`, which never holds engagement content. Learn proposes at most three changes per pass; nothing enters without approval.
 
 ## Never remember the next step
 
@@ -48,8 +49,8 @@ Every stage (build or revision, gate and render, evaluator, SUGGEST pop-ups) end
 ```
 .venv/Scripts/python .claude/skills/deck-qc/scripts/qc_check.py DECK.pptx            # findings table, exit 1 if blocked
 .venv/Scripts/python .claude/skills/deck-qc/scripts/qc_check.py DECK.pptx --fix-safe # writes DECK.qc.pptx with settled fixes only
-.venv/Scripts/python scripts/deck_diff.py BEFORE.pptx AFTER.pptx --md diff.md        # what changed between versions
-.venv/Scripts/python scripts/deck_diff.py BEFORE.pptx AFTER.pptx --comments --ledger-rows   # each reviewer comment next to what changed on its slide, plus ledger rows
+.venv/Scripts/python .claude/skills/deck-qc/scripts/deck_diff.py BEFORE.pptx AFTER.pptx --md diff.md        # what changed between versions
+.venv/Scripts/python .claude/skills/deck-qc/scripts/deck_diff.py BEFORE.pptx AFTER.pptx --comments --ledger-rows   # each reviewer comment next to what changed on its slide, plus ledger rows
 .venv/Scripts/python .claude/skills/deck-qc/scripts/pptx_comments.py DECK.pptx       # the reviewer comments in a deck, by slide; --resolve all marks them done
 .venv/Scripts/python -m pytest tests/                                                  # before committing a SKILL.md change
 ```
@@ -58,15 +59,15 @@ Every stage (build or revision, gate and render, evaluator, SUGGEST pop-ups) end
 
 ## Rules of the house the gate enforces
 
-Empty author field. Nothing below 10pt except footnotes, which stop at 8pt. Gray text outside footnotes in a color that is not in the palette is listed for the author, never blocked. The test behind it: title, body or footnote carries everything a reader needs in a five-second scan. No `[PLACEHOLDER]`, `TBD` or `XX` left in. Every footnote marker has its footnote on the same slide. Components sum to their stated total within one point. No client stakeholder named on a slide. Body pages stay under 200 words of title, body and chart labels (warned, never blocked); footnotes counted apart, appendix and quote pages exempt. Units are slides and pages.
+Empty author field at hand-back. Nothing below 10pt except footnotes, which stop at 8pt. Gray text outside footnotes in a color that is not in the palette is listed for the author, never blocked. The test behind it: title, body or footnote carries everything a reader needs in a five-second scan. No `[PLACEHOLDER]`, `TBD` or `XX` left in. Every footnote marker has its footnote on the same slide. Components sum to their stated total within one point. No client stakeholder named on a slide. Body pages stay under 200 words of title, body and chart labels (warned, never blocked); footnotes counted apart, appendix and quote pages exempt. Units are slides and pages.
 
 ## Seeing the page
 
-On Windows with PowerPoint installed, `render_check.py DECK.pptx` exports every body page to PNG and lists text that is taller than its box, measured by PowerPoint. The Stop hook runs it and blocks the turn on overflow, so a Claude Code build cannot hand over an unrendered deck. Claude looks at the PNGs before handing a deck over; so should you. Cowork has LibreOffice in its sandbox and renders through that route; a machine with neither PowerPoint nor LibreOffice cannot run the render step. Appendix and crosstab pages are left alone by both the AI phase and the gate.
+On Windows with PowerPoint installed, `render_check.py DECK.pptx` exports every body page to PNG and lists text that is taller than its box, measured by PowerPoint, and tiles the pages into contact sheets. It is deck-qc's stage 2, run after the gate; the Stop hook does not render unless `QC_GATE_RENDER=1` is set, because a full export at every stop costs minutes. Claude looks at the contact sheets before handing a deck over; so should you. Where PowerPoint is absent (Cowork's sandbox), the skill renders through LibreOffice and treats a wrapped footer or clipped label as a renderer artifact until PowerPoint shows the same. Appendix and crosstab pages are left alone by both the AI phase and the gate.
 
 ## Machine setup
 
-Python 3.11+ with the repo venv (`pip install -r requirements.txt`). For the render checks the skills ask for (overflow, hanging words, overlaps) install LibreOffice (`soffice`) and poppler (`pdftoppm`); without them the skills fall back to XML checks and say so.
+Python 3.11+ with the repo venv (`pip install -r requirements.txt`). The render step uses PowerPoint on Windows. Without it, install LibreOffice (`soffice`) and poppler (`pdftoppm`) for the fallback; with neither, the skills fall back to XML checks and say so.
 
 ## Per-engagement setup
 
@@ -74,7 +75,7 @@ Copy `qc_rules.json` locally, fill `client_names` with the stakeholders who must
 
 ## Where things live
 
-Skills: `.claude/skills/<name>/SKILL.md`, the source of truth; Cowork copies are published from here (`scripts/publish_skills.py` shows what is stale). Gate: `.claude/skills/deck-qc/scripts/`. Hook: `.claude/settings.json`. Evaluator: `.claude/agents/deck-evaluator.md`. Spec and design notes: `docs/`.
+Skills: `.claude/skills/<name>/SKILL.md`, the source of truth; the team gets them as the plugin built by `scripts/build_plugin.py` (`scripts/publish_skills.py` only shows which account copies are stale). Gate: `.claude/skills/deck-qc/scripts/`. Hook: `.claude/settings.json`. Evaluator: `.claude/agents/deck-evaluator.md`. Design decisions: `docs/workflow-and-skills.md`. Superseded specs and reviews: `docs/archive/`.
 
 ## What the tools do not do
 

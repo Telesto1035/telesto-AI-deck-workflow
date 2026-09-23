@@ -1,6 +1,6 @@
 # Workflow decisions
 
-Why the chain is shaped the way it is. Each entry is a call that was made, the constraint behind it, and what it ruled out — the part a diff cannot show. What the chain *does* is in `HANDOFF.md` (architecture) and `team-manual.md` (the consultant's path); this file does not restate either, and nothing here should need editing when a skill's version changes.
+Why the chain is shaped the way it is. Each entry is a call that was made, the constraint behind it, and what it ruled out — the part a diff cannot show. What the chain *does* is in the skill files and `team-manual.md` (the consultant's path); the original build spec is `archive/HANDOFF.md`, superseded; this file does not restate either, and nothing here should need editing when a skill's version changes.
 
 ## The chain, for orientation only
 
