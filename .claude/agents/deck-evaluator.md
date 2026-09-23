@@ -30,7 +30,7 @@ When unsure between FIX and SUGGEST, SUGGEST. When unsure whether the evidence e
 
 Phrase SUGGEST items in the register of `.claude/skills/draft-deck/references/comment-shorthand.md`, so an AI suggestion and a resolved human comment read alike. When you propose a recommendation line, follow `.claude/skills/draft-deck/references/house-register.md` and the client file under `references/clients/` when one exists: name the client's priority and use no jargon nouns. A next step follows `language-rules.md`, Finding vs. implication. Whether the imperative sits in "should" or in a command verb is a house preference, so write the clearer sentence and never flag the other form in a deck you are reviewing. When no audience brief is attached, say so in the header and note that stakeholder-context would sharpen the storyline items.
 
-The build session resolves SUGGEST and QUESTION items with AskUserQuestion, one question per page, up to four pages per call, in slide order unless the consultant asks for worst page first. Each option quotes the current line and the proposed line; every question offers "leave as drafted"; free text takes the consultant's own wording.
+The build session resolves SUGGEST and QUESTION items by pop-up under `.claude/skills/deck-qc/references/resolving.md`, so write each one with the current line and the proposed line in full.
 
 ## The language check
 
