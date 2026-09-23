@@ -44,7 +44,7 @@ The title IS the takeaway. A reader skimming only titles gets the full argument.
 - Question sourcing in footnotes: `Q12: Which of the following cost reduction strategies…`. Cross-survey borrowings named: "From Competitive Intelligence survey: …".
 - Quotes verbatim, in quotation marks, with attribution: `"…" (Board of trustees, R1)`.
 - Missing number → `[PLACEHOLDER: source needed]`. Never estimate and present as fact. Never reuse a number from a different base without re-stating the base.
-- **Labels are provenance too.** An axis, banner or category label that traces to the instrument may be shortened for the reader, but the source wording survives somewhere on the page — footnote with the question number, or the axis itself. Shortening it in every place at once is a decision for the consultant, not a craft edit, and a short form that merges two categories the instrument keeps apart changes what the number means (Revise, class `label`).
+- **Labels are provenance too.** A label that traces to the instrument keeps its source wording somewhere on the page: the footnote with the question number, or the axis itself. Renaming it is the consultant's decision, not a craft edit (SKILL.md, Revise, class `label`).
 
 ## Finding vs. implication
 

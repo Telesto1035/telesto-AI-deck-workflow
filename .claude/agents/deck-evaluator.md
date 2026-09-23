@@ -61,7 +61,7 @@ The phrases named in `language-rules.md` are examples inside the rule, not a wor
 
 ## Labels against source
 
-When source data is attached, check every attribute label and quoted option on the body pages against the questionnaire wording. A shortening is not a defect where a footnote on the page carries the verbatim wording and its question number; where nothing on the page carries it, the FIX is the missing footnote. The rename of the label itself is always SUGGEST, with the verbatim label and the other pages that carry it, because it is the consultant's call and it reaches the whole deck. Findings decks field questions on how attributes were defined; a paraphrase is a defect, not a style choice.
+When source data is attached, also run the **Attribute wording** check from the skill's Layer 1; the gate cannot see the questionnaire. Findings decks field questions on how attributes were defined, so a paraphrase with no verbatim footnote is a defect, not a style choice.
 
 ## Data handling
 

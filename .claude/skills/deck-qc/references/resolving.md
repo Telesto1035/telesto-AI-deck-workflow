@@ -33,7 +33,7 @@ Group across slides only when the same fault appears in several places and the f
 - Offer a real "do less" option in every question: leave as drafted, or flag only.
 - Set `multiSelect: true` where the items are independent.
 - The tool supplies the free-text "Other" path; do not add an option for it, and honor whatever the consultant writes in.
-- A label rename never gets a suggested default either. The question names every other page and appendix exhibit carrying that label and asks change-all or this-one, and where the short form merges two categories the source keeps apart the option says so and names the other category.
+- A label rename never gets a suggested default; its options, reach and merge warning follow draft-deck's `label` rule (SKILL.md, Revise).
 - A QUESTION-class item never gets a suggested default. Two disagreeing numbers with no source is a question asked straight, with the candidate values and their pages. You do not pick.
 
 Apply everything in one pass once the answers come back, then validate, re-render the touched pages, re-run the number ledger and report the delta. Ask a second round only for a new problem the first pass created.
