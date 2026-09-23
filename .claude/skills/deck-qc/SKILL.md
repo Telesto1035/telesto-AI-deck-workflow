@@ -67,7 +67,7 @@ Shape and length per type are defined once, in draft-deck `references/deck-types
 | Type | The check requires | Not applicable |
 |---|---|---|
 | Findings / survey report | exec summary linked to body pages both ways; methodology with n and margin of error; source and n under every exhibit; question wording in footnotes | priced options |
-| Proposal / BD | takeaway on the cover; what the client stands to gain, stated (in dollars only where the deck gives a figure, and then labelled illustrative with assumptions); priced options with outcome lines; a path with dates | methodology; footnote density; chart count; exec summary; a marked or badged recommended option; owners on the path; operating detail (staffing, cadence, who does what, what the fee covers week by week) |
+| Proposal / BD | takeaway on the cover; what the client stands to gain, stated (in dollars only where the deck gives a figure, and then labelled illustrative with assumptions); priced options with outcome lines; a path with dates | methodology; footnote density; chart count; exec summary; a marked or badged recommended option; a separate selection step, or scoring detail behind a choice the deck makes; owners on the path; next steps left for the client to decide; operating detail (staffing, cadence, who does what, what the fee covers week by week) |
 | Minipack | takeaway page; exec summary mirrored by detail pages; source and n under every exhibit; next steps with owners | conclusion page |
 | Kickoff | scope, dated timeline, roles with owners | value at stake; exhibits |
 | Presentation | as the parent type; a closing decision page | footnote density on the page |
@@ -75,7 +75,7 @@ Shape and length per type are defined once, in draft-deck `references/deck-types
 | Workshop | agenda; prompts on exercise pages; capture pages present | recommendations; value at stake; sourced exhibits |
 | Manual | a takeaway band on operating pages; every operation has a page | value at stake |
 
-**The proposal standard is the two CEO-approved proposals of Aug 2026** named in draft-deck `references/deck-types.md`. A proposal is written before the work is fully scoped, and some of the scope is settled with the client, so it is judged as a pitch and never with the logic of a findings report. Any check that would fault a pattern both exemplars share is wrong about proposals and produces no item. What stays in scope on a proposal: internal contradictions (scope, duration, dates, fee, who decides), figures without a source, a claim or promised outcome with no evidence behind it (QUESTION), undefined terms, and grammar.
+**The proposal standard is the two CEO-approved proposals of Aug 2026** named in draft-deck `references/deck-types.md`. A proposal is written before the work is fully scoped, and some of the scope is settled with the client, so it is judged as a pitch and never with the logic of a findings report. Any check that would fault a pattern both exemplars share is wrong about proposals and produces no item, and `deck-types.md` is drafting guidance, not a source of findings. What stays in scope on a proposal: internal contradictions (scope, duration, dates, fee, who decides), figures without a source, a claim or promised outcome with no evidence behind it (QUESTION), undefined terms, and grammar.
 
 ## What is not a defect
 
@@ -88,7 +88,7 @@ House convention, not error. Do not spend the consultant's attention on these.
 - A shortened attribute label whose footnote carries the verbatim source wording and its question number.
 - A comment left open because it is held (draft-deck class `scope`: it needs evidence nobody has yet), where the hand-back names it and says what scoping it would take.
 - The form of a title (see **Titles** under Layer 2).
-- On a proposal: no dollar figure where the gain is stated another way; no badge on the recommended option; a path with dates but no owners; next steps left for the client to decide; missing operating detail.
+- On a proposal, anything the proposal profile marks not applicable (see **The proposal standard**).
 
 ## Layer 1: mechanical checks
 
@@ -135,7 +135,7 @@ Technical accuracy below 3 goes in the report header regardless of the overall.
 What is still checked, as items and never as a score:
 - **Machine phrasing**, against `draft-deck/references/voice-review.md`. Research-backed pattern classes, not house taste. FIX where the line is simply wrong, SUGGEST where the rewrite is a judgment. **A language rule is a FIX only when it names a defect, never when it names a word**: a flagged word or phrase, and any rule that would apply the same change across pages, is SUGGEST however mechanical it sounds. The deck may be hours from a partner.
 - **Grammar and mechanics**: agreement, parallel structure in a list or series, tense, a garbled line. FIX.
-- **The enforceable conventions** in `draft-deck/references/house-register.md`, plus `language-rules.md`, plus the client file under `draft-deck/references/clients/` when the deck is on client paper. Read them; do not apply them from memory. **A line marked *(drafting craft)* produces no item**: those rules shape a first draft and step back, and you are checking a page that already exists. The drafted line is the baseline; say what is wrong with it against the evidence, not what a fresh draft would have done. No rule about how a title is written produces an item (**Titles**, above). On a proposal, the owner-and-date rule for next steps asks for dates only, and `deck-types.md` is drafting guidance, not a source of findings.
+- **The enforceable conventions** in `draft-deck/references/house-register.md`, plus `language-rules.md`, plus the client file under `draft-deck/references/clients/` when the deck is on client paper. Read them; do not apply them from memory. **A line marked *(drafting craft)* produces no item**: those rules shape a first draft and step back, and you are checking a page that already exists. The drafted line is the baseline; say what is wrong with it against the evidence, not what a fresh draft would have done. No rule about how a title is written produces an item (**Titles**, above).
 - **Logic across titles**, which the title chain and claim-sizing checks above already own.
 
 The floor is general professional consulting writing: an MBB or Big Four deliverable, a memo to an F500 executive. Inside that floor the deck is left alone. **Neither the Preferences section of `house-register.md` nor its "Observed, not yet promoted" list is a source of findings** — the first is house habit, the second is a pattern seen once and waiting for a second deck. Only the conventions under "Enforceable conventions" may be cited. A rule elsewhere in the file is not a weaker rule; it is not a rule — a line that merely departs from a house habit is not a defect, and a command verb in a recommendation is not one.
