@@ -115,7 +115,6 @@ class ShapeInfo:
 class RunInfo:
     text: str
     size: Optional[float]  # effective size in pt after fontScale, None when unknown
-    italic: bool
     superscript: bool
     latin: Optional[str]
     para_index: int
@@ -502,7 +501,6 @@ class Deck:
                         size = int(sz) / 100.0 * scale
                     except ValueError:
                         size = None
-                italic = rPr is not None and rPr.get("i") == "1"
                 sup = False
                 if rPr is not None and rPr.get("baseline"):
                     try:
@@ -513,7 +511,7 @@ class Deck:
                 if rPr is not None:
                     lat = rPr.find(q("a:latin"))
                     latin = lat.get("typeface") if lat is not None else None
-                out.append(RunInfo(text, size, italic, sup, latin, pi, para_text, r, in_cell))
+                out.append(RunInfo(text, size, sup, latin, pi, para_text, r, in_cell))
         return out
 
     def runs_of(self, si: ShapeInfo) -> list[RunInfo]:
@@ -1054,8 +1052,8 @@ def check_word_count(d: Deck):
                 id="word-count", severity="block" if block is not None and body > int(block) else "warn",
                 slide=sno, shape=None, shape_id=None,
                 text="%d words" % body,
-                detail="%d words of title, body and chart labels (warn above %d, block above %s); footnotes %d counted apart" % (
-                    body, int(warn), int(block) if block is not None else "off", fn
+                detail="%d words of title, body and chart labels (warn above %d%s); footnotes %d counted apart" % (
+                    body, int(warn), ", block above %d" % int(block) if block is not None else "", fn
                 ),
                 fix="reword",
             )
@@ -1957,12 +1955,6 @@ def run_checks(path: Path, rules: dict, profile: Optional[str] = None,
 # --------------------------------------------------------------------------------------
 # --fix-safe
 # --------------------------------------------------------------------------------------
-
-
-def _set_text(parent, tag: str, text: str):
-    node = parent.find(q(tag))
-    if node is not None:
-        node.text = text
 
 
 def fix_safe(deck: Deck, findings: list[Finding], out_path: Path, log) -> Path:

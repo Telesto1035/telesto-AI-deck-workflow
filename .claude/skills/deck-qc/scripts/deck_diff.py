@@ -26,7 +26,6 @@ import re
 import sys
 from pathlib import Path
 
-from lxml import etree
 from pptx import Presentation
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 

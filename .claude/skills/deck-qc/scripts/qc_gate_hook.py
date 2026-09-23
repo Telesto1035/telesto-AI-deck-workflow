@@ -39,16 +39,15 @@ import re
 import subprocess
 import sys
 import tempfile
-import time
 import zipfile
 from functools import lru_cache
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3] if len(HERE.parents) >= 4 else HERE
 CAP = 3
-RENDER_TIMEOUT = 150  # seconds per deck; settings.json gives the whole hook 400
+RENDER_TIMEOUT = 150  # seconds per deck; raise the hook timeout in settings.json (120) above this before QC_GATE_RENDER=1
 DEFAULT_EXCLUDE_PARTS = ("tests/fixtures", ".venv", "_handoff", "node_modules", "__pycache__")
 TEMPLATE_NAME_RE = re.compile(r"template", re.I)
 SLIDE_PART_RE = re.compile(r"^ppt/slides/slide\d+\.xml$")

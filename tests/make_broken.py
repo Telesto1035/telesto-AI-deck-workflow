@@ -41,7 +41,7 @@ from pptx import Presentation
 from pptx.chart.data import CategoryChartData
 from pptx.enum.chart import XL_CHART_TYPE, XL_LABEL_POSITION
 from pptx.enum.text import MSO_AUTO_SIZE
-from pptx.util import Emu, Inches, Pt
+from pptx.util import Inches, Pt
 
 HERE = Path(__file__).resolve().parent
 FIXTURES = HERE / "fixtures"

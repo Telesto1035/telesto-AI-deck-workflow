@@ -3,7 +3,6 @@ from pptx.util import Inches as I, Pt
 from pptx.dml.color import RGBColor as C
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 from pptx.enum.shapes import MSO_SHAPE
-import copy
 
 BG=C(0x28,0x28,0x28); CARD=C(0x33,0x33,0x33); CARD2=C(0x3B,0x3B,0x3B)
 TEALCARD=C(0x0E,0x3A,0x3E)
