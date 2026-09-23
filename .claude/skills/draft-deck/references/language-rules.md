@@ -4,7 +4,7 @@ Principles for titles, claims, provenance, and craft. Stable; changed only by th
 
 House style for titles, takeaways, and slide text. Applies on both papers (thinking + craft always apply; only branding changes by paper). Examples are drawn from shipped decks.
 
-The standard is general professional consulting writing: an MBB or Big Four deliverable, a memo to an F500 executive. Every rule below is meant to be one a reader outside the firm could apply the same way. None of it is scored; deck-qc retired the register dimension on 2026-09-15 because voice varies between competent consultants and a taste verdict cannot be calibrated or shared. These rules produce items that quote the line they rest on, or they produce nothing.
+The standard is general professional consulting writing: an MBB or Big Four deliverable, a memo to an F500 executive. Every rule below is meant to be one a reader outside the firm could apply the same way. None of it is scored (deck-qc, Language). These rules produce items that quote the line they rest on, or they produce nothing.
 
 ## How this file is read at each stage
 
@@ -29,7 +29,7 @@ The title IS the takeaway. A reader skimming only titles gets the full argument.
 
 ## Sizing claims to evidence
 
-- **No superlatives, no vague intensifiers.** Banned unless quoting: massive, dramatic, clear winner, game-changing, unprecedented, extremely (outside scale labels). If it matters, give the number. The claim is the rule and the list is its evidence: an unquantified superlative is a revision item, a word match on its own is not. "Significant" was removed from this list on 2026-09-16 because it is a statistical term, and a survey deck reporting significance testing is using it correctly.
+- **No superlatives, no vague intensifiers.** Banned unless quoting: massive, dramatic, clear winner, game-changing, unprecedented, extremely (outside scale labels). If it matters, give the number. The claim is the rule and the list is its evidence: an unquantified superlative is a revision item, a word match on its own is not. "Significant" is not on the list: it is a statistical term, and a survey deck reporting significance testing uses it correctly.
 - **No "every" or "never" claims from single-survey data.** "Outperform every paid channel" becomes "outperform paid outreach channels". Totalizing words survive only when the data is literally total.
 - **Quantify deltas**: "26pts difference", "2X the rate", "[X]% vs. [Y]%" — never "far more" alone. ("far more than the C-suite (26pts difference)" is fine: adjective + number.)
 - **Verbs scale with evidence.** One data point: "indicates", "points to", "suggests". Converging data points: "shows", "finds". Reserve "confirms"/"proves" for near-tautologies, and prefer not to use them.
@@ -54,7 +54,7 @@ Two registers, kept separate:
 
 A finding never smuggles in a recommendation; an implication never introduces new data.
 
-- **Next steps carry an owner and a date.** A step with neither is a wish. (Moved here from `house-register.md` on 2026-09-16: it is general professional practice, not a pattern learned from Telesto edits.) On a proposal the path needs dates only: it is drafted before the work is scoped, and owners and the order of steps are settled with the client.
+- **Next steps carry an owner and a date.** A step with neither is a wish. On a proposal the path needs dates only: it is drafted before the work is scoped, and owners and the order of steps are settled with the client.
 
 ## Craft
 

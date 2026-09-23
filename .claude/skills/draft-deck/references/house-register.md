@@ -8,7 +8,7 @@ Conventions for how a Telesto page is written, distilled from the edits consulta
 
 A convention earns a place here only if a reader outside the firm could apply it the same way the author would. Everything narrower is a preference, and preferences are collected at the bottom of this file, where a drafter may read them and no check may cite them.
 
-**Nothing in this file is scored.** deck-qc dropped the register dimension: a 1 to 5 verdict on voice is a taste judgment wearing a number, it cannot be calibrated across people, and it cannot be enforced once the skills are shared. The conventions below produce findings that quote a rule, or they produce nothing.
+**Nothing in this file is scored** (see Retired, last entry). The conventions below produce findings that quote a rule, or they produce nothing.
 
 ## Governance
 - **Cap: 25 enforceable conventions.** A new one above the cap retires one.
@@ -33,7 +33,7 @@ A check may cite these. Each is decidable by reading the page against the rule, 
 
 ## Observed, not yet promoted (firm-wide)
 
-Patterns seen in one deck, or resting on a ruling rather than on recurrence. They are held here until the same edit appears in a second shipped deck. **No check may cite them, and they produce no finding**: they are notes for the next Learn run, not rules. Demoted 2026-09-16 when the entry bar became recurrence only.
+Patterns seen in one deck, or resting on a ruling rather than on recurrence. They are held here until the same edit appears in a second shipped deck. **No check may cite them, and they produce no finding**: they are notes for the next Learn run, not rules.
 
 - No label-colon opener, no abstract-noun subject, no compressed verb-noun, no prescription in a title. "Adjacency quadrant: 35 markets" became "We ranked 35 service markets by size and closeness to the client's core". (1 deck, 5 titles, 2026-09-12; the label-prefix half is stated independently in `language-rules.md`.)
 - Fewer names in a title: the two that matter, and where they matter. (1 deck, 2026-09-12)
@@ -50,7 +50,7 @@ House habits a drafter may follow and **no check may cite, score or class as a d
 - Burning-platform framing is usually worth at most once per deck, sized to the evidence; offering the partner's strength and the data's, and letting the consultant choose, works well. [consultant ruling, 2026-09-12]
 - Recommendations often land better naming the client's priority with the imperative in "should" or "needs" than in a bare command verb. This is a house habit and not a standard: MBB and Big Four decks use the command verb routinely. An evaluator that flagged a command verb as a defect was applying this line as a rule, which it is not. [2 decks; CEO-approved proposals, 2026-09]
 - Bands usually bold the two or three phrases that carry the action.
-- The skill owner edits out these words on their own work: earned, already, carry / carries, load-bearing, recast, hypothesis, "this confirms [client]". A drafter may follow it. It is not a standard and no check may cite it: these are ordinary English words, and a reader outside the firm could not apply the line the same way. [owner ruling, 2026-09-12; moved here 2026-09-16]
+- The skill owner edits out these words on their own work: earned, already, carry / carries, load-bearing, recast, hypothesis, "this confirms [client]". A drafter may follow it. It is not a standard and no check may cite it: these are ordinary English words, and a reader outside the firm could not apply the line the same way. [owner ruling, 2026-09-12]
 - Next steps often read as proposals the room decides on ("Discuss and select"), leaving the naming of themes to the room.
 
 ## Retired

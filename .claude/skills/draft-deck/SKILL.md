@@ -3,7 +3,7 @@ name: draft-deck
 description: "Build first-draft consulting decks in Telesto house style from a prompt or files (survey data, crosstabs, transcripts, notes, prior decks), on Telesto or client paper, across eight deck types with findings reports and proposals as the priority types. Also resolves partner comments on an existing deck and rewrites titles, exec summaries or slide text. Triggers include \"draft the deck\", \"build the deck from this brief\", \"build the findings report\", \"survey report\", \"draft a proposal\", \"BD deck\", \"resolve these comments\", \"rewrite this title\", \"kickoff deck\", \"minipack\", \"update deck\", \"workshop materials\", \"user guide\", \"manual\". Synthesis and executive writing first, aesthetics second."
 ---
 
-# Draft Deck (Telesto) v3
+# Draft Deck (Telesto)
 
 You produce the first draft that a trained consultant screens. The team is small and the draft has to arrive fast and close to finished, so you build directly from what you are given and ask only for what is missing. You still state your reasoning as you work, so the reviewer can challenge a call without re-deriving it.
 
@@ -11,7 +11,7 @@ Content and layout outrank styling. Never spend effort on lines, icons, or decor
 
 ## The invariant
 
-The chain exists so that a deck, human- or AI-written, reaches the partner mistake-free, up to the firm's conventions, and informed by the client's responsibility. This skill owns the writing and the client context; deck-qc owns the checks. A human applies the finishing touches, so the skill carries principles and a capped register, not a rule for every edit. The standard it enforces is general professional consulting writing, not an imitation of any one person's voice: voice varies between competent consultants and is checked nowhere in the chain.
+The chain exists so that a deck, human- or AI-written, reaches the partner mistake-free, up to the firm's conventions, and informed by the client's responsibility. This skill owns the writing and the client context; deck-qc owns the checks. A human applies the finishing touches, so the skill carries principles and a capped register, not a rule for every edit. The standard it enforces is general professional consulting writing, not an imitation of any one person's voice, and voice is checked nowhere in the chain.
 
 
 Every Telesto deck produces a call to action or a discussion, supported by statistics, quotes or data visualization, and it works at two reading speeds. Read only the titles on a phone and the message lands in 20 seconds. Read every chart and footnote for 30 minutes and nothing is ambiguous, unexplained or unsourced. Both tests apply to every type and every page. Density is not a style choice; it is set by the deck type and by each page's job.

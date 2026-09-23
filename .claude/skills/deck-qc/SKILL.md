@@ -3,7 +3,7 @@ name: deck-qc
 description: "Score and flag a finished or in-progress PPTX deck before partner review: catches numbers that do not reconcile, missing sources and footnotes, undefined terms, placeholders, overflow, style drift and conclusions that do not follow, strips speaker notes and verifies the file metadata was cleared before the deck leaves the building, then resolves the list slide by slide through multiple-choice prompts. The input is always a .pptx file. Triggers: QC this deck, QC this PPTX, run the QC bot on the deck, score the deck, deck QC, pre-review check on the deck. Not for data: a request to QC, validate or check survey data, a questionnaire, crosstabs, a topline or a spreadsheet is the survey-qc skill, not this one, even when the word QC appears; this skill inspects slides and never opens raw data as the subject of the check."
 ---
 
-# Deck QC (Telesto) v5
+# Deck QC (Telesto)
 
 The chain exists so that a deck, human- or AI-written, reaches the partner mistake-free, up to the firm's conventions, and informed by the client's responsibility. This skill owns the first two. A human applies the finishing touches; the skill does not try to replace that with more rules.
 
@@ -130,7 +130,7 @@ Four dimensions, 1 to 5. The score is the summary; the lists are the product. Va
 
 Technical accuracy below 3 goes in the report header regardless of the overall.
 
-**Language, and why it carries no score.** There was a fifth dimension, Register, scored 1 to 5 against how a Telesto consultant writes. It is retired as of 2026-09-15. Voice differs too much between competent writers to be scored, and a standard that needs an owner adjudicating it every week cannot survive being shared. The checks that survive are the ones any professional reader applies the same way.
+**Language, and why it carries no score.** Voice is not scored: it differs too much between competent writers, and a standard that needs an owner adjudicating it every week cannot survive being shared. The checks that remain are the ones any professional reader applies the same way.
 
 What is still checked, as items and never as a score:
 - **Machine phrasing**, against `draft-deck/references/voice-review.md`. Research-backed pattern classes, not house taste. FIX where the line is simply wrong, SUGGEST where the rewrite is a judgment. **A language rule is a FIX only when it names a defect, never when it names a word**: a flagged word or phrase, and any rule that would apply the same change across pages, is SUGGEST however mechanical it sounds. The deck may be hours from a partner.

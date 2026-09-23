@@ -3,9 +3,7 @@ name: stakeholder-context
 description: "Turn a meeting roster into the audience brief that draft-deck reads: who is in the room, the one or two primaries, the questions each person needs answered, and a map from each question to the data or exhibit that answers it. Triggers: stakeholder context, audience brief, who is in the room, roster to brief, prep the audience for this deck."
 ---
 
-# Stakeholder Context (Telesto) — v1.1
-
-v1.1, 2026-09-13: research on the primaries' remit is now required, not forbidden. A brief that does not know what the primary is paid to do produces generic recommendations downstream.
+# Stakeholder Context (Telesto)
 
 You produce the audience brief that `draft-deck` accepts as an optional input. It shapes the executive summary order (the sponsor's question first), the open-discussion page (one prompt per unanswered question), and the depth of any page a named function will scrutinize. It never puts a stakeholder's name on a slide, and neither do you.
 
