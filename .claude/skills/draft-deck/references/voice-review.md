@@ -12,7 +12,7 @@ Report what you changed. Never invent or alter a fact while de-slopping; a voice
 
 - **Negative parallelism.** "It's not X, it's Y", "not just X but Y", "Y rather than X", and the split forms ("This does not mean X. It means Y." / "The question isn't X. The question is Y."). Keep the contrast only when the negated half is a belief the reader actually holds. A plain "rather than" stating what the data shows against what a reader might assume ("rather than cost") is ordinary contrast, not the pattern.
 - **Participle riders.** A trailing `-ing` clause that attaches hollow significance to a plain fact: "…, highlighting the need for continued investment", "…, underscoring the shift", "…, reflecting a broader trend". Also *emphasizing, showcasing, ensuring, fostering, contributing to*. Instruction-tuned models produce these at 2 to 5 times human rates (Reinhart et al., PNAS 2025). Cut the clause, or make it a sentence with a subject.
-- **Nominalized, verbless titles.** "Operational efficiency improvement opportunities across the supply chain footprint." Force a finite verb. At review a title is checked only against its page (deck-qc, Titles), so this applies to drafting. Prefer Saxon words to Latinate ones: *use* not *utilize*, *help* not *facilitate*, *build* not *establish*.
+- **Nominalized, verbless titles.** "Operational efficiency improvement opportunities across the supply chain footprint." Force a finite verb. *(drafting only; deck-qc, Titles)* Prefer Saxon words to Latinate ones: *use* not *utilize*, *help* not *facilitate*, *build* not *establish*.
 - **Importance puffery.** "marks a pivotal moment", "stands as a testament to", "plays a key role in", "underscores its significance", "solidifies its position", "sets the stage for", "reflects a broader shift".
 - **Vague attribution.** "experts agree", "studies show", "industry reports suggest", "many argue", "widely regarded as". In a client deliverable this is a liability as well as a tell. No source, no claim.
 - **Throat-clearing and self-answered questions.** "Here's the thing", "Let me be clear", "What nobody tells you", "Let's unpack", "The result? Devastating."
@@ -39,7 +39,7 @@ Recheck annually. The vocabulary drifts by model generation, and a word that was
 - **Em dashes in original prose:** replace with commas, full stops, or restructure. Claude over-uses them relative to professional human writers (The Economist, July 2026, 55,940-sentence corpus study), so the rule is worth keeping for this stack even though the popular version of it is now wrong for other models. Verbatim quoted material keeps its own punctuation.
 
 
-**Portability test, for drafting.** Read each action title and each recommendation line and ask whether it could move unchanged to another client's deck. If it could, it is not yet a finding; a specific title makes a claim someone could disagree with. This shapes a draft and produces no review item: deck-qc checks a title only against its page, and a proposal's structural pages are portable by design.
+**Portability test, for drafting.** Read each action title and each recommendation line and ask whether it could move unchanged to another client's deck. If it could, it is not yet a finding; a specific title makes a claim someone could disagree with. *(drafting only; deck-qc, Titles)* A proposal's structural pages are portable by design.
 
 ### What is NOT a tell, and must not be "fixed"
 
