@@ -355,7 +355,7 @@ def test_profile_lengths_match_deck_types():
     assert not mismatches, "qc_rules.json disagrees with deck-types.md: %s" % mismatches
 
 
-def test_qc_rules_env_is_read_by_both_gates(tmp_path, monkeypatch):
+def test_qc_rules_env_is_read_by_both_gates(tmp_path, monkeypatch, capsys):
     """The Stop gate calls load_rules(None); the consultant passes --rules. QC_RULES is what makes those
     the same file, so an engagement's client_names reach the gate that is actually enforced."""
     local = tmp_path / "qc_rules.local.json"
@@ -365,9 +365,10 @@ def test_qc_rules_env_is_read_by_both_gates(tmp_path, monkeypatch):
     assert qc_check.load_rules(None)["client_names"] == ["Jordan Reyes"]
     # --rules still wins over the environment
     assert qc_check.rules_path(qc_check.DEFAULT_RULES_PATH) == qc_check.DEFAULT_RULES_PATH
-    # a stale path in the environment falls back rather than crashing the gate
+    # a stale path in the environment falls back rather than crashing the gate, and says so
     monkeypatch.setenv("QC_RULES", str(tmp_path / "gone.json"))
     assert qc_check.rules_path(None) == qc_check.DEFAULT_RULES_PATH
+    assert "gone.json" in capsys.readouterr().err
 
 
 def test_skill_files_carry_no_engagement_figures():
@@ -382,6 +383,30 @@ def test_skill_files_carry_no_engagement_figures():
             if re.search(r"\b\d{1,3}%|\$\d", line):
                 hits.append((f.name, line.strip()[:100]))
     assert not hits, hits
+
+
+def test_skill_tables_are_not_split_by_prose():
+    """A paragraph inside a markdown table ends it: the rows after it render as text and read as no profile."""
+    hits = []
+    for f in (REPO / ".claude").rglob("*.md"):
+        if "worktrees" in f.parts:
+            continue
+        lines = f.read_text(encoding="utf-8").splitlines()
+        for i in range(1, len(lines) - 1):
+            row = lambda s: s.lstrip().startswith("|")  # noqa: E731
+            if row(lines[i + 1]) and not row(lines[i]) and lines[i].strip() and any(
+                    row(lines[j]) for j in range(max(0, i - 2), i)):
+                hits.append((f.name, i + 1))
+    assert not hits, hits
+
+
+def test_gate_words_come_from_citable_rule_files():
+    """The gate's `words` list may only flag a word a check is allowed to cite: one named in voice-review.md
+    or language-rules.md. The Preferences section of house-register.md is house habit and no check cites it."""
+    refs = REPO / ".claude" / "skills" / "draft-deck" / "references"
+    citable = " ".join((refs / f).read_text(encoding="utf-8").lower() for f in ("voice-review.md", "language-rules.md"))
+    words = qc_check.load_rules(qc_check.DEFAULT_RULES_PATH)["words"]
+    assert [w for w in words if w.lower() not in citable] == []
 
 
 # --- document properties: a hand-back condition, not a mid-session defect -----------------------

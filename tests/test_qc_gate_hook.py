@@ -27,7 +27,7 @@ CLEAN = FIXTURES / "Telesto_Standard_v2_P3-P5.pptx"
 def workdir(tmp_path, monkeypatch):
     """A fake project dir with a transcript whose first timestamp predates the deck write."""
     monkeypatch.setenv("QC_GATE_STATE_DIR", str(tmp_path / "state"))
-    monkeypatch.setenv("QC_GATE_NO_RENDER", "1")  # the render step is PowerPoint COM; tested by hand, not here
+    monkeypatch.delenv("QC_GATE_RENDER", raising=False)  # the render step is PowerPoint COM; tested by hand, not here
     (tmp_path / "state").mkdir()
     transcript = tmp_path / "transcript.jsonl"
     transcript.write_text(json.dumps({"timestamp": "2020-01-01T00:00:00Z", "type": "user"}) + "\n", encoding="utf-8")
@@ -49,6 +49,16 @@ def test_clean_deck_passes(workdir):
     shutil.copy(CLEAN, workdir / "out.pptx")
     out = []
     assert qc_gate_hook.run(payload(workdir), workdir, out.append) == 0
+
+
+def test_render_is_off_without_opt_in(workdir, monkeypatch):
+    # the plugin build carries the hook but no env block, so the default has to be off in code
+    calls = []
+    monkeypatch.setattr(qc_gate_hook.sys, "platform", "win32")
+    monkeypatch.setattr(qc_gate_hook.subprocess, "run", lambda *a, **k: calls.append(a))
+    shutil.copy(CLEAN, workdir / "out.pptx")
+    assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None) == 0
+    assert calls == []
 
 
 def test_broken_deck_blocks_then_caps(workdir):

@@ -68,14 +68,14 @@ Shape and length per type are defined once, in draft-deck `references/deck-types
 |---|---|---|
 | Findings / survey report | exec summary linked to body pages both ways; methodology with n and margin of error; source and n under every exhibit; question wording in footnotes | priced options |
 | Proposal / BD | takeaway on the cover; what the client stands to gain, stated (in dollars only where the deck gives a figure, and then labelled illustrative with assumptions); priced options with outcome lines; a path with dates | methodology; footnote density; chart count; exec summary; a marked or badged recommended option; owners on the path; operating detail (staffing, cadence, who does what, what the fee covers week by week) |
-
-**The proposal standard is the two CEO-approved proposals of Aug 2026** named in draft-deck `references/deck-types.md`. A proposal is written before the work is fully scoped, and some of the scope is settled with the client, so it is judged as a pitch and never with the logic of a findings report. Any check that would fault a pattern both exemplars share is wrong about proposals and produces no item. What stays in scope on a proposal: internal contradictions (scope, duration, dates, fee, who decides), figures without a source, a claim or promised outcome with no evidence behind it (QUESTION), undefined terms, and grammar.
 | Minipack | takeaway page; exec summary mirrored by detail pages; source and n under every exhibit; next steps with owners | conclusion page |
 | Kickoff | scope, dated timeline, roles with owners | value at stake; exhibits |
 | Presentation | as the parent type; a closing decision page | footnote density on the page |
 | Update | status against plan; decisions needed; dates and owners | value at stake; exhibits |
 | Workshop | agenda; prompts on exercise pages; capture pages present | recommendations; value at stake; sourced exhibits |
 | Manual | a takeaway band on operating pages; every operation has a page | value at stake |
+
+**The proposal standard is the two CEO-approved proposals of Aug 2026** named in draft-deck `references/deck-types.md`. A proposal is written before the work is fully scoped, and some of the scope is settled with the client, so it is judged as a pitch and never with the logic of a findings report. Any check that would fault a pattern both exemplars share is wrong about proposals and produces no item. What stays in scope on a proposal: internal contradictions (scope, duration, dates, fee, who decides), figures without a source, a claim or promised outcome with no evidence behind it (QUESTION), undefined terms, and grammar.
 
 ## What is not a defect
 

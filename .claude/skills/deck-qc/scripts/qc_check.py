@@ -2084,6 +2084,9 @@ def rules_path(path: Optional[Path]) -> Path:
     env = os.environ.get("QC_RULES")
     if env and Path(env).exists():
         return Path(env)
+    if env:
+        print("qc_check: QC_RULES=%s not found; using the default rules, which carry no client_names" % env,
+              file=sys.stderr)
     return DEFAULT_RULES_PATH
 
 

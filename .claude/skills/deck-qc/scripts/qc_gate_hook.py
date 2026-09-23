@@ -20,9 +20,10 @@ Behaviour:
   * Run qc_check on each. If any `block` finding exists, print the findings and exit 2 so the turn cannot end.
   * Keep a counter per session in a state file. After 3 blocked stops, exit 0 and print
     "gate cap reached, handing off with findings attached" so the loop terminates.
-  * Render step: OFF by default and opt-in, because .claude/settings.json sets QC_GATE_NO_RENDER=1. The skill's
+  * Render step: OFF unless QC_GATE_RENDER=1. The default lives in code, not in settings.json env, because the
+    plugin build carries the hook but not the env block. The skill's
     stage 2 owns the render, run by hand on the pages an iteration changed; exporting a whole deck through
-    PowerPoint at every Stop costs minutes and repeats what the consultant just did. Clear the env var and the
+    PowerPoint at every Stop costs minutes and repeats what the consultant just did. Set the env var and the
     block below runs on Windows, once per deck version, keyed on path and mtime in the state file. Raise the
     hook's timeout in settings.json above RENDER_TIMEOUT before doing that: 400 was sized for it, the current
     120 is sized for the gate alone, with room for a session that wrote several decks.
@@ -227,10 +228,12 @@ def gate(paths: list[Path], session_id: str, out) -> int:
 
     # Same resolution the consultant's own run uses: QC_RULES, else the repo default. Set QC_RULES in
     # .claude/settings.json env for an engagement and both gates read one rule set.
-    rules = qc_check.load_rules(None)
     rp = qc_check.rules_path(None)
+    rules = qc_check.load_rules(rp)
     if rp != qc_check.DEFAULT_RULES_PATH:
         out("qc gate: rules from %s" % rp)
+    elif os.environ.get("QC_RULES"):
+        out("qc gate: QC_RULES=%s not found; gating on the default rules (no client_names)" % os.environ["QC_RULES"])
     blocked: dict[Path, list] = {}
     for p in paths:
         try:
@@ -246,7 +249,7 @@ def gate(paths: list[Path], session_id: str, out) -> int:
     gated = st.setdefault("gated", {})
     # render step: on Windows with PowerPoint, a body page whose text is taller than its box blocks too.
     # Runs once per (path, mtime); a deck that has not changed since its last clean render is not re-exported.
-    if sys.platform == "win32" and not os.environ.get("QC_GATE_NO_RENDER"):
+    if sys.platform == "win32" and os.environ.get("QC_GATE_RENDER") == "1":
         rendered = st.setdefault("rendered", {})
         for p in paths:
             if p in blocked:

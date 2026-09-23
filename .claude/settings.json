@@ -1,7 +1,4 @@
 {
-  "env": {
-    "QC_GATE_NO_RENDER": "1"
-  },
   "hooks": {
     "Stop": [
       {
