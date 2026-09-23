@@ -371,3 +371,19 @@ def test_house_register_states_the_outside_reader_standard():
     assert "outside the firm" in low, (
         "house-register does not state the outside-reader test a convention must pass"
     )
+
+
+def test_evaluator_paths_resolve_in_any_install():
+    """The evaluator runs in the repo, from a plugin and in Cowork, so it names skill files relative to the
+    skills folder and finds that folder first. A `.claude/skills/` path would resolve only in the repo, and an
+    evaluator that cannot find the rule files reviews from memory."""
+    import re
+    text = AGENT.read_text(encoding="utf-8")
+    skills = REPO / ".claude" / "skills"
+    named = set(re.findall(r"`((?:deck-qc|draft-deck|stakeholder-context)/[\w./-]+\.md)`", text))
+    assert named, "the evaluator names no skill files"
+    missing = sorted(p for p in named if not (skills / p).exists())
+    assert not missing, "evaluator names files that do not exist: %s" % missing
+    body = text.split("**Find the skill files first.**", 1)
+    assert len(body) == 2, "the evaluator does not say how to find the skill files"
+    assert ".claude/skills/" not in body[1].split("\n\n", 1)[1], "a repo-only path is used after the finding step"
