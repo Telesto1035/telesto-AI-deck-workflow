@@ -28,6 +28,7 @@ A human-built deck can enter at Revise with no brief. draft-deck offers once to 
 One bundle carries everything: `dist/telesto-deck-workflow.zip`, built by `scripts/build_plugin.py`. It holds the three skills with their reference files and scripts, the evaluator agent and the Stop hook.
 
 - **Cowork:** upload the zip as a plugin. Do not use the per-skill "save proposal" card for these skills: it writes SKILL.md alone and drops the scripts and references the skills call.
+- **Once per machine, for Claude Code:** the build, the gate and the render run on Python with the python-pptx library. Install Python 3.11 or later (on Windows from python.org, ticking "Add python.exe to PATH"), then run `python -m pip install python-pptx lxml`. Without it the gate cannot run, and both Claude and the Stop hook say so with this same line. Cowork needs nothing: its sandbox has Python.
 - **Claude Code:** `claude --plugin-dir dist/telesto-deck-workflow` to try it, or install the zip; skills appear as `/telesto-deck-workflow:draft-deck` and so on. Working inside this repo needs no install: the `.claude/` folder is the development copy.
 
 Bump `VERSION` when a change should reach the team; the manifest reads it.
@@ -67,7 +68,7 @@ On Windows with PowerPoint installed, `render_check.py DECK.pptx` exports every 
 
 ## Machine setup
 
-Python 3.11+ with the repo venv (`pip install -r requirements.txt`). The render step uses PowerPoint on Windows. Without it, install LibreOffice (`soffice`) and poppler (`pdftoppm`) for the fallback; with neither, the skills fall back to XML checks and say so.
+Plugin users: Python 3.11+ and `python -m pip install python-pptx lxml` (see Installing). Working in the repo: the repo venv (`pip install -r requirements.txt`). The render step uses PowerPoint on Windows. Without it, install LibreOffice (`soffice`) and poppler (`pdftoppm`) for the fallback; with neither, the skills fall back to XML checks and say so.
 
 ## Per-engagement setup
 

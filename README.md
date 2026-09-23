@@ -55,7 +55,7 @@ Exit codes for `qc_check.py`: 0 pass, 1 blocking findings, 2 file could not be o
 3. Open the folder in Claude Code. The Stop hook, the `deck-evaluator` subagent and the skills load from `.claude/` automatically; approve the project hook when prompted.
 4. Client decks stay local under `tests/fixtures/client/` (gitignored). Stakeholder names for the `client_names` check go in a local copy of `qc_rules.json`, passed with `--rules` and set as `QC_RULES` so the Stop gate reads it too. Client names themselves are fine in skill files.
 
-Cowork users install the plugin zip; the Stop hook and the subagent run in Claude Code, and in Cowork the skill runs the gate by instruction.
+Plugin users on Claude Code need Python 3.11+ and `python -m pip install python-pptx lxml` once per machine; without it the Stop hook tells the user the gate did not run. Cowork users install the plugin zip; the Stop hook and the subagent run in Claude Code, and in Cowork the skill runs the gate by instruction.
 
 ## Status
 

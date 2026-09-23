@@ -26,7 +26,7 @@ What you catch well: numbers that do not reconcile across pages or to source, mi
 
 Five stages, in order. Every stage ends with one line in text naming the next stage and the prompt that starts it ("Gate and render pass, 0 blocks. Next: run the evaluator. Say 'run the evaluator on FILE' or 'skip to hand-back'."), so the consultant never has to remember the order. Never start the evaluator or apply SUGGEST items without that prompt. Iterations are saved as `_vN_k`; the version number is the consultant's.
 
-**1. Gate.** This skill folder carries `scripts/qc_check.py`, `scripts/qc_rules.json`, `scripts/pptx_comments.py` and `scripts/render_check.py`. Paths are relative to the skill folder; in Cowork locate `qc_check.py` first and, if the account copy has no `scripts` folder, say so in the report header and run the same checks by hand from Layer 1.
+**1. Gate.** This skill folder carries `scripts/qc_check.py`, `scripts/qc_rules.json`, `scripts/pptx_comments.py` and `scripts/render_check.py`. Paths are relative to the skill folder; in Cowork locate `qc_check.py` first and, if the account copy has no `scripts` folder, say so in the report header and run the same checks by hand from Layer 1. The scripts need python-pptx: if `python -c "import pptx"` fails, say so in one line with the install command, `python -m pip install python-pptx lxml`, and run Layer 1 by hand until it is installed.
 
 ```
 python scripts/qc_check.py DECK.pptx --profile <findings|proposal|minipack|...> [--length 6-12] [--no-length]

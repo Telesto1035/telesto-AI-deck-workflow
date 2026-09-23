@@ -224,3 +224,14 @@ def find(cwd: Path, text: str, since: float) -> list:
     t = cwd / "transcript.jsonl"
     t.write_text("{}\n", encoding="utf-8")
     return qc_gate_hook.find_candidates(cwd, str(t), since, text=text)
+
+
+def test_missing_python_pptx_is_said_to_the_user(workdir, capsys):
+    """Without python-pptx the gate cannot run. A deck written this session gets a systemMessage the user sees,
+    with the install line; the stop is not blocked. A session with no deck gets nothing."""
+    assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None, have_pptx=False) == 0
+    assert capsys.readouterr().out == "", "a session with no deck should hear nothing"
+    shutil.copy(CLEAN, workdir / "deck.pptx")
+    assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None, have_pptx=False) == 0
+    msg = json.loads(capsys.readouterr().out)["systemMessage"]
+    assert "deck.pptx" in msg and qc_gate_hook.INSTALL_LINE in msg

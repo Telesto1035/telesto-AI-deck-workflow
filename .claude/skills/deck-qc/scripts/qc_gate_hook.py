@@ -28,6 +28,9 @@ Behaviour:
     hook's timeout in settings.json above RENDER_TIMEOUT before doing that: 400 was sized for it, the current
     120 is sized for the gate alone, with room for a session that wrote several decks.
   * Never crash the stop: any internal error prints a note and exits 0.
+  * Without python-pptx the gate cannot run. When the session wrote a deck, the hook says so to the user
+    (a `systemMessage`, which Claude Code shows in the conversation) with the install line, and exits 0; a
+    session that wrote no deck hears nothing.
 
 Re-execs itself under the repo venv when python-pptx is not importable from the interpreter that started it.
 """
@@ -315,7 +318,14 @@ def gate(paths: list[Path], session_id: str, out) -> int:
     return 2
 
 
-def run(payload: dict, cwd: Path | None = None, out=None) -> int:
+INSTALL_LINE = "python -m pip install python-pptx lxml"
+NO_PPTX_MESSAGE = (
+    "Deck QC gate did not run on %s: python-pptx is not installed for the Python this hook uses. "
+    "Install it once with: " + INSTALL_LINE + " and the gate runs at the next stop."
+)
+
+
+def run(payload: dict, cwd: Path | None = None, out=None, have_pptx: bool = True) -> int:
     out = out or (lambda s: print(s, file=sys.stderr))
     cwd = Path(cwd or payload.get("cwd") or os.getcwd())
     text = read_transcript(payload.get("transcript_path"))
@@ -333,20 +343,23 @@ def run(payload: dict, cwd: Path | None = None, out=None) -> int:
         keep.append(p)
     if not keep:
         return 0
+    if not have_pptx:
+        names = ", ".join(p.name for p in keep[:3]) + (" and %d more" % (len(keep) - 3) if len(keep) > 3 else "")
+        print(json.dumps({"systemMessage": NO_PPTX_MESSAGE % names}))
+        out("qc gate: python-pptx not available and no .venv found; gate skipped")
+        return 0
     return gate(keep, session_id, out)
 
 
 def main() -> int:
-    if not _ensure_pptx():
-        print("qc gate: python-pptx not available and no .venv found; gate skipped", file=sys.stderr)
-        return 0
+    have_pptx = _ensure_pptx()
     try:
         raw = sys.stdin.read()
         payload = json.loads(raw) if raw.strip() else {}
     except Exception:  # noqa: BLE001
         payload = {}
     try:
-        return run(payload)
+        return run(payload, have_pptx=have_pptx)
     except Exception as exc:  # noqa: BLE001
         print("qc gate: internal error (%s); gate skipped" % exc, file=sys.stderr)
         return 0
