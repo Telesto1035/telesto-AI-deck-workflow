@@ -12,7 +12,7 @@ These rules were written for drafting: they say how to write a page that does no
 
 **At revision the drafted line is the baseline.** An item must name what is wrong with the line against the evidence, the source or the instrument, not name what a fresh draft would have done differently. "Another draft would have phrased this another way" is not a finding, and neither is a line that merely fails a rule below while saying something true, sourced and clear.
 
-Lines marked *(drafting craft)* shape a first draft and then step back: they produce no revision items at all. Everything else produces items, and the standing rule holds over all of it: a language rule is a FIX only when it names a defect, never when it names a word.
+Lines marked *(drafting craft)* shape a first draft and then step back: they produce no revision items at all. Everything else produces items, classed FIX or SUGGEST under deck-qc's Language section.
 
 The distinction is the one the machine-phrasing rule already states below: **the test, not the list, is the rule.**
 

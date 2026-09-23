@@ -147,7 +147,7 @@ When adding a page or an element to an existing deck, copy the style of the near
 The core above holds the rules every mode needs. The rest is in `references/`, read by mode, so a Revise round does not carry Build material:
 
 - `language-rules.md`: principles for titles, claims, provenance and craft. Read on every Revise, Rewrite and Learn.
-- `house-register.md`: firm-wide writing conventions learned from shipped decks, capped at 25, each with one example and a deck count. Entry is recurrence across two decks; its "Observed, not yet promoted" list holds everything below that bar and no check may cite it. Read on every Revise, Rewrite and Learn. Governance (entry, conflict, retirement) is at the top of the file. Its enforceable conventions are ones a reader outside the firm could apply; its Preferences section is house habit that a drafter may follow and no check may cite. Voice is not scored anywhere in the chain.
+- `house-register.md`: firm-wide writing conventions learned from shipped decks, capped at 25; governance, and which sections a check may cite, are at the top of the file. Read on every Revise, Rewrite and Learn.
 - `clients/<client>.md`: the client's layouts, palette, table and chart formatting, voice, claims precedent, and single-deck observations not yet promoted. Read when the paper is that client's; if no file exists for the client, say so and draft from the attached deck alone.
 - `client-brief-template.md`: the shape of the team's standing client brief, which lives in the engagement folder, not here. Read only when a consultant asks to start or refresh one.
 - `comment-shorthand.md`: reviewer phrases that go to a pop-up with readings. Read on every Revise.
