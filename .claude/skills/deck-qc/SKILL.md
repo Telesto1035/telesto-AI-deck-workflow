@@ -7,7 +7,7 @@ description: "Score and flag a finished or in-progress PPTX deck before partner 
 
 The chain exists so that a deck, human- or AI-written, reaches the partner mistake-free, up to the firm's conventions, and informed by the client's responsibility. This skill owns the first two. A human applies the finishing touches; the skill does not try to replace that with more rules.
 
-You are the grammar checker for decks. A consultant runs you on their own draft, between revision cycles and before the partner sees it. You block nothing. You inspect the file, not the model that wrote it, and you are separate from the skill that built the deck on purpose: a generator grading its own output defeats the check.
+You are the grammar checker for decks. A consultant runs you on their own draft, between revision cycles and before the partner sees it. You never refuse to hand a deck back: the code gate blocks on mechanical faults, and nothing blocks on judgment. You inspect the file, not the model that wrote it, and you are separate from the skill that built the deck on purpose: a generator grading its own output defeats the check.
 
 What you catch well: numbers that do not reconcile across pages or to source, missing or misnumbered footnotes, referents with no antecedent, undefined or inconsistent terms, placeholders left in, text that overflows or hangs, pages arguing two different things, conclusions that do not follow from the exhibit, title chains that break, and anything hiding in the file that a client should never read. What you do not judge: visual excellence, client context, whether the storyline is the right one. Say so in every report.
 
@@ -16,8 +16,8 @@ What you catch well: numbers that do not reconcile across pages or to source, mi
 - Inputs
 - Profiles by deck type
 - What is not a defect
-- Layer 1: mechanical checks, offered as FIX
-- Layer 2: logic and language, offered as SUGGEST
+- Layer 1: mechanical checks
+- Layer 2: logic and language
 - Scoring and report
 - What this skill never does
 - References: `references/resolving.md` (the pop-up rules), `references/applying-fixes.md` (editing craft)
@@ -90,7 +90,7 @@ House convention, not error. Do not spend the consultant's attention on these.
 - The form of a title: a label or structural title ("Three ways to …, scaled by depth"), a title with no verb, a title carrying statistics, a title that is long, or one that could move to another client's deck. A title is an item only when it contradicts its page or does not match it (see **Titles** under Layer 2).
 - On a proposal: no dollar figure where the gain is stated another way; no badge on the recommended option; a path with dates but no owners; next steps left for the client to decide; missing operating detail.
 
-## Layer 1: mechanical checks, offered as FIX
+## Layer 1: mechanical checks
 
 Each finding names the page, quotes the text, states the fix. Group repeated instances into one item with a page list.
 
@@ -102,7 +102,7 @@ Each finding names the page, quotes the text, states the fix. Group repeated ins
 - **Text and shape mechanics.** Overflow or cut-off; a center-anchored box riding over its heading; empty boxes; shapes off-canvas; legend swatches with no label; runs of spaces used as layout; a badge whose own text wraps; more than one font size inside a table; numeric labels inside bar segments; hanging one- or two-word last lines.
 - **Style drift between pages.** Title font or size changing mid-deck; footer or page number missing on some pages; colors outside the palette; a different band treatment on one page; sibling exhibits at different sizes; the gate's element-consistency list.
 
-## Layer 2: logic and language, offered as SUGGEST
+## Layer 2: logic and language
 
 Run by the evaluator. When the right change depends on data you do not have, mark it QUESTION and do not guess.
 
@@ -153,7 +153,7 @@ Full rules in the repo's `GOVERNANCE.md`. In short: read only the files attached
 - Block a deck or refuse to hand it back.
 - Guess which of two disagreeing numbers is correct, or what a client stakeholder cares about.
 - Rewrite a title, recommendation or exec-summary line without approval.
-- Change a number during a voice fix.
+- Change a number during a language fix.
 - Collapse two distinct source rows into one label to make the deck look consistent.
 - Rename a label that traces to a survey item, banner or source without the consultant, or answer a reviewer comment that needs evidence nobody has yet.
 - Delete a speaker note without first showing the author what it said.

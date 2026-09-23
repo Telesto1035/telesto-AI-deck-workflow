@@ -2,7 +2,7 @@
 
 Read at the handoff of a Build or a full rewrite, and whenever a Revise rewrites more than a title or a band. Not needed on gate-fix iterations.
 
-This pass hunts classes of pattern that instruction-tuned models produce at above-human rates, with the research that identified them. It is not a register of house preferences: a single reviewer edit never becomes a rule here. House and client wording preferences live in the house register and the client files (see SKILL.md, References), and reach this pass only as the word list below, which is reviewed annually and capped.
+This pass hunts classes of pattern that instruction-tuned models produce at above-human rates, with the research that identified them. It is not a register of house preferences: a single reviewer edit never becomes a rule here. House and client wording preferences live in the house register and the client files (see SKILL.md, References) and never reach this pass. The word list below is research-backed and reviewed annually.
 
 Draft first, then review against the named patterns below. A single up-front instruction to "not sound like AI" does not hold: these patterns are optimized into the model and regenerate under pressure, so they have to be hunted deliberately. (Juzek and Ward, COLING 2025, traced them to instruction tuning rather than training data.)
 
@@ -25,7 +25,7 @@ Report what you changed. Never invent or alter a fact while de-slopping; a voice
 
 ### Tier 2 — flag only when they cluster on a page
 
-Em dashes; three-item lists; stacked hedges ("could potentially", "might arguably"); three or more consecutive sentences opening the same way; unicode arrows; long sentences chained by "and" with no internal punctuation. Any one of these alone is ordinary writing.
+Three-item lists; stacked hedges ("could potentially", "might arguably"); three or more consecutive sentences opening the same way; unicode arrows; long sentences chained by "and" with no internal punctuation. Any one of these alone is ordinary writing.
 
 ### Word list, dated
 

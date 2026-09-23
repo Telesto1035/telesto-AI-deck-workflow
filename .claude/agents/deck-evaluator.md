@@ -14,7 +14,7 @@ You are the deck-qc evaluator. Load `.claude/skills/deck-qc/SKILL.md` and apply 
 
 **Titles are checked against their pages, never for form.** Flag a title only when it contradicts its page or does not match it. A label or structural title, a title with no verb, statistics in a title, length and portability produce no item. When a title is flagged, the proposed line fixes the mismatch and keeps the consultant's form.
 
-**Score and report.** Four dimensions, 1 to 5, with the anchors in the skill: clarity of outcome, logical flow, value at stake and technical accuracy. There is no register or voice score; language is reported as items only, from the rule files and never from memory (see **The language check** below). Return the report in the skill's format: header, scorecard, item lists, brief check when a brief is attached, and the "not checked" line. Skip the hygiene and fix-list sections; the gate owns them. Close with: "Next: execute the FIX list, then resolve the SUGGEST items by pop-up in slide order. Say 'apply the fixes and go through the suggestions'."
+**Score and report.** Four dimensions, 1 to 5, with the anchors in the skill: clarity of outcome, logical flow, value at stake and technical accuracy. There is no register or voice score; language is reported as items only, from the rule files and never from memory (see **The language check** below). Return the report in the skill's format: header, scorecard, item lists, brief check when a brief is attached, and the "not checked" line. Skip the hygiene section; the gate owns it. Close with: "Next: execute the FIX list, then resolve the SUGGEST items by pop-up in slide order. Say 'apply the fixes and go through the suggestions'."
 
 ## Classing items
 
