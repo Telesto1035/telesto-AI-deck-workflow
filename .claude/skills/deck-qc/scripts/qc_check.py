@@ -554,16 +554,10 @@ class Deck:
             return True
         return bool(FURNITURE_NAME_RE.search(si.name or ""))
 
-    def allowed_palette(self):
-        """(colors, client) where colors is the rules palette plus the active client palette, if any."""
-        palette = set(c.upper() for c in self.rules.get("palette", []))
-        active = self.rules.get("active_client_palette")
-        client = (self.rules.get("client_palettes") or {}).get(active) if active else None
-        if isinstance(client, dict):
-            palette |= set(c.upper() for c in client.get("colors", []))
-        elif isinstance(client, list):
-            palette |= set(c.upper() for c in client)
-        return palette, client
+    def allowed_palette(self) -> set:
+        """The house palette from the rules. A client's colors come from the deck itself: its theme part
+        (theme_colors) and the fills it repeats across slides (check_style_drift), never from a rule file."""
+        return set(c.upper() for c in self.rules.get("palette", []))
 
     def slide_texts(self, slide_no: int) -> list[tuple[ShapeInfo, str]]:
         out = []
@@ -656,7 +650,7 @@ def check_grey_text(d: Deck):
     """Grey text outside a footnote home. Muted detail text is the other AI habit that defeats the scan;
     a few runs are listed, above the threshold the deck is blocked."""
     threshold = int(d.rules.get("grey_text_threshold", 4))
-    palette, _client = d.allowed_palette()
+    palette = d.allowed_palette()
     found = []
     for sno, shapes in d.shapes_by_slide.items():
         allowed = palette | d.theme_colors(d.slides[sno - 1].slide_layout.slide_master)
@@ -864,9 +858,10 @@ def check_speaker_notes(d: Deck):
                 text = notes_text(notes)
                 if visible(text):
                     d.add(
-                        id="speaker-notes", severity="block", slide=sno, shape="notes", shape_id=None,
-                        text=text, detail="speaker note present in %s; text reported in full before it is stripped" % name,
-                        fix="delete", auto_fixable=True,
+                        # some clients present from the notes, so they are shown, never stripped
+                        id="speaker-notes", severity="warn", slide=sno, shape="notes", shape_id=None,
+                        text=text, detail="speaker note present in %s; confirm it is meant to travel with the deck" % name,
+                        fix="none", auto_fixable=False,
                     )
 
 
@@ -911,19 +906,40 @@ def check_comments(d: Deck):
             )
 
 
+QUOTE_CHARS = "“”\""
+
+
+def _is_sample_field(txt: str, start: int, end: int) -> bool:
+    """A token inside [brackets] inside quoted sample language ("The ballot for [Proposal XXX] is now open")
+    is a fill-in field the reader completes, not a leftover. Either curly mark counts as a delimiter,
+    since sample text in shipped decks opens with the wrong one as often as the right one."""
+    lb, rb = txt.rfind("[", 0, start), txt.find("]", end)
+    if lb < 0 or rb < 0 or "]" in txt[lb:start]:
+        return False
+    return any(c in txt[:lb] for c in QUOTE_CHARS) and any(c in txt[rb:] for c in QUOTE_CHARS)
+
+
 def check_placeholders(d: Deck):
     pats = [re.compile(p) for p in d.rules.get("placeholder_patterns", [])]
     for sno in d.shapes_by_slide:
         for si, txt in d.slide_texts(sno):
-            hits = []
+            hits, fields = [], []
             for pat in pats:
                 for m in pat.finditer(txt):
-                    hits.append(m.group(0))
+                    (fields if _is_sample_field(txt, m.start(), m.end()) else hits).append(m.group(0))
             if hits:
                 d.add(
                     id="placeholders", severity="block", slide=sno, shape=si.name, shape_id=si.shape_id,
                     text=txt.strip()[:120], detail="leftover token(s): %s" % ", ".join(sorted(set(hits))),
                     fix="reword",
+                )
+            elif fields:
+                d.add(
+                    id="placeholders", severity="warn", slide=sno, shape=si.name, shape_id=si.shape_id,
+                    text=txt.strip()[:120],
+                    detail="fill-in field(s) in quoted sample text: %s; confirm they are meant for the reader" % (
+                        ", ".join(sorted(set(fields)))),
+                    fix="none",
                 )
 
 
@@ -1016,7 +1032,7 @@ QUOTED_RE = re.compile(r"[\u201c\"]([^\u201d\"]{12,})[\u201d\"]")
 def check_word_count(d: Deck):
     """Title + body + chart labels per page against the rules' thresholds; footnotes counted apart; appendix exempt."""
     # null in a profile means the page-density rule does not apply to that deck type (a one-slide brief)
-    warn = d.rules.get("words_warn", 200)
+    warn = d.rules.get("words_warn", 280)
     block = d.rules.get("words_block", 275)
     fn_warn = d.rules.get("footnote_words_warn", 100)
     if warn is None and fn_warn is None:
@@ -1147,6 +1163,9 @@ def check_off_canvas(d: Deck):
             if si.box is None or _stype(si.shape) == MSO_SHAPE_TYPE.GROUP:
                 continue
             x, y, w, h = si.box
+            rot = round(float(getattr(si.shape, "rotation", 0) or 0)) % 180
+            if rot == 90:  # a vertical label: the drawn box is the stored one turned about its center
+                x, y, w, h = x + (w - h) / 2, y + (h - w) / 2, h, w
             over = []
             if x < -tol:
                 over.append("left by %.1fpt" % (-x / EMU_PER_PT))
@@ -1213,8 +1232,10 @@ def check_overflow_estimate(d: Deck):
             rIns = int(bodyPr.get("rIns", 91440))
             tIns = int(bodyPr.get("tIns", 45720))
             bIns = int(bodyPr.get("bIns", 45720))
-            inner_w = max(w - lIns - rIns, 1)
-            inner_h = max(h - tIns - bIns, 1)
+            if w - lIns - rIns <= 0 or h - tIns - bIns <= 0:
+                continue  # a badge or chip smaller than its own insets: text spills by design; the render decides
+            inner_w = w - lIns - rIns
+            inner_h = h - tIns - bIns
             wrap = bodyPr.get("wrap", "square") != "none"
             paras: dict[int, list] = {}
             for r in runs:
@@ -1321,8 +1342,18 @@ def check_footnote_sequence(d: Deck):
                         defs.extend(found)
                         def_shape = si
             else:
+                opened: set[int] = set()  # paragraphs whose first visible run has been seen
                 for r in runs:
+                    first = r.para_index not in opened and visible(r.text)
+                    if visible(r.text):
+                        opened.add(r.para_index)
                     if r.superscript and SUP_RUN_RE.match(r.text or ""):
+                        # "¹Negative votes are..." above the footnote band: a superscript that opens a
+                        # paragraph with text after it is the footnote itself, not a marker
+                        if first and visible(r.para_text[len(r.text):] if r.para_text.startswith(r.text) else ""):
+                            defs.extend(sup_values(r.text))
+                            def_shape = si
+                            continue
                         markers.extend(sup_values(r.text))
                     for ch_group in re.findall(r"[⁰¹²³⁴⁵⁶⁷⁸⁹]+", r.text or ""):
                         v = superscript_value(ch_group)
@@ -1330,6 +1361,9 @@ def check_footnote_sequence(d: Deck):
                             markers.append(v)
                     for m in BRACKET_MARK_RE.finditer(r.text or ""):
                         markers.append(int(m.group(1)))
+        # a number above 20 that no marker reaches is a value in the footnote band ("90 (max)"), not a footnote
+        ceiling = max([20] + markers)
+        defs = [n for n in defs if n <= ceiling]
         if not markers and not defs:
             continue
         mset, dset = set(markers), set(defs)
@@ -1641,9 +1675,12 @@ def check_stakeholder_names(d: Deck):
             for n, pat in pats:
                 if pat.search(txt):
                     d.add(
-                        id="stakeholder-name", severity="block", slide=sno, shape=si.name, shape_id=si.shape_id,
-                        text=txt.strip()[:120], detail="client stakeholder '%s' named on a slide" % n,
-                        fix="reword",
+                        # a name may belong on the page (introductions, a directed question, an owner);
+                        # the author confirms, and an opinion about the person never stays
+                        id="stakeholder-name", severity="warn", slide=sno, shape=si.name, shape_id=si.shape_id,
+                        text=txt.strip()[:120],
+                        detail="client stakeholder '%s' named on a slide; confirm the page calls for it" % n,
+                        fix="none",
                     )
 
 
@@ -1773,32 +1810,25 @@ def check_style_drift(d: Deck):
                 text="", detail="footer missing on slides %s" % ", ".join(str(s) for s in without_ft), fix="none",
             )
     # fill colours outside the palette, and typefaces outside the allowlist
-    palette, client = d.allowed_palette()
+    palette = d.allowed_palette()
     fonts = set(d.rules.get("fonts", []))
-    if isinstance(client, dict):
-        fonts = set(client.get("fonts", [])) or fonts
-    client_fonts = set(client.get("fonts", [])) if isinstance(client, dict) else set()
     if fonts:
-        # With a client palette the allowlist is exactly its fonts. Without one, allow the rules fonts, the theme
-        # fonts and the deck's own dominant face, so only the minority faces (the leaks) are reported.
+        # Allow the rules fonts, the theme fonts and the deck's own dominant face, so only the minority
+        # faces (the leaks) are reported.
         dominant = None
-        if not client_fonts:
-            tally: dict[str, int] = {}
-            for slide in d.slides:
-                for lat in slide._element.iter(q("a:latin")):
-                    face = lat.get("typeface") or ""
-                    if face and not face.startswith("+"):
-                        tally[face] = tally.get(face, 0) + 1
-            if tally:
-                dominant = max(tally, key=tally.get)
+        tally: dict[str, int] = {}
+        for slide in d.slides:
+            for lat in slide._element.iter(q("a:latin")):
+                face = lat.get("typeface") or ""
+                if face and not face.startswith("+"):
+                    tally[face] = tally.get(face, 0) + 1
+        if tally:
+            dominant = max(tally, key=tally.get)
         for sno, slide in enumerate(d.slides, 1):
             master = slide.slide_layout.slide_master
-            if client_fonts:
-                allowed_faces = set(client_fonts)
-            else:
-                allowed_faces = set(fonts) | {f for f in (d.theme_font(master, True), d.theme_font(master, False)) if f}
-                if dominant:
-                    allowed_faces.add(dominant)
+            allowed_faces = set(fonts) | {f for f in (d.theme_font(master, True), d.theme_font(master, False)) if f}
+            if dominant:
+                allowed_faces.add(dominant)
             off: dict[str, int] = {}
             for lat in slide._element.iter(q("a:latin")):
                 face = lat.get("typeface") or ""
@@ -1815,18 +1845,30 @@ def check_style_drift(d: Deck):
                     fix="none",
                 )
     tol = int(d.rules.get("palette_tolerance", 0))
-    for sno, slide in enumerate(d.slides, 1):
-        allowed = palette | d.theme_colors(slide.slide_layout.slide_master)
-        offenders: dict[str, int] = {}
+    fills_by_slide: list[dict[str, int]] = []
+    for slide in d.slides:
+        counts: dict[str, int] = {}
         for sp in slide._element.iter(q("p:spPr")):
             for fill in list(sp.findall(q("a:solidFill"))) + list(sp.findall(q("a:gradFill"))):
                 for clr in fill.iter(q("a:srgbClr")):
                     val = (clr.get("val") or "").upper()
-                    if len(val) != 6:
-                        continue
-                    if val in allowed or hex_distance_ok(val, allowed, tol):
-                        continue
-                    offenders[val] = offenders.get(val, 0) + 1
+                    if len(val) == 6:
+                        counts[val] = counts.get(val, 0) + 1
+        fills_by_slide.append(counts)
+    # A brand color a client template applies by hand instead of through its theme is still the deck's palette:
+    # a fill (within tolerance) that recurs on enough slides is kept, and only the few-slide colors are reported.
+    recur = int(d.rules.get("palette_recurrence_slides", 3))
+    deck_colors = {c for counts in fills_by_slide for c in counts}
+    recurring = {
+        c for c in deck_colors
+        if sum(1 for counts in fills_by_slide if counts and hex_distance_ok(c, counts, tol)) >= recur
+    }
+    for sno, slide in enumerate(d.slides, 1):
+        allowed = palette | recurring | d.theme_colors(slide.slide_layout.slide_master)
+        offenders = {
+            val: n for val, n in fills_by_slide[sno - 1].items()
+            if val not in allowed and not hex_distance_ok(val, allowed, tol)
+        }
         if offenders:
             d.add(
                 id="style-drift", severity="warn", slide=sno, shape=None, shape_id=None,
@@ -1958,8 +2000,8 @@ def run_checks(path: Path, rules: dict, profile: Optional[str] = None,
 
 
 def fix_safe(deck: Deck, findings: list[Finding], out_path: Path, log) -> Path:
-    """Hygiene only: strip speaker notes (after printing them) and remove generator fingerprints.
-    Both are blocks with exactly one correct answer. Nothing here edits slide text, formatting,
+    """Hygiene only: remove generator fingerprints, a block with exactly one correct answer. Speaker notes
+    are left in place: some clients present from them, so the author decides. Nothing here edits slide text, formatting,
     a number or a size: a fix that rewrites what the consultant wrote belongs in the fix pass,
     where a human sees it first."""
     parts = dict(deck.parts)
@@ -1977,44 +2019,6 @@ def fix_safe(deck: Deck, findings: list[Finding], out_path: Path, log) -> Path:
     # (File > Info > Check for Issues > Inspect Document); the gate verifies it was run and blocks
     # under --handback. Nothing in the chain edits a deck's properties behind the consultant.
     # Generator fingerprints, further down, are still cleared: Inspector leaves those in place.
-
-    # speaker notes
-    if "speaker-notes" in ids:
-        ct = load("[Content_Types].xml")
-        removed = 0
-        for name in list(parts):
-            if name.startswith("ppt/slides/_rels/") and name.endswith(".rels"):
-                rels = load(name)
-                changed = False
-                for rel in list(rels):
-                    if rel.get("Type", "").endswith("/notesSlide"):
-                        target = "ppt/" + rel.get("Target", "").replace("../", "")
-                        notes = load(target)
-                        if notes is not None:
-                            txt = notes_text(notes)
-                            if visible(txt):
-                                log("  stripped note (%s):\n    %s" % (target, txt.replace("\n", "\n    ")))
-                        rels.remove(rel)
-                        changed = True
-                        parts.pop(target, None)
-                        parts.pop(target.replace("notesSlides/", "notesSlides/_rels/") + ".rels", None)
-                        if ct is not None:
-                            for ov in list(ct):
-                                if ov.get("PartName") == "/" + target:
-                                    ct.remove(ov)
-                        removed += 1
-                if changed:
-                    store(name, rels)
-        if ct is not None:
-            store("[Content_Types].xml", ct)
-        app = load("docProps/app.xml")
-        if app is not None:
-            notes_ct = app.find(q("ep:Notes"))
-            if notes_ct is not None:
-                notes_ct.text = "0"
-            store("docProps/app.xml", app)
-        if removed:
-            applied.append("stripped %d notes slide%s" % (removed, "s" if removed != 1 else ""))
 
     # generator fingerprints
     if "metadata-scrub" in ids:
