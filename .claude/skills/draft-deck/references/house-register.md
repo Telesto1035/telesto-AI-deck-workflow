@@ -1,6 +1,6 @@
 # House register: writing conventions carried across decks
 
-Conventions for how a Telesto page is written, distilled from the edits consultants and the CEO made to AI drafts. Client-specific wording and formatting live in `clients/<client>.md`, not here.
+Conventions for how a Telesto page is written, distilled from the edits consultants and the CEO made to AI drafts. Client-specific wording and formatting live in the Deck style section of the client brief, not here.
 
 ## The standard this file holds itself to
 
@@ -16,7 +16,7 @@ A convention earns a place here only if a reader outside the firm could apply it
 - **Instances inside one deck do not corroborate.** One pass over one document is one observation however many times it repeats, and "7 instances" or "every page" is one consultant's preference counted seven times. Record instances if they are useful, but the deck count is what clears the bar.
 - **A ruling is not an entry path.** It is one voice on one day, and the register is built collaboratively from what the work shows. A ruling can retire a rule, pause one, or settle which of two readings to try next; it cannot promote a pattern the decks have not shown twice.
 - **Conflict:** two patterns that conflict are both held until the decks resolve which one recurs. The rule that loses moves to Retired with the date and what replaced it.
-- **Single-deck observations wait**, firm-wide ones under "Observed, not yet promoted" below, client-specific ones in the client file under the same heading.
+- **Single-deck observations wait**, firm-wide ones under "Observed, not yet promoted" below, client-specific ones in the Deck style section of the client brief.
 - **Refresh:** reviewed when Learn runs and at least twice a year; a rule no consultant edit has touched in a year is a candidate for retirement or for the principles file.
 - **Format:** rule in bold, one example, then `[evidence: N decks, YYYY-MM]` where N counts decks. No narrative.
 
