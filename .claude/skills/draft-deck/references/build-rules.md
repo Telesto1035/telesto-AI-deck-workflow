@@ -1,6 +1,6 @@
 # Build rules
 
-Read at the Build stage and whenever a Revise adds a page or a new element. Universal to every paper; client formatting is in `clients/<client>.md`.
+Read at the Build stage and whenever a Revise adds a page or a new element. Universal to every paper; client formatting is in the Deck style section of the client brief.
 
 ## Contents
 - Build rules (native, editable, nothing hardcoded)
@@ -17,14 +17,14 @@ Read at the Build stage and whenever a Revise adds a page or a new element. Univ
 4. **No hardcoded styling.** Colors and fonts come from the deck theme (scheme colors), not pasted hex values, wherever the format allows. A human opening the file must be able to edit any element the ordinary way.
 5. **Keep the deck's evidence furniture**: DRAFT stamp on working pages, copyright footer, page numbers, question-number footnotes, denominator lines.
 6. **One idea per page.** If a storyline line needs two ideas, it needs two pages.
-7. **Four homes for text** (client specifics in `clients/<client>.md`): action title, chart/table title, content text box, footnote. No small or gray text outside a footnote; few font treatments per page; one font size within any table. The typography floor in SKILL.md applies: 10pt minimum outside footnotes, gray text only as a rare exception. This rule overrides habits found in the attachment.
+7. **Four homes for text** (client specifics in the Deck style section of the client brief): action title, chart/table title, content text box, footnote. No small or gray text outside a footnote; few font treatments per page; one font size within any table. The typography floor in SKILL.md applies: 10pt minimum outside footnotes, gray text only as a rare exception. This rule overrides habits found in the attachment.
 8. **Tables hold data, not prose pairs.** Deliverables→outcomes and similar paired lists are built as individual text boxes with drawn rules and numbered ovals. Multi-item cells become bullets, never semicolon runs. Where a column is headed Quotes, the cells hold verbatim quotes.
 9. **Bar charts keep the Y axis line.** The category axis is a thin line at the bars' origin with no tick marks and no numeric scale; data labels sit outside the bar end.
 10. **Edit text at the run level**, and reset a reused run's formatting, as in deck-qc `references/applying-fixes.md`. A find-and-replace spanning a bold lead-in collapses the paragraph into the bold run.
 11. **File integrity.** python-pptx API for slide content. Raw XML is permitted in exactly two places: the chart-cache patch, and `a:effectLst` (shadows) or `a:gradFill` (gradients) on shapes you created yourself. Never let two slides share an embedded OLE object: when duplicating a slide carrying hidden think-cell data, strip the object from the duplicate. Validate against the original file before handing off.
 12. **Leave the author / core-properties author field empty** on every generated file.
 13. Work with the pptx skill's mechanics for unpacking, duplicating (`add_slide.py`), editing slide XML, and validating. Content QA: no leftover placeholder text from the source slides, no orphaned visuals after text replacement.
-14. Apply `clients/<client>.md` for client-paper specifics (titles, tables, charts, callouts, footnotes). A freshly attached shipped deck beats it, except where the four-homes rule or the typography floor says otherwise.
+14. Apply the Deck style section of the client brief for client-paper specifics (titles, tables, charts, callouts, footnotes). A freshly attached shipped deck beats it, except where the four-homes rule or the typography floor says otherwise.
 15. **Look at the render before handing off.** Use deck-qc stage 2 (`render_check.py`: PowerPoint, contact sheets; soffice and pdftoppm where PowerPoint is absent). Overlaps, overflow, stranded titles and hanging single words on a last line are invisible in the XML and obvious in the image. Fix (widen the box, or reword a few words), re-render, then send.
 
 
@@ -67,4 +67,4 @@ The convention (numbered superscripts, question wording verbatim, "Source:" for 
 ## Construction lessons from live revisions
 - **The eyebrow number is a finding number, not a page number.** Two pages that support finding 1 both carry "1". Never renumber to make pages consecutive.
 - **Appendix and data pages stay as they are.** Crosstabs, backup exhibits and methodology pages are not restyled, resized or re-fonted by the AI phase or by the gate; smaller type is allowed there. Only hygiene (author, notes, metadata) applies to the whole file.
-- **Use the client's plain layouts by default.** Side-panel or numbered layout variants are for varying rhythm on low-text pages; the client file says which.
+- **Use the client's plain layouts by default.** Side-panel or numbered layout variants are for varying rhythm on low-text pages; the client brief's Deck style section says which.
