@@ -56,7 +56,6 @@ PLANTED_BLOCK_IDS = {
     "font-size-floor",
     "author-empty",
     "metadata-scrub",
-    "speaker-notes",
     "placeholders",
     "totals-sum",
     "chart-cache-label",
@@ -65,6 +64,7 @@ PLANTED_BLOCK_IDS = {
     "empty-label",
 }
 PLANTED_WARN_IDS = {
+    "speaker-notes",  # warn since 1.4.0: shown, never stripped, some clients present from them
     "shape-overlap",
     "word-count",
     "label-in-bar",
@@ -73,7 +73,7 @@ PLANTED_WARN_IDS = {
     "off-canvas",
     "hidden-slides",
 }
-PLANTED_WITH_NAME_RULES = {"stakeholder-name"}
+PLANTED_WITH_NAME_RULES = {"stakeholder-name"}  # warn since 1.4.0: the author confirms the name belongs on the page
 PLANTED_MULTISLIDE_WARN_IDS = {"draft-stamp"}
 
 
