@@ -311,7 +311,8 @@ def test_language_instruction_names_the_rule_files(path):
     section = _language_section(path.read_text(encoding="utf-8"))
     missing = [f for f in RULE_FILES if f not in section]
     assert not missing, "%s language section does not name %s" % (path.name, missing)
-    assert "clients/" in section, "%s language section does not name the client file" % path.name
+    assert "client brief" in section.lower() and "deck style" in section.lower(), (
+        "%s language section does not name the client brief's Deck style section" % path.name)
 
 
 @pytest.mark.parametrize("path", INSTRUCTIONS, ids=["evaluator", "deck-qc"])
