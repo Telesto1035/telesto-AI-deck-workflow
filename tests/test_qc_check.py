@@ -98,12 +98,12 @@ def test_broken_fixture_finds_every_planted_fault(src, broken_dir, rules, name_r
     deck, findings = qc_check.run_checks(broken, name_rules, handback=True)
     multi = len(deck.slides) > 1
 
-    expected_blocks = KNOWN_CLEAN_BLOCKS[src.stem] | make_broken.PLANTED_BLOCK_IDS | make_broken.PLANTED_WITH_NAME_RULES
+    expected_blocks = KNOWN_CLEAN_BLOCKS[src.stem] | make_broken.PLANTED_BLOCK_IDS
     assert ids(findings, "block") == expected_blocks, sorted(
         (f.id, f.slide, f.detail) for f in findings if f.severity == "block"
     )
 
-    expected_warns = make_broken.PLANTED_WARN_IDS | (make_broken.PLANTED_MULTISLIDE_WARN_IDS if multi else set())
+    expected_warns = make_broken.PLANTED_WARN_IDS | make_broken.PLANTED_WITH_NAME_RULES | (make_broken.PLANTED_MULTISLIDE_WARN_IDS if multi else set())
     new_warns = ids(findings, "warn") - ids(clean_findings, "warn")
     assert expected_warns <= ids(findings, "warn"), sorted(ids(findings, "warn"))
     assert new_warns <= expected_warns, "unplanted warn(s): %s" % sorted(new_warns - expected_warns)
@@ -131,9 +131,10 @@ def test_broken_fixture_finds_every_planted_fault(src, broken_dir, rules, name_r
     custom = next(f for f in by_id(findings, "metadata-scrub") if "custom.xml" in f.detail)
     assert "ContentTypeId" in custom.text
 
-    # speaker notes are reported in full
+    # speaker notes are reported in full, as a warning: they stay in the deck for the author to judge
     notes = by_id(findings, "speaker-notes")
     assert notes and any(make_broken.NOTE_TEXT in f.text for f in notes)
+    assert all(f.severity == "warn" and not f.auto_fixable for f in notes)
 
     # placeholders
     assert any("[PLACEHOLDER: source needed]" in f.detail for f in by_id(findings, "placeholders"))
@@ -187,11 +188,9 @@ def test_fix_safe_clears_settled_faults_and_nothing_else(broken_dir, name_rules,
     qc_check.fix_safe(deck, findings, out, log.append)
     assert out.exists()
     Presentation(str(out))  # re-opens in python-pptx
-    assert any("Build sequence" in line for line in log), "notes must be printed before they are stripped"
-
     _d2, after = qc_check.run_checks(out, name_rules)
-    gone = {"speaker-notes"}
-    assert not (gone & ids(after)), sorted(gone & ids(after))
+    # speaker notes survive: since 1.4.0 they are a warning the author resolves, never stripped
+    assert "speaker-notes" in ids(after), "fix_safe must leave speaker notes in place"
     # Document properties survive: PowerPoint's Document Inspector owns that scrub, and nothing
     # in the chain rewrites a deck's properties behind the consultant.
     assert "author-empty" in ids(after), "fix_safe must not clear the author field"
@@ -244,7 +243,7 @@ def test_fix_safe_in_place_keeps_the_deck(broken_dir, name_rules, tmp_path):
     qc_check.fix_safe(deck, findings, deck_path, lambda s: None)
     Presentation(str(deck_path))
     _d2, after = qc_check.run_checks(deck_path, name_rules)
-    assert "speaker-notes" not in ids(after)
+    assert "speaker-notes" in ids(after), "speaker notes are the author's call, not fix_safe's"
     assert "author-empty" in ids(after), "document properties are a hand-back condition, not fix_safe's"
     # the temp file is moved over the deck, never left beside it
     assert sorted(p.name for p in tmp_path.iterdir()) == ["in_place.pptx"]
