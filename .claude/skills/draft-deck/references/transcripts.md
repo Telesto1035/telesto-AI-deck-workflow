@@ -45,4 +45,4 @@ Where a deck carries in-file comments too, extract those first (`deck-qc/scripts
 
 The register holds asks and their anchors. It does not hold the rest of the meeting. Nothing about a named person's performance, standing or relationships; no pricing, margins, fees or staffing; no personal information; no client gossip or legal exposure. Where an ask is entangled with that material, the ask is recorded stripped of it and the anchor quote is trimmed to the instruction.
 
-A meeting transcript is client engagement data or Telesto internal data, or both at once. It lives in the session and the engagement folder and nowhere else: not a skill file, not the house register, not a client style file, not memory. `GOVERNANCE.md` governs.
+A meeting transcript is client engagement data or Telesto internal data, or both at once. It lives in the session and the engagement folder and nowhere else: not a skill file, not the house register, not the client brief, not memory. `GOVERNANCE.md` governs.
