@@ -46,7 +46,7 @@ tests/
 .venv/Scripts/python scripts/build_plugin.py
 ```
 
-Exit codes for `qc_check.py`: 0 pass, 1 blocking findings, 2 file could not be opened. `--fix-safe` writes `DECK.qc.pptx` beside the input; it strips speaker notes and generator fingerprints and never changes a number, a size or wording. `--handback` makes document properties block; run it after Document Inspector.
+Exit codes for `qc_check.py`: 0 pass, 1 blocking findings, 2 file could not be opened. `--fix-safe` writes `DECK.qc.pptx` beside the input; it strips generator fingerprints and never changes a number, a size or wording; speaker notes are shown as warnings and left in place, since some clients present from them. `--handback` makes document properties block; run it after Document Inspector.
 
 ## Team setup (Claude Code users)
 
