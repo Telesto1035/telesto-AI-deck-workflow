@@ -74,7 +74,8 @@ def test_broken_deck_blocks_then_caps(workdir):
     # blocks on it; a content fault is what holds the stop.
     assert "font-size-floor" in logs[0]
     assert "author-empty" not in logs[0], "property hygiene must not block the consultant mid-session"
-    assert "--fix-safe" in logs[0]
+    # nothing planted is auto-fixable since speaker notes became a warning, so no --fix-safe hint
+    assert "--fix-safe" not in logs[0]
     assert "gate cap reached, handing off with findings attached" in logs[2]
     assert "gate cap reached" in logs[3]
 
