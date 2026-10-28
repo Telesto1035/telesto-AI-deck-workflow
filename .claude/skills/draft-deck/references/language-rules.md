@@ -1,6 +1,6 @@
 # Language rules
 
-Principles for titles, claims, provenance, and craft. Stable; changed only by the skill owner. Rules learned from shipped decks live in `house-register.md` (capped, governed); client wording and formatting in `clients/<client>.md`.
+Principles for titles, claims, provenance, and craft. Stable; changed only by the skill owner. Rules learned from shipped decks live in `house-register.md` (capped, governed); client wording and formatting in the Deck style section of the client brief.
 
 House style for titles, takeaways, and slide text. Applies on both papers (thinking + craft always apply; only branding changes by paper). Examples are drawn from shipped decks.
 
@@ -54,7 +54,7 @@ Two registers, kept separate:
 
 A finding never smuggles in a recommendation; an implication never introduces new data.
 
-- **Next steps carry an owner and a date.** A step with neither is a wish. On a proposal the path needs dates only: it is drafted before the work is scoped, and owners and the order of steps are settled with the client.
+- **A committed next step says who carries it and by when.** The owner may be a person, a team or department, or a party (Telesto, the client). Steps put to the room for discussion, marked as such, need neither: the room settles them. On a proposal the path needs dates only: it is drafted before the work is scoped, and owners and the order of steps are settled with the client.
 
 ## Craft
 
