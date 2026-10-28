@@ -30,7 +30,7 @@ Stages, prompts and exit codes: `deck-qc/SKILL.md`, "Procedure". Versions live i
 
 **onepagebrief-builder is retired** (9/14). The Build Brief is a one-slide artifact the gate recognizes as a profile, not a separate skill with its own step. Build opens instead with a pop-up round confirming deck type, audience and materials.
 
-**Nothing client-specific lives in a rule file** (9/14). Names, figures, palettes and findings are engagement data; rule files, the register, the client style file, tests and memory stay clean of them. A test enforces it. Client brand colours are read from the template's own theme part, which is a better source than a copied hex list anyway.
+**Nothing client-specific lives in a rule file** (9/14). Names, figures, palettes and findings are engagement data; rule files, the register, tests and memory stay clean of them; client style lives in the client brief in that client's Cowork project. A test enforces it. Client brand colours are read from the template's own theme part, which is a better source than a copied hex list anyway.
 
 **Attachment is permission to read, not to write** (9/14). A skill writes only the deliverable it was asked for, at a path the consultant named. It never writes back to a source file, metadata included.
 
