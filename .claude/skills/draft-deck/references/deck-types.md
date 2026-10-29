@@ -15,6 +15,7 @@ The deck a room of MDs, team leads and directors reads for an hour. No ambiguity
 - **Usually present:** cover with the takeaway as title; executive summary with numbered findings, each a bold finding sentence with the key numbers inline and a labelled implication; methodology with n and margin of error, stating which cuts are directional; one or two pages per finding (numbered eyebrow, full-sentence action title, one or two exhibits, recommendation band, source and n under every exhibit, question wording verbatim in the footnote); closing recommendations or next steps; appendix after a divider, not counted in length.
 - **Exhibits:** native, editable charts from the data files. Bars and heatmaps for many percentages; paired bars for two groups; stacked scales for rating batteries; quote pages with verbatim attributed quotes.
 - **Length:** 10 to 25 pages usually; 6 to 12 when a product holds the detail.
+- **Research brief variant:** one question answered with public or Telesto-gathered evidence, such as an AI visibility brief. Cover with the question as the title; key message page with the answer in two to four sentences and its numbers; three to five evidence pages, each with a numbered eyebrow, one exhibit (chart with quotes, scored comparison table with its rubric in the footnote, or stat cards) and a recommendation band; a considerations close with two or three open routes framed as choices for the client. No methodology page or next-steps table unless a scoped offer follows. 5 to 8 pages; run the gate as `--profile findings --length 5-8`, not the one-slide `brief` profile. Exemplar C in the Telesto dark template v3.
 - **Register:** findings declarative and data-anchored; implications labelled and separate; bands in the should-register.
 
 ## Proposal / BD
@@ -23,7 +24,8 @@ Speaks the buyer's language: why now, what problem, what the client gains, what 
 - **Page grammar:** visual throughout: stat callouts, option cards, chevrons, timeline, closing band. A chart only where one number needs proof.
 - **Length:** 4 to 7 pages.
 - **Register:** outcome-led; credit the client's own direction and let their criteria select the answer. Fees, durations and value-at-stake inputs come from the consultant or become `[PLACEHOLDER: builder input needed]`.
-- **Exemplars:** the two CEO-approved proposals of Aug 2026 (7 and 4 pages) are the style guide for how a proposal recommends.
+- **Options variant:** modular options, taken on their own or together, without fees on the page, with one outcome line per audience ("For marketing:", "For [client]:") when two buyers read the deck.
+- **Exemplars:** the two CEO-approved proposals of Aug 2026 (7 and 4 pages) are the style guide for how a proposal recommends. The Telesto dark template v3 carries anonymised exemplars of both option styles (A, tiered; B, modular).
 
 ## Minipack
 The between-milestones deck that answers one question with evidence. Its shape is stable so a reader who has seen one can read the next without orientation; the order can still bend to the storyline.

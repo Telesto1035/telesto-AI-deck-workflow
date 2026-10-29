@@ -13,7 +13,15 @@
     "005366",
     "003366",
     "FFFFFF",
-    "8A8F92"
+    "8A8F92",
+    "363636",
+    "2D2D2D",
+    "4A4E50",
+    "5A5A5A",
+    "B5B5B5",
+    "12403F",
+    "E07A4F",
+    "1E1E1E"
   ],
   "palette_tolerance": 40,
   "palette_recurrence_slides": 3,
@@ -81,7 +89,9 @@
       ]
     },
     "minipack": {
-      "length": [8, 11
+      "length": [
+        8,
+        11
       ]
     },
     "presentation": {
