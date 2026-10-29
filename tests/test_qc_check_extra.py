@@ -559,3 +559,30 @@ def test_a_word_starting_with_x_is_not_a_placeholder(tmp_path, rules):
     out = _one_box(tmp_path, "As the [Xerox study] showed", 3.0, 12)
     _deck, findings = qc_check.run_checks(out, rules)
     assert not any(f.id == "placeholders" for f in findings)
+
+
+def _deck_with_footer_layout(layouts: list[int]):
+    """Slides on the given default layouts; layout 6 carries a copyright line, the others carry none."""
+    import copy
+    scratch = Presentation().slides.add_slide(Presentation().slide_layouts[6])
+    tb = _box(scratch, Inches(0.5), Inches(7), Inches(4), Inches(0.3), "© 2026 Telesto")
+    prs = Presentation()
+    prs.slide_layouts[6].shapes._spTree.append(copy.deepcopy(tb._element))
+    for i in layouts:
+        prs.slides.add_slide(prs.slide_layouts[i])
+    return prs
+
+
+def test_closing_page_on_its_own_layout_is_not_footer_drift(tmp_path, rules):
+    """A contacts or thank-you page on a layout no body page uses drops the footer by design (DTA deck, Oct 2026)."""
+    out = tmp_path / "closing.pptx"
+    _deck_with_footer_layout([0, 6, 6, 6, 1]).save(str(out))
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert not [f for f in findings if f.id == "style-drift" and "footer missing" in f.detail], findings
+
+
+def test_body_page_without_footer_is_still_drift(tmp_path, rules):
+    out = tmp_path / "drift.pptx"
+    _deck_with_footer_layout([0, 6, 1, 6, 6]).save(str(out))
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert [f for f in findings if f.id == "style-drift" and "footer missing on slides 3" in f.detail], findings

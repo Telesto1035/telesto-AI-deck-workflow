@@ -42,7 +42,7 @@ There is no dot-dash step. The storyline comes from the inputs and you produce t
 - An **example deck or template**, mandatory for any file build (below).
 
 **Routing, in this order:**
-1. **Deck type**, from the eight in `references/deck-types.md`, confirmed by pop-up at Build entry (below). The type sets skeleton, density, exhibit types, length and register.
+1. **Deck type**, the nearest of the eight in `references/deck-types.md` plus what this deck does differently, confirmed by pop-up at Build entry (below). The type is a starting point for skeleton, density, exhibits, length and register; a deck that mixes two types takes what it needs from each, and deck-qc judges it by its purpose, not its type.
 2. **Paper and template**, from the example attachment: dark Telesto, light Telesto, or a client template. Paper sets colors, fonts and furniture only. It never sets density. The client's colors are read from that attachment (its theme and the fills it repeats), or from a screenshot of the palette when no deck exists; no skill file supplies them.
 3. **Page grammar**, chosen per page from the type's palette. Two grammars coexist in one deck. The **visual grammar** is stat rails, option cards, chevrons, timelines, recommendation bands. The **analytical grammar** is bar charts, heatmaps, paired bars, stacked scales, shape-built tables, quote pages, with source and n under every exhibit. A findings deck opens visual, runs analytical, closes visual. A proposal is visual throughout with an analytical page wherever one number needs proof.
 
@@ -59,7 +59,7 @@ Ask only what the inputs do not answer, in one round, and never ask for somethin
 ### Build
 Inputs in, deck out. A from-scratch build opens with one AskUserQuestion round of up to three questions, each skipped when the inputs already answer it:
 
-1. **Deck type.** Infer it from the prompt and the files and put the inference first with "(Recommended)" and one line of reasoning (page count asked for, data present, audience). Offer the two nearest types with what changes. "A 20-page deck for marketing from this survey file" reads as a findings report (10 to 25 pages, methodology, one or two pages per finding) against a minipack (8 to 11 pages, four findings) or a presentation (8 to 15 pages, larger exhibits, a decision page).
+1. **Deck type.** Infer the nearest type from the prompt and the files and put it first with "(Recommended)", one line of reasoning (page count asked for, data present, audience) and what this deck does differently from it ("a findings report, shorter, closing on open questions instead of recommendations"). Offer the next nearest type with what changes; the consultant can describe a mix in free text. "A 20-page deck for marketing from this survey file" reads as a findings report (10 to 25 pages, methodology, one or two pages per finding) against a minipack (8 to 11 pages, four findings) or a presentation (8 to 15 pages, larger exhibits, a decision page).
 2. **Audience.** When no audience brief is attached: "Run stakeholder-context first (Recommended), attach the roster or invite" against "use the audience as the prompt states it" and "skip". A named audience is what makes the exec summary order and the bands specific.
 3. **Materials.** Confirm the example deck or template found and the paper it implies, and the data form (raw xlsx or csv preferred, PDF accepted); ask for whichever is missing.
 
@@ -182,7 +182,6 @@ Every Build ends with two things alongside the file:
 - Build a file without an example deck or template to inherit from.
 - Escalate a claim beyond the client's precedent without flagging it.
 - Add decorative elements, icons, or styling flourishes as a substitute for content.
-- Scatter small or gray context text outside the four text homes, or set any text below 10pt outside a footnote.
 - Build narrator-dependent speaking slides (an image plus a phrase). Presentation decks are in scope; every page still passes the standalone test.
 - Guess at an ambiguous senior comment; the shorthand in `references/comment-shorthand.md` always goes to a pop-up with readings.
 - Answer a comment that calls for net-new research from its own knowledge, or fill the gap with a placeholder on the slide. It is held and scoped.

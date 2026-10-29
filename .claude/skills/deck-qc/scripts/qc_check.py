@@ -1814,17 +1814,23 @@ def check_style_drift(d: Deck):
                 text="", detail="title size or face differs across slides on layout '%s': %s" % (layout_name, desc),
                 fix="resize",
             )
-    # page number and footer presence on content slides
+    # page number and footer presence on content slides; the cover is skipped, and so is a closing page
+    # (contacts, thank-you) on a layout no body page uses
+    last = n
     if n >= 3:
-        with_num = [s for s in range(2, n + 1) if _has_page_number(d, d.slides[s - 1])]
-        without_num = [s for s in range(2, n + 1) if s not in with_num]
+        body_layouts = {d.slides[s - 1].slide_layout.name for s in range(2, n)}
+        if d.slides[n - 1].slide_layout.name not in body_layouts:
+            last = n - 1
+    if n >= 3:
+        with_num = [s for s in range(2, last + 1) if _has_page_number(d, d.slides[s - 1])]
+        without_num = [s for s in range(2, last + 1) if s not in with_num]
         if with_num and without_num:
             d.add(
                 id="style-drift", severity="warn", slide=None, shape=None, shape_id=None,
                 text="", detail="page number missing on slides %s" % ", ".join(str(s) for s in without_num), fix="none",
             )
-        with_ft = [s for s in range(2, n + 1) if _has_footer(d, d.slides[s - 1])]
-        without_ft = [s for s in range(2, n + 1) if s not in with_ft]
+        with_ft = [s for s in range(2, last + 1) if _has_footer(d, d.slides[s - 1])]
+        without_ft = [s for s in range(2, last + 1) if s not in with_ft]
         if with_ft and without_ft:
             d.add(
                 id="style-drift", severity="warn", slide=None, shape=None, shape_id=None,
