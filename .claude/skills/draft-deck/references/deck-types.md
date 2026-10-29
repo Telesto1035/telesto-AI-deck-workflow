@@ -1,6 +1,6 @@
 # Deck types
 
-Eight types. Each lists the elements that usually appear, the length such decks usually run, and a register. None of this is a fixed order or a limit: the storyline decides the order, the content decides the length (a minipack can run past 11 pages when the client should see it), and the consultant confirms both in text before any build. The gate reports length as information only, and the `--length` option passes a variant's range, such as `6-12` for a findings deck whose detail sits in a product. Paper (Telesto or client) sets colors, fonts and furniture only; density follows the type and the page's job.
+Eight types. Each lists the elements that usually appear, the length such decks usually run, and a register. They are starting points for drafting, not boxes: many decks mix two (a short findings deck that closes on open questions, a BD brief that sells nothing), and deck-qc never checks a deck against this file. None of this is a fixed order or a limit: the storyline decides the order, the content decides the length (a minipack can run past 11 pages when the client should see it), and the consultant confirms both in text before any build. The gate reports length as information only, and the `--length` option passes a variant's range, such as `6-12` for a findings deck whose detail sits in a product. Paper (Telesto or client) sets colors, fonts and furniture only; density follows the type and the page's job.
 
 ## Contents
 - Findings / survey report

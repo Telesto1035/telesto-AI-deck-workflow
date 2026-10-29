@@ -40,8 +40,7 @@ The title IS the takeaway. A reader skimming only titles gets the full argument.
 
 ## Provenance — every number has a home
 
-- Chart subtitle convention: `% of respondents selecting attribute · n=200` (metric · denominator).
-- Question sourcing in footnotes: `Q12: Which of the following cost reduction strategies…`. Cross-survey borrowings named: "From Competitive Intelligence survey: …".
+- Chart subtitles and footnotes follow the convention in SKILL.md (metric · denominator; numbered question footnotes; "Source:" for external material).
 - Quotes verbatim, in quotation marks, with attribution: `"…" (Board of trustees, R1)`.
 - Missing number → `[PLACEHOLDER: source needed]`. Never estimate and present as fact. Never reuse a number from a different base without re-stating the base.
 - **Labels are provenance too.** A label that traces to the instrument keeps its source wording somewhere on the page: the footnote with the question number, or the axis itself. Renaming it is the consultant's decision, not a craft edit (SKILL.md, Revise, class `label`).
@@ -54,7 +53,7 @@ Two registers, kept separate:
 
 A finding never smuggles in a recommendation; an implication never introduces new data.
 
-- **A committed next step says who carries it and by when.** The owner may be a person, a team or department, or a party (Telesto, the client). Steps put to the room for discussion, marked as such, need neither: the room settles them. On a proposal the path needs dates only: it is drafted before the work is scoped, and owners and the order of steps are settled with the client.
+- **A committed next step says who carries it and by when.** *(drafting craft)* The owner may be a person, a team or department, or a party (Telesto, the client). Steps put to the room for discussion, marked as such, need neither: the room settles them. On a proposal the path needs dates only: it is drafted before the work is scoped, and owners and the order of steps are settled with the client.
 
 ## Craft
 

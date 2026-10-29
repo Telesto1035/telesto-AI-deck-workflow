@@ -168,7 +168,8 @@ def test_brief_still_gates_hygiene(tmp_path, rules):
     _d2, mid = qc_check.run_checks(p, rules)
     assert "author-empty" not in {f.id for f in mid if f.severity == "block"}
     assert "author-empty" in {f.id for f in mid if f.severity == "warn"}
-    assert "placeholders" in {f.id for f in mid if f.severity == "block"}, "content faults still block"
+    # a draft is told to leave placeholders (draft-deck rule 4): they warn mid-session, block at hand-back
+    assert "placeholders" in {f.id for f in mid if f.severity == "warn"}, "placeholders warn mid-session"
 
 
 def test_brief_profile_can_be_asked_for_by_name(tmp_path, rules):
@@ -515,7 +516,7 @@ def test_fill_in_field_in_quoted_sample_text_warns_and_a_bare_token_blocks(tmp_p
     _box(s, Inches(1), Inches(3), Inches(8), Inches(0.5), "Spend grew XX points against the plan.")
     out = tmp_path / "fields.pptx"
     prs.save(str(out))
-    _deck, findings = qc_check.run_checks(out, rules)
+    _deck, findings = qc_check.run_checks(out, rules, handback=True)
     ph = sorted((f.severity, f.text[:4]) for f in findings if f.id == "placeholders")
     assert ph == [("block", "Spen"), ("warn", "\u201cThe")], ph
 
@@ -548,11 +549,40 @@ def test_nine_point_body_text_still_blocks(tmp_path, rules):
 @pytest.mark.parametrize("token", ["[~X weeks]", "[X weeks]", "[x weeks]", "[$X]", "[X%]"])
 def test_bracketed_x_is_a_placeholder(tmp_path, rules, token):
     out = _one_box(tmp_path, "Phase 1 runs %s from kickoff" % token, 3.0, 12)
-    _deck, findings = qc_check.run_checks(out, rules)
+    _deck, findings = qc_check.run_checks(out, rules, handback=True)
     assert any(f.id == "placeholders" and f.severity == "block" for f in findings), token
+    _deck, mid = qc_check.run_checks(out, rules)
+    assert any(f.id == "placeholders" and f.severity == "warn" for f in mid), token
 
 
 def test_a_word_starting_with_x_is_not_a_placeholder(tmp_path, rules):
     out = _one_box(tmp_path, "As the [Xerox study] showed", 3.0, 12)
     _deck, findings = qc_check.run_checks(out, rules)
     assert not any(f.id == "placeholders" for f in findings)
+
+
+def _deck_with_footer_layout(layouts: list[int]):
+    """Slides on the given default layouts; layout 6 carries a copyright line, the others carry none."""
+    import copy
+    scratch = Presentation().slides.add_slide(Presentation().slide_layouts[6])
+    tb = _box(scratch, Inches(0.5), Inches(7), Inches(4), Inches(0.3), "© 2026 Telesto")
+    prs = Presentation()
+    prs.slide_layouts[6].shapes._spTree.append(copy.deepcopy(tb._element))
+    for i in layouts:
+        prs.slides.add_slide(prs.slide_layouts[i])
+    return prs
+
+
+def test_closing_page_on_its_own_layout_is_not_footer_drift(tmp_path, rules):
+    """A contacts or thank-you page on a layout no body page uses drops the footer by design (DTA deck, Oct 2026)."""
+    out = tmp_path / "closing.pptx"
+    _deck_with_footer_layout([0, 6, 6, 6, 1]).save(str(out))
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert not [f for f in findings if f.id == "style-drift" and "footer missing" in f.detail], findings
+
+
+def test_body_page_without_footer_is_still_drift(tmp_path, rules):
+    out = tmp_path / "drift.pptx"
+    _deck_with_footer_layout([0, 6, 1, 6, 6]).save(str(out))
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert [f for f in findings if f.id == "style-drift" and "footer missing on slides 3" in f.detail], findings

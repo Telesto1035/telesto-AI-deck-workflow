@@ -22,7 +22,7 @@ A convention earns a place here only if a reader outside the firm could apply it
 
 ## Enforceable conventions (3)
 
-A check may cite these. Each is decidable by reading the page against the rule, with no knowledge of the firm, and each rests on the same edit recurring across two shipped decks. A convention marked *(drafting craft)* shapes a draft and produces no review item, as in `language-rules.md`.
+A check may cite these. Each is decidable by reading the page against the rule, with no knowledge of the firm, and each rests on the same edit recurring across two shipped decks. A convention marked *(drafting craft)* shapes a draft and produces no review item, as in `language-rules.md`. Conventions 1 and 2 are drafting craft, so convention 3 is the only one a review may cite today; all three count toward the cap.
 
 ### Titles
 1. **A title states the finding, not the method, the label or the survey structure.** "Secondary analysis of competitor articles reveals whitespace for [topic]" became "On competitor websites, [topic] is scarcely covered by any of the six firms". [evidence: 2 decks, 2026-09] *(drafting craft)* [owner ruling, 2026-09-23: the CEO-approved proposals title structural pages such as the options page by what the page holds]

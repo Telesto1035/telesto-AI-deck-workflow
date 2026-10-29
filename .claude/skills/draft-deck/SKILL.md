@@ -42,7 +42,7 @@ There is no dot-dash step. The storyline comes from the inputs and you produce t
 - An **example deck or template**, mandatory for any file build (below).
 
 **Routing, in this order:**
-1. **Deck type**, from the eight in `references/deck-types.md`, confirmed by pop-up at Build entry (below). The type sets skeleton, density, exhibit types, length and register.
+1. **Deck type**, the nearest of the eight in `references/deck-types.md` plus what this deck does differently, confirmed by pop-up at Build entry (below). The type is a starting point for skeleton, density, exhibits, length and register; a deck that mixes two types takes what it needs from each, and deck-qc judges it by its purpose, not its type.
 2. **Paper and template**, from the example attachment: dark Telesto, light Telesto, or a client template. Paper sets colors, fonts and furniture only. It never sets density. The client's colors are read from that attachment (its theme and the fills it repeats), or from a screenshot of the palette when no deck exists; no skill file supplies them.
 3. **Page grammar**, chosen per page from the type's palette. Two grammars coexist in one deck. The **visual grammar** is stat rails, option cards, chevrons, timelines, recommendation bands. The **analytical grammar** is bar charts, heatmaps, paired bars, stacked scales, shape-built tables, quote pages, with source and n under every exhibit. A findings deck opens visual, runs analytical, closes visual. A proposal is visual throughout with an analytical page wherever one number needs proof.
 
@@ -59,7 +59,7 @@ Ask only what the inputs do not answer, in one round, and never ask for somethin
 ### Build
 Inputs in, deck out. A from-scratch build opens with one AskUserQuestion round of up to three questions, each skipped when the inputs already answer it:
 
-1. **Deck type.** Infer it from the prompt and the files and put the inference first with "(Recommended)" and one line of reasoning (page count asked for, data present, audience). Offer the two nearest types with what changes. "A 20-page deck for marketing from this survey file" reads as a findings report (10 to 25 pages, methodology, one or two pages per finding) against a minipack (8 to 11 pages, four findings) or a presentation (8 to 15 pages, larger exhibits, a decision page).
+1. **Deck type.** Infer the nearest type from the prompt and the files and put it first with "(Recommended)", one line of reasoning (page count asked for, data present, audience) and what this deck does differently from it ("a findings report, shorter, closing on open questions instead of recommendations"). Offer the next nearest type with what changes; the consultant can describe a mix in free text. "A 20-page deck for marketing from this survey file" reads as a findings report (10 to 25 pages, methodology, one or two pages per finding) against a minipack (8 to 11 pages, four findings) or a presentation (8 to 15 pages, larger exhibits, a decision page).
 2. **Audience.** When no audience brief is attached: "Run stakeholder-context first (Recommended), attach the roster or invite" against "use the audience as the prompt states it" and "skip". A named audience is what makes the exec summary order and the bands specific.
 3. **Materials.** Confirm the example deck or template found and the paper it implies, and the data form (raw xlsx or csv preferred, PDF accepted); ask for whichever is missing.
 
@@ -95,18 +95,18 @@ The shipped deck plus the last AI draft it came from. Diff title by title and pa
 
 ## Language rules (apply to every title, takeaway, and body line)
 
-Principles: `references/language-rules.md`; learned rules: `references/house-register.md`; client formatting and voice: the Deck style section of the client brief. The non-negotiables:
+Principles: `references/language-rules.md`; learned rules: `references/house-register.md`; client formatting and voice: the Deck style section of the client brief. These are drafting defaults: they shape a page that does not exist yet. On a page that exists, an item comes only through deck-qc, which reads each rule at its own strength. Rules 3 to 5 hold at every stage, because a breach there is a fault in the evidence and not in the style.
 
 1. **Action titles are full-sentence takeaways**, verb-led, specific, roughly 8–20 words. A reader who reads only the titles gets the whole argument (the "T" test).
 2. **No superlatives or vague intensifiers.** No "massive", "clear winner", "game-changing". If it matters, quantify it.
 3. **Never over-read a single data point.** One number supports "indicates" or "points to", not "proves" or "confirms". A subgroup finding stays a subgroup finding. Small-n cuts are labeled "directional only".
 4. **Never invent data.** No number, quote, or source appears unless the user supplied it or it is in the provided material. A missing number becomes `[PLACEHOLDER: source needed]`, never an estimate presented as fact. On proposals this extends to fees, durations, and value-at-stake inputs: `[PLACEHOLDER: builder input needed]`.
-5. **Every stat carries its provenance**: question number or source, denominator ("% of respondents selecting attribute · n=200"), and footnote. Quotes carry attribution (role, segment). Proposal value-at-stake math is labeled "Illustrative" with assumptions and their source stated.
+5. **Every stat carries its provenance**: question number or source, denominator ("% of respondents selecting attribute · n=200"), and footnote. Quotes carry attribution (role, segment). On a proposal a source line naming the survey or study and its year is enough (deck-qc, **The proposal standard**). Proposal value-at-stake math is labeled "Illustrative" with assumptions and their source stated.
 6. **Findings and implications stay separate.** A finding states what the data shows. An implication states what to do about it. Do not blend them into one sentence. On proposals, the equivalent discipline is deliverable vs. outcome: the artifact and the client result it enables stay paired but distinct.
 7. **Claims precedent (client paper).** Match the assertion level of the client's prior decks. If a proposed claim escalates beyond precedent, flag it: escalation needs account partner sign-off, not your judgment.
 8. **Craft:** active verbs, short sentences, no filler, quantified deltas over adjectives ("26pts higher", not "much higher").
 
-**Terminology.** The units are slides and pages. Never call them beats. Spell department and agency names in full on slides.
+**Terminology.** The units are slides and pages. Never call them beats. Define a department or agency abbreviation on first use, unless the client's own decks use it bare.
 
 ## Recommendation register
 
@@ -131,6 +131,8 @@ Every survey attribute, answer option, segment name and scale point appears on t
 Where the verbatim label does not fit the space, the fix is layout, not wording: widen the label column, allow a two-line label, reduce the number of rows shown and say so in the subtitle, or move the exhibit to a page with room. If none of those works, the shortened label is a SUGGEST to the consultant with the verbatim wording beside it, and the verbatim label goes in the footnote. In prose, quote the option in full the first time; a short form is allowed afterward on the same page only if the full label is on the page. Segment names follow the crosstab headers ("VP/Dir", "Other 4-year") or their evident expansion, never a new coinage.
 
 ## Footnote convention
+
+On a proposal, a source line naming the survey and its year is enough; the rest of this section is for findings work.
 
 - **Question-level citations use numbered superscripts.** Where a figure, quote set or exhibit draws on a survey question, a superscript ¹ ² ³ sits on the word, number, subtitle or column head it supports, and the footnote reads "1. Q21. How would you characterize the current state of AI adoption at your institution?" with the question wording verbatim, never paraphrased, then the survey name and n. Free-response quotes are cited the same way: the marker on the section subtitle, the footnote giving the question and that it was free response.
 - **"Source:" is for external material.** A website, a report, a different survey from the rest of the deck, a client dataset: "Source: Semrush API, US database, pulled 10 September 2026." A sister survey used beside the main one takes a numbered footnote that names it ("2. Q31. … 2026 Healthcare Intelligence Survey, n=200").
@@ -180,7 +182,6 @@ Every Build ends with two things alongside the file:
 - Build a file without an example deck or template to inherit from.
 - Escalate a claim beyond the client's precedent without flagging it.
 - Add decorative elements, icons, or styling flourishes as a substitute for content.
-- Scatter small or gray context text outside the four text homes, or set any text below 10pt outside a footnote.
 - Build narrator-dependent speaking slides (an image plus a phrase). Presentation decks are in scope; every page still passes the standalone test.
 - Guess at an ambiguous senior comment; the shorthand in `references/comment-shorthand.md` always goes to a pop-up with readings.
 - Answer a comment that calls for net-new research from its own knowledge, or fill the gap with a placeholder on the slide. It is held and scoped.
