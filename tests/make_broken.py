@@ -65,13 +65,17 @@ PLANTED_BLOCK_IDS = {
 }
 PLANTED_WARN_IDS = {
     "speaker-notes",  # warn since 1.4.0: shown, never stripped, some clients present from them
-    "shape-overlap",
     "word-count",
-    "label-in-bar",
+    "footnote-sequence",  # the planted skip warns since 1.6.0; its orphan marker still blocks
     "abbreviation-list",
-    "empty-textbox",
     "off-canvas",
     "hidden-slides",
+}
+# info since 1.6.0: each fired on every approved deck of both clients; the render is the real check
+PLANTED_INFO_IDS = {
+    "shape-overlap",
+    "label-in-bar",
+    "empty-textbox",
 }
 PLANTED_WITH_NAME_RULES = {"stakeholder-name"}  # warn since 1.4.0: the author confirms the name belongs on the page
 PLANTED_MULTISLIDE_WARN_IDS = {"draft-stamp"}

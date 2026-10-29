@@ -47,6 +47,7 @@ def rules() -> dict:
 def name_rules(rules) -> dict:
     r = json.loads(json.dumps(rules))
     r["client_names"] = [make_broken.STAKEHOLDER]
+    r["expand"] = {"State": "Department of State"}  # per engagement; the shipped default is empty
     return r
 
 
@@ -107,6 +108,7 @@ def test_broken_fixture_finds_every_planted_fault(src, broken_dir, rules, name_r
     new_warns = ids(findings, "warn") - ids(clean_findings, "warn")
     assert expected_warns <= ids(findings, "warn"), sorted(ids(findings, "warn"))
     assert new_warns <= expected_warns, "unplanted warn(s): %s" % sorted(new_warns - expected_warns)
+    assert make_broken.PLANTED_INFO_IDS <= ids(findings, "info"), sorted(ids(findings, "info"))
 
     # each slide-level planted fault sits on slide 1, where make_broken put it
     for fid in ("font-size-floor", "placeholders", "totals-sum", "chart-cache-label",
@@ -151,6 +153,8 @@ def test_broken_fixture_finds_every_planted_fault(src, broken_dir, rules, name_r
     fs = " | ".join(f.detail for f in by_id(findings, "footnote-sequence"))
     assert "marker(s) 4 have no footnote" in fs
     assert "skips 3" in fs
+    # a skipped number alone is cosmetic; the orphan marker and unmarked footnote are what block
+    assert all(f.severity == "warn" for f in by_id(findings, "footnote-sequence") if "skips" in f.detail)
     assert "footnote(s) 3 defined but never marked" in fs
 
     # abbreviation and stakeholder

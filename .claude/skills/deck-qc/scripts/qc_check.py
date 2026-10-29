@@ -661,7 +661,7 @@ def _text_colour_is_grey(val: str) -> bool:
 
 def check_grey_text(d: Deck):
     """Grey text outside a footnote home. Muted detail text is the other AI habit that defeats the scan;
-    a few runs are listed, above the threshold the deck is blocked."""
+    a few runs are listed as info, above the threshold they warn; grey never blocks."""
     threshold = int(d.rules.get("grey_text_threshold", 4))
     palette = d.allowed_palette()
     found = []
@@ -933,7 +933,10 @@ def _is_sample_field(txt: str, start: int, end: int) -> bool:
 
 
 def check_placeholders(d: Deck):
+    """A draft is told to leave [PLACEHOLDER] tokens where a figure is missing (draft-deck rule 4), so a token
+    warns mid-session and blocks only under --handback, where a placeholder in the final version is the fault."""
     pats = [re.compile(p) for p in d.rules.get("placeholder_patterns", [])]
+    severity = "block" if getattr(d, "handback", False) else "warn"
     for sno in d.shapes_by_slide:
         for si, txt in d.slide_texts(sno):
             hits, fields = [], []
@@ -942,7 +945,7 @@ def check_placeholders(d: Deck):
                     (fields if _is_sample_field(txt, m.start(), m.end()) else hits).append(m.group(0))
             if hits:
                 d.add(
-                    id="placeholders", severity="block", slide=sno, shape=si.name, shape_id=si.shape_id,
+                    id="placeholders", severity=severity, slide=sno, shape=si.name, shape_id=si.shape_id,
                     text=txt.strip()[:120], detail="leftover token(s): %s" % ", ".join(sorted(set(hits))),
                     fix="reword",
                 )
@@ -1028,8 +1031,9 @@ def check_shape_overlap(d: Deck):
                 if key in seen:
                     continue
                 seen.add(key)
+                # info: 36 to 39 per approved Huron deck; the render decides whether the collision is real
                 d.add(
-                    id="shape-overlap", severity="warn", slide=sno, shape=a.name, shape_id=a.shape_id,
+                    id="shape-overlap", severity="info", slide=sno, shape=a.name, shape_id=a.shape_id,
                     text=(d.shape_text(a).strip()[:50] or a.name) + "  x  " + (d.shape_text(b).strip()[:50] or b.name),
                     detail="'%s' and '%s' overlap by %.0f%% of the smaller shape; confirm in the render" % (
                         a.name, b.name, 100 * (ix * iy) / smaller
@@ -1046,7 +1050,7 @@ def check_word_count(d: Deck):
     """Title + body + chart labels per page against the rules' thresholds; footnotes counted apart; appendix exempt."""
     # null in a profile means the page-density rule does not apply to that deck type (a one-slide brief)
     warn = d.rules.get("words_warn", 280)
-    block = d.rules.get("words_block", 275)
+    block = d.rules.get("words_block")
     fn_warn = d.rules.get("footnote_words_warn", 100)
     if warn is None and fn_warn is None:
         return
@@ -1163,8 +1167,9 @@ def check_empty_textbox(d: Deck):
                 continue
             if not visible(d.shape_text(si)):
                 kind = "placeholder" if si.shape.is_placeholder else "text box"
+                # info: every approved deck of both clients carries a few; harmless unless the render shows one
                 d.add(
-                    id="empty-textbox", severity="warn", slide=sno, shape=si.name, shape_id=si.shape_id,
+                    id="empty-textbox", severity="info", slide=sno, shape=si.name, shape_id=si.shape_id,
                     text="", detail="%s with no visible characters" % kind, fix="delete",
                 )
 
@@ -1275,8 +1280,9 @@ def check_overflow_estimate(d: Deck):
                 lines = max(1, math.ceil(len(text) * char_w / inner_w)) if wrap else 1
                 total += lines * size * factor * EMU_PER_PT
             if total > inner_h * 1.20 and total - inner_h > 6 * EMU_PER_PT:
+                # info: an estimate that fires on every approved deck; the render is the real overflow check
                 d.add(
-                    id="overflow-estimate", severity="warn", slide=sno, shape=si.name, shape_id=si.shape_id,
+                    id="overflow-estimate", severity="info", slide=sno, shape=si.name, shape_id=si.shape_id,
                     text=d.shape_text(si).strip()[:80],
                     detail="estimated text height %.0fpt exceeds frame %.0fpt with no autofit; confirm in the render" % (
                         total / EMU_PER_PT, inner_h / EMU_PER_PT
@@ -1398,8 +1404,9 @@ def check_footnote_sequence(d: Deck):
                 fix="reword",
             )
         if gaps:
+            # a skipped number is cosmetic once every marker has its footnote; orphans block above
             d.add(
-                id="footnote-sequence", severity="block", slide=sno, shape=shape_name, shape_id=shape_id,
+                id="footnote-sequence", severity="warn", slide=sno, shape=shape_name, shape_id=shape_id,
                 text="markers %s" % ", ".join(str(n) for n in sorted(mset)),
                 detail="marker sequence skips %s" % ", ".join(str(n) for n in gaps),
                 fix="reword",
@@ -1637,8 +1644,9 @@ def check_charts(d: Deck):
                     positions.add(pos.get("val"))
             is_bar = cs.find(".//" + q("c:barChart")) is not None or cs.find(".//" + q("c:bar3DChart")) is not None
             if positions and is_bar:
+                # info: a house drafting preference that every approved deck of both clients departs from
                 d.add(
-                    id="label-in-bar", severity="warn", slide=sno, shape=si.name, shape_id=si.shape_id,
+                    id="label-in-bar", severity="info", slide=sno, shape=si.name, shape_id=si.shape_id,
                     text="", detail="data labels positioned inside bar segments (%s); house style puts labels outside" % ", ".join(sorted(positions)),
                     fix="none",
                 )

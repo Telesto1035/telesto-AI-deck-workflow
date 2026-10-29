@@ -35,7 +35,7 @@ python scripts/qc_check.py DECK.pptx --fix-safe     # settled fixes only, writes
 python scripts/pptx_comments.py DECK.pptx --open-only  # who asked for what, on which slide
 ```
 
-Exit 1 means blocking findings; fix them and run again until it exits 0. The gate is deterministic and owns hygiene and mechanics: generator fingerprints, text under 10pt outside footnotes, placeholders, footnote markers without footnotes, totals that do not sum, chart labels against cached data, reviewer notes, empty register labels, element consistency. What it blocks is not re-argued here; thresholds live in `scripts/qc_rules.json`. Read the summary and the BLOCK lines; WARN and INFO lines are for the fix pass. The `element-consistency` warning names a color that an element class carries on only one or two pages while the rest of the deck uses another; two or three line colors in a deck are normal, a fourth on one page is the flag. Fix by copying the style from a sibling page. Pages after a divider titled Appendix, Crosstabs or Backup are data pages: no style check and no fix applies to them, only hygiene.
+Exit 1 means blocking findings; fix them and run again until it exits 0. The gate is deterministic and owns hygiene and mechanics. It blocks on generator fingerprints, text under 10pt outside footnotes (8pt in them), footnote markers without footnotes and footnotes without markers, totals that do not sum, chart labels against cached data, reviewer notes and empty register labels. Placeholders and document properties warn during a session and block under `--handback`, because a draft is told to leave `[PLACEHOLDER]` where a figure is missing. What it blocks is not re-argued here; thresholds live in `scripts/qc_rules.json`. Read the summary and the BLOCK lines; WARN lines are for the fix pass. INFO lines (shape overlap, estimated overflow, empty boxes, labels inside bars) fire on approved decks too: fix one only when the render shows the fault. The `element-consistency` warning names a color that an element class carries on only one or two pages while the rest of the deck uses another; two or three line colors in a deck are normal, a fourth on one page is the flag. Fix by copying the style from a sibling page. Pages after a divider titled Appendix, Crosstabs or Backup are data pages: no style check and no fix applies to them, only hygiene.
 
 **Document properties are a hand-back condition, not a draft defect.** The author field, title, TotalTime and custom properties warn during a session and block only under `--handback`, because PowerPoint restamps them on every save and blocking on them interrupts the consultant's own editing over something that is not yet wrong. The gate never writes them: **PowerPoint's Document Inspector owns that scrub** (File > Info > Check for Issues > Inspect Document), run by a human at stage 5, and the gate's job is to verify it was run. Generator fingerprints are the exception and keep blocking, because Inspector leaves those in place.
 
@@ -45,7 +45,7 @@ Exit 1 means blocking findings; fix them and run again until it exits 0. The gat
 
 **4. Resolution.** SUGGEST items go to the consultant as pop-ups, one page per question, in slide order. Rules in `references/resolving.md`. Apply the answers as one iteration (`references/applying-fixes.md`), re-render the touched pages, re-run the number ledger, report the delta.
 
-**5. Hand-back.** Run PowerPoint's Document Inspector on the file, then `qc_check.py DECK.pptx --handback` to confirm nothing was missed; document properties block here and nowhere else. Append the round to the engagement's revision ledger (in the engagement folder; ask where before creating one), attach the file, state what is still open.
+**5. Hand-back.** Run PowerPoint's Document Inspector on the file, then `qc_check.py DECK.pptx --handback` to confirm nothing was missed; document properties and placeholders block here and nowhere else. Append the round to the engagement's revision ledger (in the engagement folder; ask where before creating one), attach the file, state what is still open.
 
 Token discipline throughout: never read a whole crosstab PDF or transcript into context (extract once to the scratchpad and search it for the cited questions); extract the deck's text once per iteration and diff it against the last extract; patch the saved file with a short script per iteration rather than regenerating a build script.
 
@@ -99,14 +99,14 @@ House convention, not error. Do not spend the consultant's attention on these.
 
 ## Layer 1: mechanical checks
 
-Each finding names the page, quotes the text, states the fix. Group repeated instances into one item with a page list.
+Each finding names the page, quotes the text, states the fix. Group repeated instances into one item with a page list. The gate checks the parts of this list that code can decide (footnote numbering, totals, chart caches, placeholders, leftovers, font sizes, overflow estimates, style drift). Everything else here needs reading: numbers across pages, summary against body, sources against the attached data, attribute wording, referents and terms. The evaluator runs those parts, because the gate cannot.
 
 - **Numbers reconcile.** Same metric with different values across pages; exec summary against body; chart cache against label or title; components against a stated total (one point of rounding allowed, said so); a figure absent from the source; a pool quoted as a total on one page and an annual rate on another.
 - **Sources and footnotes.** An exhibit with no source or n where required; footnote numbers out of sequence, duplicated or orphaned; a definition with no marker; a cross-reference to a page that does not exist; one source written five ways; a question cited without its wording (not on a proposal); two questions on a page without each labelled.
 - **Attribute wording.** With the questionnaire or crosstab attached, every chart label, table row, scale point and option quoted in prose is checked against the source wording. Where nothing on the page carries the source wording, the FIX is the footnote, not a rewrite of the label. A rename, including a short form that merges two source categories, is SUGGEST under draft-deck's `label` rule (SKILL.md, Revise, "Data labels and survey wording").
-- **Referents and terms.** A pronoun or "this" with no antecedent on the page; an acronym before its definition; the same thing named two ways; an agency abbreviated; an opinion about a named person on a slide (a name alone is not a defect); one count word used for different sets.
+- **Referents and terms.** A pronoun or "this" with no antecedent on the page; an acronym or agency abbreviation used before it is defined (an abbreviation the deck defines once, or the client's own usage, is fine); the same thing named two ways; an opinion about a named person on a slide (a name alone is not a defect); one count word used for different sets.
 - **Leftovers.** Placeholders, TBD, XX, template text, a DRAFT stamp inconsistent with the version, and anything the gate's hygiene pass reports.
-- **Text and shape mechanics.** Overflow or cut-off; a center-anchored box riding over its heading; empty boxes; shapes off-canvas; legend swatches with no label; runs of spaces used as layout; a badge whose own text wraps; more than one font size inside a table; numeric labels inside bar segments; hanging one- or two-word last lines.
+- **Text and shape mechanics.** Overflow or cut-off; a center-anchored box riding over its heading; shapes off-canvas; legend swatches with no label; runs of spaces used as layout; a badge whose own text wraps; more than one font size inside a table. Raised only when the render shows them: empty boxes, labels inside bar segments, hanging one- or two-word last lines. Approved decks carry all three.
 - **Style drift between pages.** Title font or size changing mid-deck; footer or page number missing on some pages; colors outside the palette; a different band treatment on one page; sibling exhibits at different sizes; the gate's element-consistency list.
 
 ## Layer 2: logic and language
@@ -129,13 +129,13 @@ Four dimensions, 1 to 5. The score is the summary; the lists are the product. Va
 
 | Score | Clarity of outcome | Logical flow | Value at stake | Technical accuracy |
 |---|---|---|---|---|
-| 5 | One takeaway; the reader can say what to decide; a closing decision page where the profile needs one | Title chain reads as one argument; summary and body map one to one | Stated; any figure sourced with assumptions shown | Every figure traced; totals reconcile; footnotes complete |
+| 5 | One takeaway; the reader can say what to decide | Title chain reads as one argument; summary and body map one to one | Stated; any figure sourced with assumptions shown | Every figure traced; totals reconcile; footnotes complete |
 | 4 | Takeaway clear; the decision needs one body page to state | One soft transition or one page out of order | Stated; a figure's assumptions partly shown | One unsourced figure or one footnote gap |
-| 3 | Takeaway inferred from several pages; no decision page where required | One missing page or one contradiction | Stated, but a figure has no source or assumptions | Two to four unsourced figures or one reconciliation failure |
+| 3 | Takeaway inferred from several pages | One missing page or one contradiction | Stated, but a figure has no source or assumptions | Two to four unsourced figures or one reconciliation failure |
 | 2 | One or more titles contradict their pages; the reader cannot say what to decide | Two or more contradictions or missing pages | Gestured at; the reader cannot say what the client gains | Multiple reconciliation failures; placeholders |
-| 1 | No discernible takeaway | Pages do not connect | Absent where required | Figures cannot be traced |
+| 1 | No discernible takeaway | Pages do not connect | Absent | Figures cannot be traced |
 
-Technical accuracy below 3 goes in the report header regardless of the overall. An unsourced figure is one with no source on the page. A figure whose named source was not attached is a QUESTION and does not lower the score; only a confirmed mismatch or a placeholder does. An anchor clause that names an element the profile does not carry (an exec summary, footnotes, a decision page) is skipped, not scored against, so a short deck is not marked down for being short. A "missing page" in Logical flow is a gap in the argument the titles make, not a profile element the deck leaves out (**Profiles by deck type**).
+Technical accuracy below 3 goes in the report header regardless of the overall. An unsourced figure is one with no source on the page. A figure whose named source was not attached is a QUESTION and does not lower the score; only a confirmed mismatch or a placeholder does. No profile element is required: an anchor clause that names an element the deck does not carry (an exec summary, footnotes, a decision page) is skipped, not scored against, so a short deck is not marked down for being short. A missing decision page is at most a QUESTION. A "missing page" in Logical flow is a gap in the argument the titles make, not a profile element the deck leaves out (**Profiles by deck type**).
 
 **Language, and why it carries no score.** Voice is not scored: it differs too much between competent writers, and a standard that needs an owner adjudicating it every week cannot survive being shared. The checks that remain are the ones any professional reader applies the same way.
 
@@ -159,7 +159,7 @@ Full rules in the repo's `GOVERNANCE.md`. In short: read only the files attached
 
 ## What this skill never does
 
-- Block a deck or refuse to hand it back.
+- Block a deck on judgment, or refuse to hand it back. Only the code gate blocks, and only on the mechanical faults it lists.
 - Guess which of two disagreeing numbers is correct, or what a client stakeholder cares about.
 - Rewrite a title, recommendation or exec-summary line without approval.
 - Change a number during a language fix.

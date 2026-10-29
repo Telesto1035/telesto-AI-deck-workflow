@@ -95,18 +95,18 @@ The shipped deck plus the last AI draft it came from. Diff title by title and pa
 
 ## Language rules (apply to every title, takeaway, and body line)
 
-Principles: `references/language-rules.md`; learned rules: `references/house-register.md`; client formatting and voice: the Deck style section of the client brief. The non-negotiables:
+Principles: `references/language-rules.md`; learned rules: `references/house-register.md`; client formatting and voice: the Deck style section of the client brief. These are drafting defaults: they shape a page that does not exist yet. On a page that exists, an item comes only through deck-qc, which reads each rule at its own strength. Rules 3 to 5 hold at every stage, because a breach there is a fault in the evidence and not in the style.
 
 1. **Action titles are full-sentence takeaways**, verb-led, specific, roughly 8–20 words. A reader who reads only the titles gets the whole argument (the "T" test).
 2. **No superlatives or vague intensifiers.** No "massive", "clear winner", "game-changing". If it matters, quantify it.
 3. **Never over-read a single data point.** One number supports "indicates" or "points to", not "proves" or "confirms". A subgroup finding stays a subgroup finding. Small-n cuts are labeled "directional only".
 4. **Never invent data.** No number, quote, or source appears unless the user supplied it or it is in the provided material. A missing number becomes `[PLACEHOLDER: source needed]`, never an estimate presented as fact. On proposals this extends to fees, durations, and value-at-stake inputs: `[PLACEHOLDER: builder input needed]`.
-5. **Every stat carries its provenance**: question number or source, denominator ("% of respondents selecting attribute · n=200"), and footnote. Quotes carry attribution (role, segment). Proposal value-at-stake math is labeled "Illustrative" with assumptions and their source stated.
+5. **Every stat carries its provenance**: question number or source, denominator ("% of respondents selecting attribute · n=200"), and footnote. Quotes carry attribution (role, segment). On a proposal a source line naming the survey or study and its year is enough (deck-qc, **The proposal standard**). Proposal value-at-stake math is labeled "Illustrative" with assumptions and their source stated.
 6. **Findings and implications stay separate.** A finding states what the data shows. An implication states what to do about it. Do not blend them into one sentence. On proposals, the equivalent discipline is deliverable vs. outcome: the artifact and the client result it enables stay paired but distinct.
 7. **Claims precedent (client paper).** Match the assertion level of the client's prior decks. If a proposed claim escalates beyond precedent, flag it: escalation needs account partner sign-off, not your judgment.
 8. **Craft:** active verbs, short sentences, no filler, quantified deltas over adjectives ("26pts higher", not "much higher").
 
-**Terminology.** The units are slides and pages. Never call them beats. Spell department and agency names in full on slides.
+**Terminology.** The units are slides and pages. Never call them beats. Define a department or agency abbreviation on first use, unless the client's own decks use it bare.
 
 ## Recommendation register
 
@@ -131,6 +131,8 @@ Every survey attribute, answer option, segment name and scale point appears on t
 Where the verbatim label does not fit the space, the fix is layout, not wording: widen the label column, allow a two-line label, reduce the number of rows shown and say so in the subtitle, or move the exhibit to a page with room. If none of those works, the shortened label is a SUGGEST to the consultant with the verbatim wording beside it, and the verbatim label goes in the footnote. In prose, quote the option in full the first time; a short form is allowed afterward on the same page only if the full label is on the page. Segment names follow the crosstab headers ("VP/Dir", "Other 4-year") or their evident expansion, never a new coinage.
 
 ## Footnote convention
+
+On a proposal, a source line naming the survey and its year is enough; the rest of this section is for findings work.
 
 - **Question-level citations use numbered superscripts.** Where a figure, quote set or exhibit draws on a survey question, a superscript ¹ ² ³ sits on the word, number, subtitle or column head it supports, and the footnote reads "1. Q21. How would you characterize the current state of AI adoption at your institution?" with the question wording verbatim, never paraphrased, then the survey name and n. Free-response quotes are cited the same way: the marker on the section subtitle, the footnote giving the question and that it was free response.
 - **"Source:" is for external material.** A website, a report, a different survey from the rest of the deck, a client dataset: "Source: Semrush API, US database, pulled 10 September 2026." A sister survey used beside the main one takes a numbered footnote that names it ("2. Q31. … 2026 Healthcare Intelligence Survey, n=200").
