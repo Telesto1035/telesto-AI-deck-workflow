@@ -149,7 +149,7 @@
   "_palette_note": "palette is the house palette. A client's colors are never listed here: the gate reads them from the deck's own theme part (clrScheme and custClrLst) and treats a fill that recurs, within palette_tolerance, on palette_recurrence_slides or more slides as the deck's palette, so a brand color applied by hand is not drift. Only colors on fewer slides are reported.",
   "_expand_note": "Per engagement. A single capitalised token at the start of a paragraph (a chart label, a sentence opener) is never flagged. On the shipped federal deck the consultant kept HHS, DoD, VA, DHA and CMS as written and spelled out only DOE and, in one quote attribution, DHA; a default list of federal agencies produced 10 ignored warnings, and the short list that replaced it was one engagement's terms and fired on every deck of another client, so the shipped default is empty. Set it in a local copy for an engagement that asks for spelled-out names.",
   "grey_text_threshold": 4,
-  "_grey_text_note": "Grey text outside footnotes is listed for judgment and never blocks; above the threshold it warns. Rationale: title, body or footnote should carry everything a reader needs in a five-second scan; recurring small grey detail text is the AI habit that works against it.",
+  "_grey_text_note": "Grey text outside footnotes is listed as info for judgment and never blocks or warns (chart detail lines are grey on approved decks of both clients); the threshold is shown in the detail. Rationale: title, body or footnote should carry everything a reader needs in a five-second scan; recurring small grey detail text is the AI habit that works against it.",
   "words_warn": 280,
   "words_block": null,
   "footnote_words_warn": 100,

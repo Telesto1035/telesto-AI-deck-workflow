@@ -14,7 +14,7 @@ The report is for reading. The resolution is a set of choices, collected with th
 
 ## Titles, recommendations and exec-summary lines are always SUGGEST
 
-By this stage those lines are human-written. Rewriting them pulls the deck back toward AI tone. So never apply a change to a title, a recommendation band, an exec-summary line or a takeaway as a settled fix, even when it is plainly wrong. Put it in a question, quote the current line and the proposed line in full, and let the consultant choose, edit or decline. The only exception is a factual error inside one of those lines that the source settles, such as a wrong figure or a misspelled agency: change that and nothing else, and say which words you touched.
+By this stage those lines are human-written. Rewriting them pulls the deck back toward AI tone. So never apply a change to a title, a recommendation band, an exec-summary line or a takeaway as a settled fix, even when it is plainly wrong. Put it in a question, quote the current line and the proposed line in full, and let the consultant choose, edit or decline. The only exception is a factual error inside one of those lines that the deck itself or the source settles, such as a wrong figure, a page reference to the wrong page or a misspelled agency: change that and nothing else, and say which words you touched.
 
 ## One question per slide, not one per finding
 

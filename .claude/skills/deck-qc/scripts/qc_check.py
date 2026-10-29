@@ -661,7 +661,7 @@ def _text_colour_is_grey(val: str) -> bool:
 
 def check_grey_text(d: Deck):
     """Grey text outside a footnote home. Muted detail text is the other AI habit that defeats the scan;
-    a few runs are listed as info, above the threshold they warn; grey never blocks."""
+    runs are listed as info for judgment; grey never blocks or warns."""
     threshold = int(d.rules.get("grey_text_threshold", 4))
     palette = d.allowed_palette()
     found = []
@@ -688,8 +688,9 @@ def check_grey_text(d: Deck):
     if not found:
         return
     total = sum(len(h) for _s, _si, h in found)
-    # grey is reported for the skill's judgment; it never blocks
-    severity = "warn" if total > threshold else "info"
+    # grey is reported for the skill's judgment and never blocks or warns: chart detail lines are grey on approved
+    # decks of both clients (15 runs on one, 9 on another); total and threshold stay in the detail for the reader
+    severity = "info"
     for sno, si, hits in found:
         d.add(
             id="gray-text",
@@ -1151,7 +1152,8 @@ def check_element_consistency(d: Deck):
                 continue
             plist = ", ".join(str(x) for x in sorted(pages))
             d.add(
-                id="element-consistency", severity="warn", slide=min(pages), shape=cls, shape_id=None,
+                # info: 3 to 6 per approved deck across both clients; the render step compares pages side by side
+                id="element-consistency", severity="info", slide=min(pages), shape=cls, shape_id=None,
                 text="%s on pages %s" % (val, plist),
                 detail="%s is %s on most pages but %s on pages %s; match the deck" % (cls, majority, val, plist),
                 fix="none",

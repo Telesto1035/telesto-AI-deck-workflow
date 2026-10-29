@@ -53,7 +53,7 @@ Two registers, kept separate:
 
 A finding never smuggles in a recommendation; an implication never introduces new data.
 
-- **A committed next step says who carries it and by when.** The owner may be a person, a team or department, or a party (Telesto, the client). Steps put to the room for discussion, marked as such, need neither: the room settles them. On a proposal the path needs dates only: it is drafted before the work is scoped, and owners and the order of steps are settled with the client.
+- **A committed next step says who carries it and by when.** *(drafting craft)* The owner may be a person, a team or department, or a party (Telesto, the client). Steps put to the room for discussion, marked as such, need neither: the room settles them. On a proposal the path needs dates only: it is drafted before the work is scoped, and owners and the order of steps are settled with the client.
 
 ## Craft
 
