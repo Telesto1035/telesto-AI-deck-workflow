@@ -120,6 +120,7 @@ Recommendations are read by Fortune 500 executives who decide for themselves. Pr
 
 - **Nothing below 10pt except a footnote.** Body text, chart labels, axis labels, table cells, stat-rail captions, eyebrows, recommendation bands, source lines: all 10pt or larger. The footnote home is the only place a smaller size is allowed, and only when the footnote would otherwise not fit. If text needs to be smaller than 10pt to fit, the page carries too much: cut, split the page, or footnote it.
 - **Gray detail text is an exception, not a style.** The test for every page: the title, the body text or the footnote carries everything a reader needs in a five-second scan. Small gray text added to squeeze in more detail is the AI habit that defeats that scan; the gate lists gray runs outside the palette for the author and never blocks on them.
+- **10pt is the floor, not the target.** Body text is 12pt by default and 14pt where a page carries little text; 11pt is the lowest size for dense cards, option cards, tables and chart labels. The paper may set its own scale (Telesto dark paper in `references/build-rules.md`; a client's in the Deck style section of the client brief).
 - **Few sizes per page.** Title, one body size, one footnote size is the norm. One font size within any table.
 
 ## Attribute labels are verbatim
