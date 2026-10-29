@@ -4,6 +4,7 @@
   "footnote_floor_pt": 8,
   "footnote_band": 0.12,
   "footnote_name_regex": "foot|source|note",
+  "footnote_text_regex": "(?:sources?|notes?)\\s*:",
   "palette": [
     "282828",
     "333333",
@@ -61,7 +62,8 @@
     "\\bXX+\\b",
     "(?i)lorem ipsum",
     "Click to add",
-    "\\{\\{.*?\\}\\}"
+    "\\{\\{.*?\\}\\}",
+    "(?i)\\[[~$]?\\s*X+\\b[^\\]]*\\]"
   ],
   "profiles": {
     "findings": {

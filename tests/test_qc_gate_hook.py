@@ -21,6 +21,9 @@ import make_broken  # noqa: E402
 
 FIXTURES = HERE / "fixtures"
 CLEAN = FIXTURES / "Telesto_Standard_v2_P3-P5.pptx"
+# the line a transcript carries when the session invoked draft-deck through the Skill tool
+SKILL_CALL = json.dumps({"type": "assistant", "message": {"content": [
+    {"type": "tool_use", "name": "Skill", "input": {"skill": "telesto-deck-workflow:draft-deck"}}]}})
 
 
 @pytest.fixture
@@ -28,9 +31,11 @@ def workdir(tmp_path, monkeypatch):
     """A fake project dir with a transcript whose first timestamp predates the deck write."""
     monkeypatch.setenv("QC_GATE_STATE_DIR", str(tmp_path / "state"))
     monkeypatch.delenv("QC_GATE_RENDER", raising=False)  # the render step is PowerPoint COM; tested by hand, not here
+    monkeypatch.delenv("QC_GATE_ALWAYS", raising=False)
     (tmp_path / "state").mkdir()
     transcript = tmp_path / "transcript.jsonl"
-    transcript.write_text(json.dumps({"timestamp": "2020-01-01T00:00:00Z", "type": "user"}) + "\n", encoding="utf-8")
+    transcript.write_text(json.dumps({"timestamp": "2020-01-01T00:00:00Z", "type": "user"}) + "\n" + SKILL_CALL + "\n",
+                          encoding="utf-8")
     return tmp_path
 
 
@@ -104,12 +109,45 @@ def test_transcript_path_is_picked_up_outside_cwd(workdir, tmp_path_factory):
     transcript = workdir / "transcript.jsonl"
     transcript.write_text(
         json.dumps({"timestamp": "2020-01-01T00:00:00Z"}) + "\n"
+        + SKILL_CALL + "\n"
         + json.dumps({"tool_input": {"file_path": str(elsewhere / "deck.pptx")}}) + "\n",
         encoding="utf-8",
     )
     out = []
     assert qc_gate_hook.run(payload(workdir), workdir, out.append) == 2
     assert "deck.pptx" in "\n".join(out)
+
+
+# --- workflow scoping: the plugin installs the hook org-wide, so only deck-workflow sessions are gated ---
+
+
+def _transcript(workdir: Path, *lines: str) -> None:
+    (workdir / "transcript.jsonl").write_text(
+        "\n".join([json.dumps({"timestamp": "2020-01-01T00:00:00Z", "type": "user"}), *lines]) + "\n", encoding="utf-8")
+
+
+def test_session_without_the_workflow_is_not_gated(workdir):
+    _transcript(workdir, json.dumps({"type": "assistant", "message": {"content": [
+        {"type": "tool_use", "name": "Skill", "input": {"skill": "anthropic-skills:pptx"}}]}}))
+    make_broken.make_broken(CLEAN, workdir / "out.pptx")
+    out = []
+    assert qc_gate_hook.run(payload(workdir), workdir, out.append) == 0
+    assert out == []
+
+
+def test_slash_command_counts_as_the_workflow(workdir):
+    _transcript(workdir, json.dumps({"type": "user", "message": {
+        "content": "<command-name>/telesto-deck-workflow:deck-qc</command-name>"}}))
+    make_broken.make_broken(CLEAN, workdir / "out.pptx")
+    assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None) == 2
+
+
+def test_gate_always_overrides_the_scoping(workdir, monkeypatch):
+    _transcript(workdir)
+    make_broken.make_broken(CLEAN, workdir / "out.pptx")
+    assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None) == 0
+    monkeypatch.setenv("QC_GATE_ALWAYS", "1")
+    assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None) == 2
 
 
 def test_old_files_are_not_gated(workdir):
@@ -236,3 +274,22 @@ def test_missing_python_pptx_is_said_to_the_user(workdir, capsys):
     assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None, have_pptx=False) == 0
     msg = json.loads(capsys.readouterr().out)["systemMessage"]
     assert "deck.pptx" in msg and qc_gate_hook.INSTALL_LINE in msg
+
+
+def test_only_the_newest_iteration_of_a_deck_is_gated(workdir):
+    """The upload is an attachment the session may not write back to; its iterations are the session's."""
+    up = workdir / "uploads"
+    up.mkdir()
+    make_broken.make_broken(CLEAN, up / "Proposal_v2.pptx")
+    later = time.time() + 5
+    shutil.copy(CLEAN, workdir / "Proposal_v2_1.pptx")
+    os.utime(workdir / "Proposal_v2_1.pptx", (later, later))
+    out = []
+    assert qc_gate_hook.run(payload(workdir), workdir, out.append) == 0, out
+    assert any("Proposal_v2.pptx" in line and "later iteration" in line for line in out)
+
+
+def test_distinct_decks_are_each_gated(workdir):
+    make_broken.make_broken(CLEAN, workdir / "Findings_v1.pptx")
+    shutil.copy(CLEAN, workdir / "Proposal_v1.pptx")
+    assert qc_gate_hook.run(payload(workdir), workdir, lambda s: None) == 2

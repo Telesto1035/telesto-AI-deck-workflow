@@ -5,6 +5,9 @@ Wired in .claude/settings.json. Claude Code passes a JSON payload on stdin:
     {"session_id": ..., "transcript_path": ..., "cwd": ..., "hook_event_name": "Stop", "stop_hook_active": bool}
 
 Behaviour:
+  * Only a session that used this workflow is gated: the transcript shows draft-deck or deck-qc invoked, or
+    qc_check.py run. The plugin installs the hook for everyone, so a teammate building an unrelated PPTX with
+    another skill is not held to Telesto's house rules. QC_GATE_ALWAYS=1 gates every session regardless.
   * Find PPTX files THIS SESSION WROTE: a path mentioned in the transcript, or any *.pptx under cwd, but in
     both cases only when its mtime is at or after the session start (first transcript timestamp, the floor
     for a first run). Naming a deck is not touching it — a deck the conversation read, quoted or discussed
@@ -17,6 +20,9 @@ Behaviour:
     of --fix-safe), any `worktrees` folder (another agent's session owns those files), and templates
     (*template*.pptx, *.potx, or a file with no slide parts), which are specimen layouts rather than decks.
     Every skip is logged, never silent.
+  * One deck per iteration chain: `Deck.pptx`, `Deck_v2.pptx` and `Deck_v2_3.pptx` share a chain, and only the
+    newest written this session is gated. The original upload is an attachment GOVERNANCE forbids writing
+    back to, so blocking on it stops the session over a file it may not fix.
   * Run qc_check on each. If any `block` finding exists, print the findings and exit 2 so the turn cannot end.
   * Keep a counter per session in a state file. After 3 blocked stops, exit 0 and print
     "gate cap reached, handing off with findings attached" so the loop terminates.
@@ -70,6 +76,17 @@ def exclude_parts() -> tuple:
 def exclude_dirs() -> set:
     """Folder names pruned before descending: the single-segment entries of the exclusion list, plus .git."""
     return {".git"} | {p.strip("/") for p in exclude_parts() if "/" not in p and not p.endswith(".pptx")}
+# A Skill tool call or slash command naming draft-deck or deck-qc (plugin-namespaced or not), or a qc_check run.
+WORKFLOW_RE = re.compile(
+    r'"skill"\s*:\s*"(?:[\w-]+:)?(?:draft-deck|deck-qc)"|<command-name>/?(?:[\w-]+:)?(?:draft-deck|deck-qc)\b|qc_check\.py'
+)
+
+
+def workflow_session(text: str | None) -> bool:
+    """True when this session used the deck workflow, or QC_GATE_ALWAYS=1 is set."""
+    return os.environ.get("QC_GATE_ALWAYS") == "1" or bool(WORKFLOW_RE.search(text or ""))
+
+
 PPTX_PATH_RE = re.compile(r"""[A-Za-z]:\\[^"'<>|\n]*?\.pptx|(?:/|\./|\.\./)[^"'<>|\s]*?\.pptx|[\w./\\ -]+\.pptx""")
 
 
@@ -223,6 +240,24 @@ def find_candidates(cwd: Path, transcript_path: str | None, since: float | None,
     return sorted(found.values())
 
 
+ITERATION_SUFFIX_RE = re.compile(r"(?:_v\d+(?:_\d+)*)$", re.I)
+
+
+def newest_per_chain(paths: list[Path]) -> tuple[list[Path], list[Path]]:
+    """Split candidates into (gate, superseded): per iteration chain (the stem without its `_vN_k` suffix),
+    keep the file written last. Folders are ignored on purpose: an upload and its iterations usually sit
+    in different folders."""
+    chains: dict[str, list[Path]] = {}
+    for p in paths:
+        chains.setdefault(ITERATION_SUFFIX_RE.sub("", p.stem).lower(), []).append(p)
+    keep, dropped = [], []
+    for group in chains.values():
+        group.sort(key=lambda q: q.stat().st_mtime if q.exists() else 0.0)
+        keep.append(group[-1])
+        dropped.extend(group[:-1])
+    return sorted(keep), sorted(dropped)
+
+
 def gate(paths: list[Path], session_id: str, out) -> int:
     """Run qc_check on paths. Returns the exit code for the hook."""
     sys.path.insert(0, str(HERE))
@@ -329,8 +364,13 @@ def run(payload: dict, cwd: Path | None = None, out=None, have_pptx: bool = True
     out = out or (lambda s: print(s, file=sys.stderr))
     cwd = Path(cwd or payload.get("cwd") or os.getcwd())
     text = read_transcript(payload.get("transcript_path"))
+    if not workflow_session(text):
+        return 0  # another skill's PPTX, or no deck work at all: not this gate's business
     since = session_start(payload.get("transcript_path"), text)
     paths = find_candidates(cwd, payload.get("transcript_path"), since, text)
+    paths, superseded = newest_per_chain(paths)
+    for p in superseded:
+        out("qc gate: skipped %s (a later iteration of it was written)" % p.name)
     session_id = payload.get("session_id", "")
     gated = load_state(state_path(session_id)).get("gated", {})
     keep = []

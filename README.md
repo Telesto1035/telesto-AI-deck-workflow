@@ -14,10 +14,10 @@ stakeholder-context (audience brief) → draft-deck (storyline in text, then bui
 
 ```
 .claude/
-  settings.json                 Stop hook runs the gate on every PPTX written in the session
+  settings.json                 Stop hook runs the gate on every PPTX written in a session that used the workflow
   agents/deck-evaluator.md      Layer 2 evaluator, fresh context, never edits the file
   skills/
-    draft-deck/                 SKILL.md + references/ (language rules, house register, client files, build rules, deck types)
+    draft-deck/                 SKILL.md + references/ (language rules, house register, client brief template, build rules, deck types)
     deck-qc/                    SKILL.md + references/ + scripts/
                                   qc_check.py, qc_rules.json   the gate and its thresholds
                                   qc_gate_hook.py              the Stop hook

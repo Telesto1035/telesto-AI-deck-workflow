@@ -388,3 +388,41 @@ def test_evaluator_paths_resolve_in_any_install():
     body = text.split("**Find the skill files first.**", 1)
     assert len(body) == 2, "the evaluator does not say how to find the skill files"
     assert ".claude/skills/" not in body[1].split("\n\n", 1)[1], "a repo-only path is used after the finding step"
+
+
+def _one_box(tmp_path, text: str, top_in: float, size_pt: int, name: str = "Text 19") -> Path:
+    prs = Presentation(str(CLEAN))
+    tb = prs.slides[0].shapes.add_textbox(Inches(1), Inches(top_in), Inches(6), Inches(0.3))
+    tb.name = name
+    tb.text_frame.text = text
+    for r in tb.text_frame.paragraphs[0].runs:
+        r.font.size = Pt(size_pt)
+    out = tmp_path / "box.pptx"
+    prs.save(str(out))
+    return out
+
+
+def test_source_line_above_the_band_is_a_footnote(tmp_path, rules):
+    """A 9pt "Source:" box a few points above the bottom band is a footnote, not 9pt body text."""
+    out = _one_box(tmp_path, "Source: Annual Workforce Survey, 2025", 5.6, 9)
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert not [f for f in findings if f.id == "font-size-floor" and "Workforce" in (f.text or "")], findings
+
+
+def test_nine_point_body_text_still_blocks(tmp_path, rules):
+    out = _one_box(tmp_path, "Enrollment rose across every segment", 3.0, 9)
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert [f for f in findings if f.id == "font-size-floor" and f.severity == "block"]
+
+
+@pytest.mark.parametrize("token", ["[~X weeks]", "[X weeks]", "[x weeks]", "[$X]", "[X%]"])
+def test_bracketed_x_is_a_placeholder(tmp_path, rules, token):
+    out = _one_box(tmp_path, "Phase 1 runs %s from kickoff" % token, 3.0, 12)
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert any(f.id == "placeholders" and f.severity == "block" for f in findings), token
+
+
+def test_a_word_starting_with_x_is_not_a_placeholder(tmp_path, rules):
+    out = _one_box(tmp_path, "As the [Xerox study] showed", 3.0, 12)
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert not any(f.id == "placeholders" for f in findings)
