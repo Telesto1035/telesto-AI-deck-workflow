@@ -60,7 +60,7 @@ Every stage (build or revision, gate and render, evaluator, SUGGEST pop-ups) end
 
 ## Rules of the house the gate enforces
 
-Empty author field at hand-back. Nothing below 10pt except footnotes, which stop at 8pt. Gray text outside footnotes in a color that is not in the palette is listed for the author, never blocked. The test behind it: title, body or footnote carries everything a reader needs in a five-second scan. No `[PLACEHOLDER]`, `TBD` or `XX` left in. Every footnote marker has its footnote on the same slide. Components sum to their stated total within one point. No client stakeholder named on a slide. Body pages stay under 280 words of title, body and chart labels (warned, never blocked); footnotes counted apart, appendix and quote pages exempt. Units are slides and pages.
+Empty author field at hand-back. Nothing below 10pt except footnotes, which stop at 8pt. Gray text outside footnotes in a color that is not in the palette is listed for the author, never blocked. The test behind it: title, body or footnote carries everything a reader needs in a five-second scan. No `[PLACEHOLDER]`, `TBD` or `XX` left in. Every footnote marker has its footnote on the same slide. Components sum to their stated total within one point. A client stakeholder named on a slide is listed for the author to confirm; an opinion about a person never goes on a slide. Body pages stay under 280 words of title, body and chart labels (warned, never blocked); footnotes counted apart, appendix and quote pages exempt. Units are slides and pages.
 
 ## Seeing the page
 
