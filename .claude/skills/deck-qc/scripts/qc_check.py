@@ -219,6 +219,14 @@ class Deck:
             self._fn_re = re.compile(pat, re.I)
         return self._fn_re
 
+    @property
+    def footnote_text_re(self):
+        pat = self.rules.get("footnote_text_regex", r"(?:sources?|notes?)\s*:")
+        if getattr(self, "_fnt_re_src", None) != pat:
+            self._fnt_re_src = pat
+            self._fnt_re = re.compile(pat, re.I)
+        return self._fnt_re
+
     def _find_appendix_start(self):
         for i, slide in enumerate(self.slides, 1):
             t = slide.shapes.title
@@ -335,6 +343,11 @@ class Deck:
 
     def is_footnote_home(self, si: ShapeInfo) -> bool:
         if self.footnote_name_re.search(si.name or ""):
+            return True
+        # A box that opens with "Source:" or "Note:" is a footnote wherever it sits: source lines placed a
+        # few points above the bottom band were otherwise held to the 10pt body floor.
+        tf = getattr(si.shape, "text_frame", None) if getattr(si.shape, "has_text_frame", False) else None
+        if tf is not None and self.footnote_text_re.match(tf.text.lstrip()):
             return True
         if si.box is None:
             return False

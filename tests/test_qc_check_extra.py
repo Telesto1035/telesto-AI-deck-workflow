@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 from pptx import Presentation
-from pptx.util import Inches, Pt
+from pptx.util import Emu, Inches, Pt
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
@@ -388,3 +388,171 @@ def test_evaluator_paths_resolve_in_any_install():
     body = text.split("**Find the skill files first.**", 1)
     assert len(body) == 2, "the evaluator does not say how to find the skill files"
     assert ".claude/skills/" not in body[1].split("\n\n", 1)[1], "a repo-only path is used after the finding step"
+
+
+# ---- patch 2026-09-23: false positives found on a second client's shipped decks ----------------
+
+HAND_HEX = "12A45C"
+
+
+def _blank_deck(n_slides: int):
+    prs = Presentation()
+    for _ in range(n_slides):
+        prs.slides.add_slide(prs.slide_layouts[6])
+    return prs
+
+
+def _box(slide, x, y, w, h, text, size=12):
+    tb = slide.shapes.add_textbox(x, y, w, h)
+    tb.text_frame.text = text
+    for p in tb.text_frame.paragraphs:
+        for r in p.runs:
+            r.font.size = Pt(size)
+    return tb
+
+
+def _fill(slide, hex_, top=Inches(1)):
+    from pptx.dml.color import RGBColor
+    from pptx.enum.shapes import MSO_SHAPE
+
+    sh = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1), top, Inches(1), Inches(0.5))
+    sh.fill.solid()
+    sh.fill.fore_color.rgb = RGBColor.from_string(hex_)
+    sh.line.fill.background()
+
+
+def test_a_brand_color_applied_by_hand_on_most_slides_is_the_decks_palette(tmp_path, rules):
+    """A client template can apply its brand color by hand instead of through the theme. A fill that recurs
+    on three or more slides is the deck's palette; a color on one slide is still reported."""
+    prs = _blank_deck(4)
+    for s in prs.slides:
+        _fill(s, HAND_HEX)
+    _fill(prs.slides[2], "C81E1E", top=Inches(3))
+    out = tmp_path / "hand_palette.pptx"
+    prs.save(str(out))
+    _deck, findings = qc_check.run_checks(out, rules)
+    fills = [f for f in findings if f.id == "style-drift" and "fill color" in f.detail]
+    assert len(fills) == 1 and fills[0].slide == 3 and "C81E1E" in fills[0].detail, [f.detail for f in fills]
+    assert not any(HAND_HEX in f.detail for f in fills)
+
+
+def test_rules_carry_no_client_palette(rules):
+    """Client colors come from the deck (theme or recurrence) or from a screenshot the consultant supplies;
+    no rule file codifies one."""
+    assert "client_palettes" not in rules and "active_client_palette" not in rules
+
+
+def test_vertical_label_is_not_off_canvas(tmp_path, rules):
+    """A 270-degree label near the left edge: its stored box starts left of the slide, its drawn box does not."""
+    prs = _blank_deck(1)
+    tb = _box(prs.slides[0], Emu(-450000), Inches(3), Inches(1.7), Inches(0.3), "1. Select inputs")
+    tb.rotation = 270
+    out = tmp_path / "vertical.pptx"
+    prs.save(str(out))
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert not [f for f in findings if f.id == "off-canvas"], findings
+
+
+def test_badge_smaller_than_its_insets_is_not_an_overflow(tmp_path, rules):
+    """A 10pt numbered chip: default insets exceed its width, so no text-height estimate is meaningful."""
+    prs = _blank_deck(1)
+    from pptx.enum.text import MSO_AUTO_SIZE
+
+    chip = _box(prs.slides[0], Inches(1), Inches(1), Pt(10), Pt(10), "2", size=9)
+    chip.text_frame.word_wrap = True
+    chip.text_frame.auto_size = MSO_AUTO_SIZE.NONE
+    out = tmp_path / "badge.pptx"
+    prs.save(str(out))
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert not [f for f in findings if f.id == "overflow-estimate"], [f.detail for f in findings]
+
+
+def _superscript(run):
+    run.font._rPr.set("baseline", "30000")
+
+
+def test_superscript_opening_a_paragraph_is_a_footnote_not_a_marker(tmp_path, rules):
+    """A two-paragraph note box sits above the footnote band; its second paragraph opens with a superscript 1.
+    That run is the footnote for the body's marker, not a second marker."""
+    prs = _blank_deck(1)
+    s = prs.slides[0]
+    body = _box(s, Inches(1), Inches(2), Inches(6), Inches(0.6), "Out of scope such as certification.")
+    _superscript(body.text_frame.paragraphs[0].add_run())
+    body.text_frame.paragraphs[0].runs[-1].text = "1"
+    note = _box(s, Inches(1), Inches(6.2), Inches(8), Inches(0.6), "Only category with procedural standing.", size=9)
+    p2 = note.text_frame.add_paragraph()
+    r1 = p2.add_run()
+    r1.text = "1"
+    _superscript(r1)
+    p2.add_run().text = "A negative vote on a non-germane item counts as an abstention."
+    out = tmp_path / "sup_def.pptx"
+    prs.save(str(out))
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert not [f for f in findings if f.id == "footnote-sequence"], [f.detail for f in findings]
+
+
+def test_value_label_in_the_footnote_band_is_not_a_footnote(tmp_path, rules):
+    """'90 (max)' at the foot of a table column is a value, not footnote 90."""
+    prs = _blank_deck(1)
+    s = prs.slides[0]
+    body = _box(s, Inches(1), Inches(2), Inches(3), Inches(0.4), "Stakeholders involved")
+    r = body.text_frame.paragraphs[0].add_run()
+    r.text = "1"
+    _superscript(r)
+    _box(s, Inches(5), Inches(6.9), Inches(0.8), Inches(0.2), "90 (max)", size=9)
+    _box(s, Inches(1), Inches(7.2), Inches(8), Inches(0.25), "1. Additional stakeholders for harmonized standards.", size=8)
+    out = tmp_path / "band_value.pptx"
+    prs.save(str(out))
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert not [f for f in findings if f.id == "footnote-sequence"], [f.detail for f in findings]
+
+
+def test_fill_in_field_in_quoted_sample_text_warns_and_a_bare_token_blocks(tmp_path, rules):
+    prs = _blank_deck(1)
+    s = prs.slides[0]
+    _box(s, Inches(1), Inches(1), Inches(8), Inches(0.5),
+         "\u201cThe ballot for [Proposal XXX] is now open as of [date].\u201d")
+    _box(s, Inches(1), Inches(3), Inches(8), Inches(0.5), "Spend grew XX points against the plan.")
+    out = tmp_path / "fields.pptx"
+    prs.save(str(out))
+    _deck, findings = qc_check.run_checks(out, rules)
+    ph = sorted((f.severity, f.text[:4]) for f in findings if f.id == "placeholders")
+    assert ph == [("block", "Spen"), ("warn", "\u201cThe")], ph
+
+
+def _one_box(tmp_path, text: str, top_in: float, size_pt: int, name: str = "Text 19") -> Path:
+    prs = Presentation(str(CLEAN))
+    tb = prs.slides[0].shapes.add_textbox(Inches(1), Inches(top_in), Inches(6), Inches(0.3))
+    tb.name = name
+    tb.text_frame.text = text
+    for r in tb.text_frame.paragraphs[0].runs:
+        r.font.size = Pt(size_pt)
+    out = tmp_path / "box.pptx"
+    prs.save(str(out))
+    return out
+
+
+def test_source_line_above_the_band_is_a_footnote(tmp_path, rules):
+    """A 9pt "Source:" box a few points above the bottom band is a footnote, not 9pt body text."""
+    out = _one_box(tmp_path, "Source: Annual Workforce Survey, 2025", 5.6, 9)
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert not [f for f in findings if f.id == "font-size-floor" and "Workforce" in (f.text or "")], findings
+
+
+def test_nine_point_body_text_still_blocks(tmp_path, rules):
+    out = _one_box(tmp_path, "Enrollment rose across every segment", 3.0, 9)
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert [f for f in findings if f.id == "font-size-floor" and f.severity == "block"]
+
+
+@pytest.mark.parametrize("token", ["[~X weeks]", "[X weeks]", "[x weeks]", "[$X]", "[X%]"])
+def test_bracketed_x_is_a_placeholder(tmp_path, rules, token):
+    out = _one_box(tmp_path, "Phase 1 runs %s from kickoff" % token, 3.0, 12)
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert any(f.id == "placeholders" and f.severity == "block" for f in findings), token
+
+
+def test_a_word_starting_with_x_is_not_a_placeholder(tmp_path, rules):
+    out = _one_box(tmp_path, "As the [Xerox study] showed", 3.0, 12)
+    _deck, findings = qc_check.run_checks(out, rules)
+    assert not any(f.id == "placeholders" for f in findings)

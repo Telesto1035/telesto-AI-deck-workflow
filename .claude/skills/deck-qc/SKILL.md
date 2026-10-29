@@ -41,11 +41,11 @@ Exit 1 means blocking findings; fix them and run again until it exits 0. The gat
 
 **2. Render.** `scripts/render_check.py DECK.pptx` exports the body pages through PowerPoint, measures overflow, and tiles the pages into contact sheets of nine. Read the sheets, not single pages; open one `slideN.png` only to inspect a defect. On an iteration render only the changed pages (`--slides 4,7,12`); read the full sheets once before hand-back. Without PowerPoint, use soffice and pdftoppm, and treat a wrapped footer or clipped label as a renderer artifact until the original renders the same way ("verify in PowerPoint").
 
-**3. Evaluator.** Layer 2 runs in the `deck-evaluator` subagent, in a fresh context, with the source data and the audience brief attached. It returns FIX and SUGGEST lists. Execute FIX. The evaluator runs on Opus: in Claude Code the subagent file sets this; in Cowork, before starting it, remind the consultant in one line to switch the model to Opus for this stage (it is the largest single token consumer and mostly mechanical tracing) and switch back for storyline work.
+**3. Evaluator.** Layer 2 runs in the `deck-evaluator` subagent, in a fresh context, with the source data and the audience brief attached. Pass it the deck type when the brief or the consultant has stated one, so a short or BD deck is not judged against an inferred findings profile. It returns FIX and SUGGEST lists. Execute FIX. The evaluator runs on Opus: in Claude Code the subagent file sets this; in Cowork, before starting it, remind the consultant in one line to switch the model to Opus for this stage (it is the largest single token consumer and mostly mechanical tracing) and switch back for storyline work.
 
 **4. Resolution.** SUGGEST items go to the consultant as pop-ups, one page per question, in slide order. Rules in `references/resolving.md`. Apply the answers as one iteration (`references/applying-fixes.md`), re-render the touched pages, re-run the number ledger, report the delta.
 
-**5. Hand-back.** Run PowerPoint's Document Inspector on the file, then `qc_check.py DECK.pptx --handback` to confirm nothing was missed; document properties block here and nowhere else. Append the round to the revision ledger, attach the file, state what is still open.
+**5. Hand-back.** Run PowerPoint's Document Inspector on the file, then `qc_check.py DECK.pptx --handback` to confirm nothing was missed; document properties block here and nowhere else. Append the round to the engagement's revision ledger (in the engagement folder; ask where before creating one), attach the file, state what is still open.
 
 Token discipline throughout: never read a whole crosstab PDF or transcript into context (extract once to the scratchpad and search it for the cited questions); extract the deck's text once per iteration and diff it against the last extract; patch the saved file with a short script per iteration rather than regenerating a build script.
 
@@ -53,8 +53,9 @@ Token discipline throughout: never read a whole crosstab PDF or transcript into 
 
 - **The PPTX**, required.
 - **The source data**, strongly preferred. Ask once for the raw survey or data file (xlsx or csv, respondent-level or the crosstab workbook) before PDF crosstabs; a PDF needs an extraction step and can drop a row or a low-base marker. Accept the PDF if that is all there is, and say in the report header which form was used. Without any source, every number check is internal consistency only; say so. Never ask twice for the same deck.
-- **A written brief** and **the audience brief**, optional. They supply deck type, audience, the takeaway and the storyline lines.
-- **The client brief**, optional: the team's standing file on a core client (strengths and weaknesses, departments and services, account stakeholders, stated objectives), found in the engagement folder. Layer 2 reads it to judge whether recommendations are specific to this client or generic. Context only: it never supplies a figure for a number check.
+- **A written brief** and **the audience brief**, optional. They supply deck type, audience, the takeaway and the storyline lines. Without one there is no brief check, and nobody's asks are inferred from the deck.
+- **The prior readouts the deck builds on**, when it cites or continues earlier work: attach each one from the engagement folder, so a quote or figure carried over from them can be traced.
+- **The client brief**, optional: the team's standing file on a core client (strengths and weaknesses, departments and services, account stakeholders, stated objectives), the context file of the client's Cowork project or a file in the engagement folder. Layer 2 reads it to judge whether recommendations are specific to this client or generic. Context only: it never supplies a figure for a number check.
 - **A prior version**, optional: with it you diff what changed, which flags closed, what regressed.
 - **A prior shipped deck for the client**, optional: claims precedent.
 
@@ -75,9 +76,13 @@ Shape and length per type are defined once, in draft-deck `references/deck-types
 | Workshop | agenda; prompts on exercise pages; capture pages present | recommendations; value at stake; sourced exhibits |
 | Manual | a takeaway band on operating pages; every operation has a page | value at stake |
 
+A BD deck that prices no scope (a capabilities or introduction deck) takes the proposal profile with priced options and the path also not applicable.
+
 The middle column is what each type usually carries, not a checklist: approved decks leave elements out when the room does not need them. A missing element produces at most a QUESTION asking whether this room needs it, never a proposed new page, and it does not lower a score.
 
-**The proposal standard is the two CEO-approved proposals of Aug 2026** named in draft-deck `references/deck-types.md`. A proposal is written before the work is fully scoped, and some of the scope is settled with the client, so it is judged as a pitch and never with the logic of a findings report. Any check that would fault a pattern both exemplars share is wrong about proposals and produces no item, and `deck-types.md` is drafting guidance, not a source of findings. What stays in scope on a proposal: internal contradictions (scope, duration, dates, fee, who decides), figures without a source, a claim or promised outcome with no evidence behind it (QUESTION), undefined terms, and grammar.
+**The proposal standard is the two CEO-approved proposals of Aug 2026** named in draft-deck `references/deck-types.md`. A proposal is written before the work is fully scoped, and some of the scope is settled with the client, so it is judged as a pitch and never with the logic of a findings report. Any check that would fault a pattern both exemplars share is wrong about proposals and produces no item, and `deck-types.md` is drafting guidance, not a source of findings. What stays in scope on a proposal: internal contradictions (scope, duration, dates, fee, who decides), figures without a source, a figure that does not match its source (the wrong segment on a stat, a callout disagreeing with its footnote), undefined terms, and grammar. Two checks run lighter than on a findings report:
+- **Citations.** A source line naming the survey or study and its year is enough. Question numbers, question wording and n are not required. A label that misstates what the source measured is still raised.
+- **Claims.** A claim is raised only when it contradicts a figure in the deck or its source. Framing words, a totalizing word in a title and a promised outcome produce no item: some overstatement is how a pitch is written.
 
 ## What is not a defect
 
@@ -97,7 +102,7 @@ House convention, not error. Do not spend the consultant's attention on these.
 Each finding names the page, quotes the text, states the fix. Group repeated instances into one item with a page list.
 
 - **Numbers reconcile.** Same metric with different values across pages; exec summary against body; chart cache against label or title; components against a stated total (one point of rounding allowed, said so); a figure absent from the source; a pool quoted as a total on one page and an annual rate on another.
-- **Sources and footnotes.** An exhibit with no source or n where required; footnote numbers out of sequence, duplicated or orphaned; a definition with no marker; a cross-reference to a page that does not exist; one source written five ways; a question cited without its wording; two questions on a page without each labelled.
+- **Sources and footnotes.** An exhibit with no source or n where required; footnote numbers out of sequence, duplicated or orphaned; a definition with no marker; a cross-reference to a page that does not exist; one source written five ways; a question cited without its wording (not on a proposal); two questions on a page without each labelled.
 - **Attribute wording.** With the questionnaire or crosstab attached, every chart label, table row, scale point and option quoted in prose is checked against the source wording. Where nothing on the page carries the source wording, the FIX is the footnote, not a rewrite of the label. A rename, including a short form that merges two source categories, is SUGGEST under draft-deck's `label` rule (SKILL.md, Revise, "Data labels and survey wording").
 - **Referents and terms.** A pronoun or "this" with no antecedent on the page; an acronym before its definition; the same thing named two ways; an agency abbreviated; an opinion about a named person on a slide (a name alone is not a defect); one count word used for different sets.
 - **Leftovers.** Placeholders, TBD, XX, template text, a DRAFT stamp inconsistent with the version, and anything the gate's hygiene pass reports.
@@ -112,7 +117,7 @@ Run by the evaluator. When the right change depends on data you do not have, mar
 - **Titles.** A title is flagged only when it contradicts its page, or does not match it: it names a different subject, a different option, a different number, or a claim the page does not show. How a title is written is the consultant's call and produces no item, whichever rule file states the rule: a label or structural title ("Three ways to …, scaled by depth"), a prefix, a missing verb, length, statistics in a title, and portability are drafting guidance. When a title is flagged, the proposed line matches the page and keeps the consultant's form.
 - **Exec summary to body.** Where the profile has an exec summary: every summary point has a body page and every body page traces back; the figures agree.
 - **Conclusion follows exhibit.** Does the band follow from the exhibit? Does the title claim more than the exhibit shows?
-- **Claim sizing.** "Proves" on one data point; a subgroup promoted to the whole; a totalizing word on single-survey data; a firm-level conclusion from a handful of mentions; a claim beyond precedent when a prior deck is attached.
+- **Claim sizing.** "Proves" on one data point; a subgroup promoted to the whole; a totalizing word on single-survey data; a firm-level conclusion from a handful of mentions; a claim beyond precedent when a prior deck is attached. On a proposal, only a claim that contradicts a figure (**The proposal standard**).
 - **Quotes as evidence.** Trimmed or reworded against the same quote elsewhere; a paraphrase in a Quotes column; a quote that does not support the band beside it; attribution spelled two ways.
 - **Outcome clarity.** Can a reader state the takeaway and the decision after the titles alone? Where the deck type usually closes on a decision or next-step page and this one does not, is that deliberate (QUESTION)?
 - **Value at stake.** What the client stands to gain is stated. Where the deck gives a dollar figure, it carries its assumptions and source, is labelled illustrative where projected, and reconciles with the other numbers on the page. A gain stated without dollars is not a defect.
@@ -130,7 +135,7 @@ Four dimensions, 1 to 5. The score is the summary; the lists are the product. Va
 | 2 | One or more titles contradict their pages; the reader cannot say what to decide | Two or more contradictions or missing pages | Gestured at; the reader cannot say what the client gains | Multiple reconciliation failures; placeholders |
 | 1 | No discernible takeaway | Pages do not connect | Absent where required | Figures cannot be traced |
 
-Technical accuracy below 3 goes in the report header regardless of the overall.
+Technical accuracy below 3 goes in the report header regardless of the overall. An unsourced figure is one with no source on the page. A figure whose named source was not attached is a QUESTION and does not lower the score; only a confirmed mismatch or a placeholder does. An anchor clause that names an element the profile does not carry (an exec summary, footnotes, a decision page) is skipped, not scored against, so a short deck is not marked down for being short. A "missing page" in Logical flow is a gap in the argument the titles make, not a profile element the deck leaves out (**Profiles by deck type**).
 
 **Language, and why it carries no score.** Voice is not scored: it differs too much between competent writers, and a standard that needs an owner adjudicating it every week cannot survive being shared. The checks that remain are the ones any professional reader applies the same way.
 
@@ -144,7 +149,9 @@ The floor is general professional consulting writing: an MBB or Big Four deliver
 
 Report up to five worst offenders as items; this is not an exhaustive sweep. **Each one names the file and quotes the rule verbatim**, then the deck line, then the rewrite. An item that cannot be sourced this way is not a language finding: offer it as a plain SUGGEST on its own merits or drop it, and never attribute it to a house rule it cannot quote.
 
-Report, in order: header (deck type, inferred or from the brief; page count and version; whether and in what form source data was attached; the one thing to act on first); scorecard with a one-line reason each; hygiene (what the gate stripped; every speaker note quoted, with a line asking whether it travels with the deck, since some clients present from their notes); FIX list; SUGGEST list in slide order, each naming the page by number and title, with QUESTION items stated as questions; brief check when a brief is attached; diff when a prior version is attached; and the "not checked" line every time. Short enough to act on.
+Report, in order: header (deck type, inferred or from the brief; page count and version; whether and in what form source data was attached; the one thing to act on first); scorecard with a one-line reason each; hygiene (what the gate stripped; every speaker note quoted, with a line asking whether it travels with the deck, since some clients present from their notes); FIX list; SUGGEST list in slide order, each naming the page by number and title, with QUESTION items stated as questions; brief check when a brief is attached (below); diff when a prior version is attached; and the "not checked" line every time. Short enough to act on.
+
+**Brief check.** Runs only on a brief that is attached; with none, the report says so and there is no brief check. It keeps two things apart: what a stakeholder **stated**, which comes only from meeting notes or a brief line quoting them, and what **the brief infers or recommends** (remits, questions, suggested depth), which is the brief writer's reading. Only the first is written as "asked for". Flag the brief as possibly stale when it is dated before the deck's current scope. On a proposal, two lines at most.
 
 ## Data handling
 

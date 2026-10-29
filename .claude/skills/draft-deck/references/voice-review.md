@@ -2,7 +2,7 @@
 
 Read at the handoff of a Build or a full rewrite, and whenever a Revise rewrites more than a title or a band. Not needed on gate-fix iterations.
 
-This pass hunts classes of pattern that instruction-tuned models produce at above-human rates, with the research that identified them. It is not a register of house preferences: a single reviewer edit never becomes a rule here. House and client wording preferences live in the house register and the client files (see SKILL.md, References) and never reach this pass. The word list below is research-backed and reviewed annually.
+This pass hunts classes of pattern that instruction-tuned models produce at above-human rates, with the research that identified them. It is not a register of house preferences: a single reviewer edit never becomes a rule here. House and client wording preferences live in the house register and the Deck style section of the client brief (see SKILL.md, References) and never reach this pass. The word list below is research-backed and reviewed annually.
 
 Draft first, then review against the named patterns below. A single up-front instruction to "not sound like AI" does not hold: these patterns are optimized into the model and regenerate under pressure, so they have to be hunted deliberately. (Juzek and Ward, COLING 2025, traced them to instruction tuning rather than training data.)
 

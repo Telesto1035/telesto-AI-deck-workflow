@@ -41,6 +41,16 @@ def copy_tree(src: Path, dst: Path) -> None:
         shutil.copy2(p, dst / rel)
 
 
+def plugin_command(dev_command: str) -> str:
+    """The repo's `python .claude/skills/X.py` as a plugin hook. Hook commands run under sh (Git Bash on
+    Windows), so the plugin path is quoted (a profile folder with a space splits it otherwise), and the first
+    interpreter that runs is used: a Mac often has no `python`, and the Windows Store `python3` stub exits 9009.
+    With none, the hook exits 0 so no teammate's turn shows a hook error."""
+    script = dev_command.split(".claude/skills/", 1)[1]
+    target = '"${CLAUDE_PLUGIN_ROOT}/skills/%s"' % script
+    return ('for py in python3 python py; do "$py" -c "" >/dev/null 2>&1 && exec "$py" %s; done; exit 0' % target)
+
+
 def main() -> int:
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -60,7 +70,7 @@ def main() -> int:
     for event in hooks.values():
         for entry in event:
             for h in entry.get("hooks", []):
-                h["command"] = h["command"].replace("python .claude/skills/", "python ${CLAUDE_PLUGIN_ROOT}/skills/")
+                h["command"] = plugin_command(h["command"])
     (OUT / "hooks").mkdir()
     (OUT / "hooks" / "hooks.json").write_text(json.dumps({"hooks": hooks}, indent=2) + "\n", encoding="utf-8")
     shutil.copy2(REPO / "GOVERNANCE.md", OUT / "GOVERNANCE.md")
