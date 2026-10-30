@@ -586,3 +586,20 @@ def test_body_page_without_footer_is_still_drift(tmp_path, rules):
     _deck_with_footer_layout([0, 6, 1, 6, 6]).save(str(out))
     _deck, findings = qc_check.run_checks(out, rules)
     assert [f for f in findings if f.id == "style-drift" and "footer missing on slides 3" in f.detail], findings
+
+
+def test_template_exemplar_and_readme_pages_block_at_handback(tmp_path, rules):
+    """A deck built from an AI-readable template must not ship its exemplar or readme pages: the exemplar stamp
+    and the readme eyebrow are placeholder text and block at hand-back, one line per page."""
+    prs = Presentation()
+    for line in ("EXEMPLAR · DUMMY DATA", "TEMPLATE README · NOT A DECK PAGE"):
+        slide = prs.slides.add_slide(prs.slide_layouts[6])
+        tb = slide.shapes.add_textbox(Inches(1), Inches(1), Inches(6), Inches(0.5))
+        tb.text_frame.text = line
+        for r in tb.text_frame.paragraphs[0].runs:
+            r.font.size = Pt(12)
+    out = tmp_path / "template_leftovers.pptx"
+    prs.save(str(out))
+    _deck, findings = qc_check.run_checks(out, rules, handback=True)
+    blocks = [f for f in findings if f.id == "placeholders" and f.severity == "block"]
+    assert sorted(f.slide for f in blocks) == [1, 2], [(f.slide, f.detail) for f in blocks]

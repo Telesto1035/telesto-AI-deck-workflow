@@ -67,8 +67,11 @@
     "(?i)lorem ipsum",
     "Click to add",
     "\\{\\{.*?\\}\\}",
-    "(?i)\\[[~$]?\\s*X+\\b[^\\]]*\\]"
+    "(?i)\\[[~$]?\\s*X+\\b[^\\]]*\\]",
+    "EXEMPLAR ·",
+    "TEMPLATE README"
   ],
+  "_placeholder_note": "EXEMPLAR · and TEMPLATE README are the stamp and eyebrow text on exemplar and readme pages of Telesto AI-readable templates (EXEMPLAR · DUMMY DATA; EXEMPLAR · <deck> · DO NOT REUSE CONTENT; TEMPLATE README · NOT A DECK PAGE). They appear only on template pages, so a deck that still carries one blocks at hand-back.",
   "profiles": {
     "findings": {
       "length": [
