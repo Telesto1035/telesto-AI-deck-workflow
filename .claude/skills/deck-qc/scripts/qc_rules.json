@@ -67,11 +67,12 @@
     "(?i)lorem ipsum",
     "Click to add",
     "\\{\\{.*?\\}\\}",
-    "(?i)\\[[~$]?\\s*X+\\b[^\\]]*\\]",
-    "EXEMPLAR ·",
-    "TEMPLATE README"
+    "(?i)\\[[~$]?\\s*X+\\b[^\\]]*\\]"
   ],
-  "_placeholder_note": "EXEMPLAR · and TEMPLATE README are the stamp and eyebrow text on exemplar and readme pages of Telesto AI-readable templates (EXEMPLAR · DUMMY DATA; EXEMPLAR · <deck> · DO NOT REUSE CONTENT; TEMPLATE README · NOT A DECK PAGE). They appear only on template pages, so a deck that still carries one blocks at hand-back.",
+  "template_contract_version": 1,
+  "template_exemplar_stamp": "EXEMPLAR ·",
+  "template_readme_eyebrow": "TEMPLATE README",
+  "_template_note": "The template contract (draft-deck references/template-contract.md). The exemplar stamp (EXEMPLAR · DUMMY DATA; EXEMPLAR · <deck> · DO NOT REUSE CONTENT) and the readme eyebrow (TEMPLATE README · NOT A DECK PAGE) appear only on template pages: check_placeholders treats both as leftovers, so a deck that still carries one blocks at hand-back, and qc_check.py --template checks a template carries them where the contract says. Bump template_contract_version with any change to the contract.",
   "profiles": {
     "findings": {
       "length": [

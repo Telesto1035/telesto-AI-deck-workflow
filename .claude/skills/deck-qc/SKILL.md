@@ -32,6 +32,7 @@ Five stages, in order. Every stage ends with one line in text naming the next st
 python scripts/qc_check.py DECK.pptx [--length 6-12] [--no-length]   # --profile brief only for a one-slide Build Brief
 python scripts/qc_check.py DECK.pptx --handback     # stage 5 only: document properties block instead of warn
 python scripts/qc_check.py DECK.pptx --fix-safe     # settled fixes only, writes DECK.qc.pptx
+python scripts/qc_check.py TEMPLATE.pptx --template # a template against the template contract, not a deck check
 python scripts/pptx_comments.py DECK.pptx --open-only  # who asked for what, on which slide
 ```
 

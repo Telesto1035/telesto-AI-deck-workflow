@@ -4,6 +4,7 @@
 Usage:
     python qc_check.py DECK.pptx [--rules qc_rules.json] [--json out.json] [--fix-safe] [--handback]
                         [--profile findings|proposal|kickoff|minipack|presentation|update|workshop|manual|brief]
+    python qc_check.py TEMPLATE.pptx --template     # template contract conformance, not a deck check
 
 Exit 0: no blocking findings. Exit 1: blocking findings present. Exit 2: file could not be opened.
 
@@ -963,6 +964,9 @@ def check_placeholders(d: Deck):
     """A draft is told to leave [PLACEHOLDER] tokens where a figure is missing (draft-deck rule 4), so a token
     warns mid-session and blocks only under --handback, where a placeholder in the final version is the fault."""
     pats = [re.compile(p) for p in d.rules.get("placeholder_patterns", [])]
+    # the template contract's page stamps: a deck that still carries an exemplar or readme page has a leftover
+    pats += [re.compile(re.escape(d.rules[k])) for k in ("template_exemplar_stamp", "template_readme_eyebrow")
+             if d.rules.get(k)]
     severity = "block" if getattr(d, "handback", False) else "warn"
     for sno in d.shapes_by_slide:
         for si, txt in d.slide_texts(sno):
@@ -2045,6 +2049,96 @@ def run_checks(path: Path, rules: dict, profile: Optional[str] = None,
 
 
 # --------------------------------------------------------------------------------------
+# --template: contract conformance (draft-deck references/template-contract.md)
+# --------------------------------------------------------------------------------------
+
+SECTION_URI = "{521415D9-36F7-43E2-AB2F-B90AF26B5E84}"
+P14 = "http://schemas.microsoft.com/office/powerpoint/2010/main"
+CONTRACT_RE = re.compile(r"template\s+contract\s*v\s*(\d+)", re.I)
+
+
+def template_sections(d: Deck) -> dict[int, str]:
+    """Slide number -> starter | exemplar | readme, from the deck's sections whose names say so. Empty when
+    the template has no sections; slides in other sections are left out."""
+    by_id = {int(s.slide_id): i for i, s in enumerate(d.slides, 1)}
+    out: dict[int, str] = {}
+    for ext in d.prs.part._element.iter(q("p:ext")):
+        if ext.get("uri") != SECTION_URI:
+            continue
+        for sec in ext.iter("{%s}section" % P14):
+            name = (sec.get("name") or "").lower()
+            kind = next((k for k in ("exemplar", "readme", "starter") if k in name), None)
+            if kind is None:
+                continue
+            for sid in sec.iter("{%s}sldId" % P14):
+                sno = by_id.get(int(sid.get("id") or 0))
+                if sno:
+                    out[sno] = kind
+    return out
+
+
+def check_template_contract(path: Path, rules: dict) -> tuple[Deck, list[Finding]]:
+    """A template agrees with the skills when its readme names the contract version it meets, every exemplar
+    and readme page carries its stamp, and the starter pages carry neither. Sections named Starter, Exemplar
+    and Readme let the check catch an exemplar page that lost its stamp; without them only stamps are seen."""
+    d = Deck(path, rules)
+    current = int(rules.get("template_contract_version", 1))
+    stamp, eyebrow = rules.get("template_exemplar_stamp", ""), rules.get("template_readme_eyebrow", "")
+
+    def add(severity, slide, detail, text=""):
+        d.add(id="template-contract", severity=severity, slide=slide, shape=None, shape_id=None,
+              text=text, detail=detail, fix="none")
+
+    texts = {sno: "\n".join(t for _si, t in d.slide_texts(sno)) for sno in d.shapes_by_slide}
+    stamped = {sno: ("readme" if eyebrow and eyebrow in t else "exemplar" if stamp and stamp in t else "starter")
+               for sno, t in texts.items()}
+    readme = [s for s, k in stamped.items() if k == "readme"]
+    if not readme:
+        add("block", None, "no readme page: no slide carries '%s'" % eyebrow)
+    else:
+        versions = sorted({int(m.group(1)) for s in readme for m in CONTRACT_RE.finditer(texts[s])})
+        if not versions:
+            add("block", readme[0], "the readme does not name the contract version it meets "
+                "(add 'Template contract v%d' to a readme page)" % current)
+        elif max(versions) < current:
+            add("warn", readme[0], "meets template contract v%d; the skills are on v%d: update the template "
+                "and its client brief, or record it as behind" % (max(versions), current))
+        elif max(versions) > current:
+            add("warn", readme[0], "names template contract v%d; these skills know v%d: update the plugin" % (
+                max(versions), current))
+    if not any(k == "starter" for k in stamped.values()):
+        add("block", None, "no starter page: every slide carries an exemplar or readme stamp")
+
+    sections = template_sections(d)
+    if not sections:
+        add("info", None, "no Starter, Exemplar or Readme sections: an exemplar page that lost its stamp "
+            "cannot be told from a starter page")
+    for sno, kind in sorted(sections.items()):
+        got = stamped[sno]
+        if kind == got:
+            continue
+        if kind == "starter":
+            add("block", sno, "starter section page carries the %s stamp" % got, texts[sno].strip()[:120])
+        else:
+            want = stamp if kind == "exemplar" else eyebrow
+            add("block", sno, "%s section page lacks '%s'" % (kind, want), texts[sno].strip()[:120])
+
+    # a starter page's source or note line must sit in a footnote home the gate recognises by name, or a
+    # deck built from it is held to the 10pt body floor and loses its footnote checks
+    for sno, kind in stamped.items():
+        if kind != "starter" or sections.get(sno, "starter") != "starter":
+            continue
+        for si, txt in d.slide_texts(sno):
+            if d.footnote_text_re.match(txt.lstrip()) and not d.footnote_name_re.search(si.name or ""):
+                d.add(id="template-contract", severity="warn", slide=sno, shape=si.name, shape_id=si.shape_id,
+                      text=txt.strip()[:120], detail="source or note line in a shape not named Source, Note "
+                      "or Footnote", fix="none")
+
+    d.findings.sort(key=lambda f: (SEVERITY_ORDER.get(f.severity, 9), f.slide or 0, f.id))
+    return d, d.findings
+
+
+# --------------------------------------------------------------------------------------
 # --fix-safe
 # --------------------------------------------------------------------------------------
 
@@ -2176,6 +2270,9 @@ def main(argv=None) -> int:
                     help="final check before the deck leaves the building: document properties "
                          "(author, title, TotalTime, custom fields) block instead of warn. Run "
                          "PowerPoint's Document Inspector first; this verifies it was done.")
+    ap.add_argument("--template", action="store_true",
+                    help="check a template against the template contract (stamps, readme version, sections) "
+                         "instead of running the deck checks")
     args = ap.parse_args(argv)
 
     try:
@@ -2192,7 +2289,11 @@ def main(argv=None) -> int:
         return 2
     try:
         length = tuple(int(x) for x in args.length.split("-")) if args.length else None
-        deck, findings = run_checks(path, rules, args.profile, length, handback=args.handback)
+        if args.template:
+            deck, findings = check_template_contract(path, rules)
+            deck.profile = None
+        else:
+            deck, findings = run_checks(path, rules, args.profile, length, handback=args.handback)
         if args.no_length:
             findings = [f for f in findings if f.id != "deck-length"]
     except Exception as exc:  # noqa: BLE001

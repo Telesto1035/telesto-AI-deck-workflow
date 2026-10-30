@@ -159,6 +159,7 @@ The core above holds the rules every mode needs. The rest is in `references/`, r
 - `transcripts.md`: the one-pass read, topic segmentation and the ask register, and what is never extracted from a recording. Not mode-gated: read the first time a meeting transcript appears, at Build or at Revise.
 - `voice-review.md`: the de-AI pass. Read at handoff of a Build or a full rewrite.
 - `build-rules.md`: native and editable build rules, density, versioning, rating columns, Telesto dark paper. Read at Build and when a Revise adds a page or element.
+- `template-contract.md`: what a Telesto AI-readable template carries (starter, exemplar and readme pages, their stamps, the readme's contract version), where templates live, and how a template and these skills stay in step. Read at Build when the attachment is a template, and when a consultant asks to make or update one.
 - `deck-types.md`: the eight deck types as the elements each usually carries, plus recurring page patterns. Read at Build, or when a Revise changes the storyline.
 
 ## Data handling

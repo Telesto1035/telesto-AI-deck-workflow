@@ -35,7 +35,7 @@ Segments or business units with the services each sells and named leaders where 
 Date, target, segment, what it adds.
 
 ## 5. Deck style
-From the client's shipped decks, named with their type and month. Paper (template, fonts, color roles; colors are read from the attached deck or a palette screenshot, never listed as hex codes), recurring pages and elements, and voice (client vocabulary, title conventions, how far claims go). A freshly attached shipped deck wins over this section. Mark what the decks do not settle `[TO CONFIRM]`.
+From the client's shipped decks, named with their type and month. Paper (template, fonts, color roles; colors are read from the attached deck or a palette screenshot, never listed as hex codes), recurring pages and elements, and voice (client vocabulary, title conventions, how far claims go). Name the template file and the template contract version it meets (`template-contract.md`). A freshly attached shipped deck wins over this section. Mark what the decks do not settle `[TO CONFIRM]`.
 
 ## 6. Key account stakeholders
 The people and teams Telesto works with: name, role, where it sits, three or four responsibilities from job postings, public pages or the engagement. Facts only; see the three rules above.
