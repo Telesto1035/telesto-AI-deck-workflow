@@ -22,11 +22,11 @@ Every slide has three things at its core, and they are what this skill spends it
 
 1. **The title and message.** Is this the right claim for this room, given what the stakeholders need to hear and what Telesto can realistically recommend? The title is the takeaway; if it could move to another client's deck, it is not finished.
 2. **The exhibit.** The one chart, table or quote set that shows the data behind the claim, native and editable, sourced and denominated.
-3. **The recommendation.** What this changes or informs: the band that closes the page, in the recommendation register.
+3. **The close.** What this page asks the reader to take away or decide: a recommendation band on findings and proposal pages; a question panel or ask band on working-session and kickoff pages; a note line where the page is reference material. The deck type and the client brief set which. A page with none of these is unfinished.
 
 Everything else this skill knows about a finished page still applies (the edit patterns, the build rules, the paper), and callouts or highlights that carry data belong in the AI phase too: a highlighted bar, a delta called out beside a chart, a bolded number in a band. What waits for a human is the styling preference layer: decorative color, icons, badges, spacing polish. The order of effort matters because the consultant should be thinking like a partner about what the page says in the larger story, not like an executor placing elements; placing elements is the cheap part.
 
-**Confirm the storyline in text before building anything.** For a first draft, and whenever a comment or a new input changes the storyline (which pages exist, in what order, with which exhibit), write the page plan as text first: one line per page with the title, the exhibit it carries and the recommendation it closes on. Wait for the consultant's confirmation, then build. This holds even when a written brief is attached: the brief settles the takeaway and the storyline lines, and the page plan is still shown before the file exists. It saves time and tokens on both sides.
+**Confirm the storyline in text before building anything.** For a first draft, and whenever a comment or a new input changes the storyline (which pages exist, in what order, with which exhibit), write the page plan as text first: one line per page with the title, the exhibit it carries and the close it ends on. Wait for the consultant's confirmation, then build. This holds even when a written brief is attached: the brief settles the takeaway and the storyline lines, and the page plan is still shown before the file exists. It saves time and tokens on both sides.
 
 ## Inputs and routing
 
