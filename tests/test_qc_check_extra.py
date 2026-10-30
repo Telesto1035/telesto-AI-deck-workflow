@@ -603,3 +603,29 @@ def test_template_exemplar_and_readme_pages_block_at_handback(tmp_path, rules):
     _deck, findings = qc_check.run_checks(out, rules, handback=True)
     blocks = [f for f in findings if f.id == "placeholders" and f.severity == "block"]
     assert sorted(f.slide for f in blocks) == [1, 2], [(f.slide, f.detail) for f in blocks]
+
+
+def _grey_eyebrow_deck(tmp_path, n_slides):
+    from pptx.dml.color import RGBColor
+    prs = Presentation()
+    for i in range(n_slides):
+        slide = prs.slides.add_slide(prs.slide_layouts[6])
+        tb = slide.shapes.add_textbox(Inches(1), Inches(1), Inches(6), Inches(0.5))
+        tb.name = "Eyebrow"
+        tb.text_frame.text = "PROJECT NAME · SECTION %d" % (i + 1)
+        for r in tb.text_frame.paragraphs[0].runs:
+            r.font.size = Pt(11)
+            r.font.color.rgb = RGBColor(0x7F, 0x7F, 0x7F)
+    out = tmp_path / ("grey_%d.pptx" % n_slides)
+    prs.save(str(out))
+    return out
+
+
+def test_grey_text_colour_recurring_on_client_paper_is_the_palette(tmp_path, rules):
+    """A grey eyebrow client paper repeats on palette_recurrence_slides or more slides is the deck's palette,
+    as the fill check already treats recurring fills; on fewer slides it is still reported."""
+    recur = int(rules["palette_recurrence_slides"])
+    _d, findings = qc_check.run_checks(_grey_eyebrow_deck(tmp_path, recur), rules)
+    assert not [f for f in findings if f.id == "gray-text"]
+    _d, findings = qc_check.run_checks(_grey_eyebrow_deck(tmp_path, recur - 1), rules)
+    assert len([f for f in findings if f.id == "gray-text"]) == recur - 1

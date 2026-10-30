@@ -181,6 +181,15 @@ def hex_distance_ok(color: str, palette: Iterable[str], tol: int) -> bool:
     return False
 
 
+def recurring_colors(counts_by_slide: list[dict[str, int]], recur: int, tol: int) -> set:
+    """Colors that recur, within tol, on recur or more slides: the deck's own palette, applied by hand."""
+    deck_colors = {c for counts in counts_by_slide for c in counts}
+    return {
+        c for c in deck_colors
+        if sum(1 for counts in counts_by_slide if counts and hex_distance_ok(c, counts, tol)) >= recur
+    }
+
+
 # --------------------------------------------------------------------------------------
 # Deck model
 # --------------------------------------------------------------------------------------
@@ -664,9 +673,30 @@ def check_grey_text(d: Deck):
     runs are listed as info for judgment; grey never blocks or warns."""
     threshold = int(d.rules.get("grey_text_threshold", 4))
     palette = d.allowed_palette()
+
+    def run_colour(r) -> str:
+        rPr = r.elm.find(q("a:rPr"))
+        clr = rPr.find(q("a:solidFill") + "/" + q("a:srgbClr")) if rPr is not None else None
+        return (clr.get("val") or "").upper() if clr is not None else ""
+
+    colours_by_slide: list[dict[str, int]] = []
+    for sno in range(1, len(d.slides) + 1):
+        counts: dict[str, int] = {}
+        for si in d.shapes_by_slide.get(sno, []):
+            if not d.is_text_shape(si):
+                continue
+            for r in d.runs_of(si):
+                val = run_colour(r) if visible(r.text) else ""
+                if len(val) == 6:
+                    counts[val] = counts.get(val, 0) + 1
+        colours_by_slide.append(counts)
+    # a text colour client paper repeats across slides (an eyebrow, a note line) is the deck's palette, as with fills
+    recurring = recurring_colors(
+        colours_by_slide, int(d.rules.get("palette_recurrence_slides", 3)), int(d.rules.get("palette_tolerance", 0))
+    )
     found = []
     for sno, shapes in d.shapes_by_slide.items():
-        allowed = palette | d.theme_colors(d.slides[sno - 1].slide_layout.slide_master)
+        allowed = palette | recurring | d.theme_colors(d.slides[sno - 1].slide_layout.slide_master)
         for si in shapes:
             if not d.is_text_shape(si) or d.is_footnote_home(si):
                 continue
@@ -674,13 +704,9 @@ def check_grey_text(d: Deck):
             for r in d.runs_of(si):
                 if not visible(r.text):
                     continue
-                rPr = r.elm.find(q("a:rPr"))
-                if rPr is None:
-                    continue
-                clr = rPr.find(q("a:solidFill") + "/" + q("a:srgbClr"))
-                val = (clr.get("val") or "").upper() if clr is not None else ""
-                # a muted colour that belongs to the theme or the house palette is a deliberate choice
-                # (inactive navigation, a denominator line); anything else grey is the detail-text habit
+                val = run_colour(r)
+                # a muted colour that belongs to the theme, the house palette or the deck's recurring colours is
+                # a deliberate choice (inactive navigation, a denominator line); anything else grey is the habit
                 if val and val not in allowed and _text_colour_is_grey(val):
                     hits.append(r)
             if hits:
@@ -1886,12 +1912,7 @@ def check_style_drift(d: Deck):
         fills_by_slide.append(counts)
     # A brand color a client template applies by hand instead of through its theme is still the deck's palette:
     # a fill (within tolerance) that recurs on enough slides is kept, and only the few-slide colors are reported.
-    recur = int(d.rules.get("palette_recurrence_slides", 3))
-    deck_colors = {c for counts in fills_by_slide for c in counts}
-    recurring = {
-        c for c in deck_colors
-        if sum(1 for counts in fills_by_slide if counts and hex_distance_ok(c, counts, tol)) >= recur
-    }
+    recurring = recurring_colors(fills_by_slide, int(d.rules.get("palette_recurrence_slides", 3)), tol)
     for sno, slide in enumerate(d.slides, 1):
         allowed = palette | recurring | d.theme_colors(slide.slide_layout.slide_master)
         offenders = {
