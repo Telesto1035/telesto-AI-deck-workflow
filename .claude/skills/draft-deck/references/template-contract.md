@@ -23,13 +23,15 @@ What draft-deck and deck-qc assume of any Telesto AI-readable template, house or
 
 ## Where templates live
 
-One folder per paper, outside this repo, owned by the template owner:
+The template library is the SharePoint folder **TelestoStrategyTeam > Shared Documents > Client Projects > Telesto AI templates**, synced to the template owner's machine through the OneDrive client. One subfolder per paper:
 
 ```
-Telesto Templates/
+Telesto AI templates/
   Telesto/     house templates
   <Client>/    that client's template, one current version plus superseded ones in an Archive folder
 ```
+
+SharePoint keeps each file's version history. Give a team member access to the `Telesto/` folder and to their own clients' folders only.
 
 - **A client folder is attached only to that client's Cowork project.** Exemplar pages carry client content, so a project that sees two clients' folders breaks one engagement per session (GOVERNANCE rule 3). The `Telesto/` folder may be attached to any project.
 - **The client brief's Deck style section names the template file and the contract version it meets.** The template carries the paper; the brief carries the conventions the template cannot show (title form, voice, claims precedent).
