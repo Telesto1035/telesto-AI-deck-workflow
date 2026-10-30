@@ -35,7 +35,7 @@ The between-milestones deck that answers one question with evidence. Its shape i
 - **Register:** findings as the client's opportunity; bands bold the action phrase and carry the client proof the consultant supplies.
 
 ## Kickoff, Presentation, Update, Workshop
-- **Kickoff:** objectives and success, scope and workstreams, approach and timeline, roles and cadence, first two weeks. 5 to 8 pages; operational register with dates and owners.
+- **Kickoff:** objectives and success, scope and workstreams, approach and timeline, roles and cadence, first two weeks. 5 to 8 pages; operational register with dates and owners. Exemplar: Scaling TC Activity kickoff (Oct 2026) on ULSE paper, held in that client's project.
 - **Presentation:** a findings or proposal deck with fewer words and larger exhibits, closing on a decision page. 8 to 15 pages. Explainer variant for a product: problem, what it does, how the client uses it, value, what happens next, 3 to 5 pages.
 - **Update:** where we are against plan, what we learned, decisions needed, next period. 3 to 6 pages; plain, dated, owner-named.
 - **Workshop:** agenda and objectives, framing pages, exercise pages with prompts, empty capture grids, close. 6 to 12 pages; questions and prompts, not conclusions.
@@ -58,3 +58,11 @@ Content structure only; colors, fonts and furniture come from the attached deck.
 - **Coverage or whitespace matrix:** rows are topics, columns are sources or segments, cells carry intensity with parenthetical examples; a bottom row calls out whitespace; footnote states corpus and window.
 - **Methodology:** who, n, how sampled, when; margin of error; which cuts are directional and their n.
 - **Profile series:** one layout repeated per subject; build one, confirm it, then replicate.
+- **Executive project charter:** facts table (name, leads, start, target end), problem statement, scope, goals, team by role (decider, advisor, recommender, executor), milestone strip.
+- **Context and objectives:** where this fits, what we are solving for (outcome, why it matters), closing ask band naming the session's objective.
+- **Risk and mitigation:** paired rows, risk left, mitigation right with owner where known; five rows at most.
+- **Gantt timeline:** month band, two to four workstream bars, diamond milestones, scope tag for anything outside the SOW; intro line states whether dates are commitments.
+- **Stage chevron track:** four to six chevrons with the active stage lit; the rule at this stage and a worked example beneath.
+- **Decision tree:** two or three levels of options, one result node, key inputs panel; drawn in the grammar of the decision (build-rules "Concept pages").
+- **For discussion:** what we know on the left, two or three questions for the room in a panel on the right; ends on the questions.
+- **Next steps:** step, owner, by; an owner may be a team.
