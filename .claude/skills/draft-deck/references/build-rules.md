@@ -58,7 +58,7 @@ The 2.0 house paper is dark and built for screen. It is the default for Telesto-
 - Certain pages can be text-heavy (methodology, discussion), but never a wall of text for executive audiences.
 ## Footnotes
 
-The convention (numbered superscripts, question wording verbatim, "Source:" for external material) is in SKILL.md. Two construction points: replace survey piping tokens (such as $HQ14_text) with the piped value, following the shipped deck; end a survey footnote with the survey name and base ("; Competitive Intelligence survey, n=200").
+The convention (numbered superscripts, question wording verbatim, "Source:" for external material, Source and Note lines on process and benchmarking pages) is in SKILL.md. Two construction points: replace survey piping tokens (such as $HQ14_text) with the piped value, following the shipped deck; end a survey footnote with the survey name and base ("; Competitive Intelligence survey, n=200").
 ## Versioning
 
 - The version number _vN moves up only after a CEO or client revision, or when the storyline or page order changes. Everything else is an iteration of the same version: gate fixes, evaluator FIX items, resolved SUGGEST items, render fixes. Iterations are saved as _vN_1, _vN_2 and so on, never as a new N. When the consultant hands back an edited file, that edit is the new version and the AI iterations on it start again at _1. Never bump the version on your own; a build script that writes a new file writes the next iteration.

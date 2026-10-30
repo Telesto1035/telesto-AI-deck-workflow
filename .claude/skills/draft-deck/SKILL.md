@@ -137,6 +137,7 @@ On a proposal, a source line naming the survey and its year is enough; the rest 
 
 - **Question-level citations use numbered superscripts.** Where a figure, quote set or exhibit draws on a survey question, a superscript ¹ ² ³ sits on the word, number, subtitle or column head it supports, and the footnote reads "1. Q21. How would you characterize the current state of AI adoption at your institution?" with the question wording verbatim, never paraphrased, then the survey name and n. Free-response quotes are cited the same way: the marker on the section subtitle, the footnote giving the question and that it was free response.
 - **"Source:" is for external material.** A website, a report, a different survey from the rest of the deck, a client dataset: "Source: Semrush API, US database, pulled 10 September 2026." A sister survey used beside the main one takes a numbered footnote that names it ("2. Q31. … 2026 Healthcare Intelligence Survey, n=200").
+- **Process and benchmarking pages take two line forms** in the footnote home, 10pt, named `Source` and `Note`. Source: "Source: [system or document set], accessed [month year]; [who computed it]." Note: a one-sentence caveat on how to read the page ("Dates are illustrative; actual timing depends on the level of lift"). A figure on a stat card or appendix table traces to a Source line on the same page.
 - Every marker has its footnote on the same page and every footnote has its marker; the gate checks both directions.
 
 ## Word budget
