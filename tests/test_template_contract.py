@@ -101,6 +101,15 @@ def test_exemplar_section_page_without_stamp_blocks(tmp_path, rules):
     assert [f.slide for f in _blocks(findings)] == [2]
 
 
+def test_unstamped_readme_and_exemplar_divider_block(tmp_path, rules):
+    """Both client templates first shipped this way: readme pages without the eyebrow, and an Exemplars divider
+    without the stamp. Either reads as a starter page and would travel into a deck unflagged."""
+    path = _template(tmp_path, [STARTER, ("Title 1", "Exemplars"), EXEMPLAR,
+                                ("Title 1", "Readme 1 of 2: type and colour"), README])
+    _d, findings = qc_check.check_template_contract(path, rules)
+    assert sorted(f.slide for f in _blocks(findings)) == [2, 4], [(f.slide, f.detail) for f in _blocks(findings)]
+
+
 def test_starter_source_line_outside_a_named_home_warns(tmp_path, rules):
     path = _template(tmp_path, [("TextBox 7", "Source: [system], accessed [month year]"), EXEMPLAR, README])
     _d, findings = qc_check.check_template_contract(path, rules)

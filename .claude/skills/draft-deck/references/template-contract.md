@@ -13,13 +13,13 @@ What draft-deck and deck-qc assume of any Telesto AI-readable template, house or
 
 1. **Three kinds of page.** Starter pages are the layouts a deck is built from. Exemplar pages show a finished page in the paper's style and carry real or dummy client content. Readme pages explain the template to the drafter. A deck duplicates starter pages only (build-rules rule 1).
 2. **Sections named Starter, Exemplar and Readme**, each name containing that word (a section called "Exemplar · Scaling TC" counts). Recommended: without them an exemplar page whose stamp was deleted cannot be told from a starter page, and `--template` says so as INFO.
-3. **The exemplar stamp** on every exemplar page: text beginning `EXEMPLAR ·`, such as `EXEMPLAR · DUMMY DATA` or `EXEMPLAR · <deck> (<month year>) · DO NOT REUSE CONTENT`.
-4. **The readme eyebrow** on every readme page: `TEMPLATE README · NOT A DECK PAGE`. Starter pages carry neither string. Both strings block at hand-back on a deck, so a page that keeps one cannot ship.
-5. **A readme that states:** `Template contract v<n>`, the version the template meets; the slide master or layout a deck inherits; the palette roles (which color marks what); and any page-design exception (a page type that departs from the paper's title size, for instance).
+3. **The exemplar stamp** on every exemplar page, the section's divider page included: text beginning `EXEMPLAR ·`, such as `EXEMPLAR · DUMMY DATA` or `EXEMPLAR · <deck> (<month year>) · DO NOT REUSE CONTENT`.
+4. **The readme eyebrow** on every readme page, wherever the readme sits in the file: `TEMPLATE README · NOT A DECK PAGE`. Starter pages carry neither string. Both strings block at hand-back on a deck, so a page that keeps one cannot ship.
+5. **A readme that states:** `Template contract v<n>`, the version the template meets; which pages to delete before a deck leaves (exemplar and readme sections, unused starters); the slide master or layout a deck inherits; the palette roles (which color marks what); and any page-design exception (a page type that departs from the paper's title size, for instance).
 6. **Footnote homes named for what they hold.** A source or note line on a starter page sits in a shape named `Source`, `Note` or `Footnote`; the gate finds footnote homes by name (`footnote_name_regex`).
 7. **Colors from the theme**, or applied by hand on at least `palette_recurrence_slides` slides, so the gate reads them as the deck's palette for fills and text alike.
 8. **Type at the floor.** 10pt or larger outside footnotes, 8pt floor in them, on starter pages; the paper's convention never lowers it.
-9. **"template" in the file name** (`<Client>_PPT_Template_<year>_v<n>.pptx`), so the Stop hook skips it as a template rather than gating it as a deck.
+9. **"template" anywhere in the file name**, so the Stop hook skips it as a template rather than gating it as a deck. Client papers use `Telesto_<Client>_PPT_Template_<year>_v<n>.pptx`.
 
 ## Where templates live
 

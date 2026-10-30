@@ -2055,6 +2055,7 @@ def run_checks(path: Path, rules: dict, profile: Optional[str] = None,
 SECTION_URI = "{521415D9-36F7-43E2-AB2F-B90AF26B5E84}"
 P14 = "http://schemas.microsoft.com/office/powerpoint/2010/main"
 CONTRACT_RE = re.compile(r"template\s+contract\s*v\s*(\d+)", re.I)
+UNSTAMPED_KIND_RE = re.compile(r"\b(readme|exemplars?)\b", re.I)
 
 
 def template_sections(d: Deck) -> dict[int, str]:
@@ -2106,6 +2107,14 @@ def check_template_contract(path: Path, rules: dict) -> tuple[Deck, list[Finding
         elif max(versions) > current:
             add("warn", readme[0], "names template contract v%d; these skills know v%d: update the plugin" % (
                 max(versions), current))
+    # a readme page without its eyebrow, or the exemplar section's divider without the stamp, reads as a starter
+    # page: it would be duplicated into a deck and not caught at hand-back
+    for sno, kind in stamped.items():
+        m = UNSTAMPED_KIND_RE.search(texts[sno]) if kind == "starter" else None
+        if m:
+            want = eyebrow if m.group(1).lower() == "readme" else stamp
+            add("block", sno, "names %s pages but lacks '%s'" % (m.group(1).lower().rstrip("s"), want),
+                texts[sno].strip()[:120])
     if not any(k == "starter" for k in stamped.values()):
         add("block", None, "no starter page: every slide carries an exemplar or readme stamp")
 
